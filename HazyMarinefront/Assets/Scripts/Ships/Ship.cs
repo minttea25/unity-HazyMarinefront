@@ -42,10 +42,51 @@ public abstract class Ship : MonoBehaviour
         if (shipType == ShipType.MainShip)
             isMainShip = true;
         visibility = isMainShip;
+
+        Material m = GetMaterial(team);
+
+
+
+        if (m != null)
+        {
+            // 색상 변경을 위해 임시 코드 (2개의 메쉬로 되어있는 프리팹이기 때문에 모두 변경)
+            // 프리팹의 부모 오브젝트의 mesh renderer의 meterial을 바꾸는 것인므로 실제 아래 코드에 의해 시각적으로 색상이 변경되지 않음
+            // 따라서 아예 팀 A, B의 배들을 각각 다른 프리팹으로 고정
+            SetMaterial(m);
+        }
+    }
+
+    private Material GetMaterial(Team team)
+    {
+        Material m = null;
+        String m1 = "test/Team1Material";
+        String m2 = "test/Team2Material";
+
+        if (team == Team.ATeam)
+        {
+            m = Resources.Load<Material>(m1);
+        }
+        else
+        {
+            m = Resources.Load<Material>(m2);
+        }
+
+        Debug.Log(m);
+
+        if (m != null)
+        {
+            return m;
+        } else
+        {
+            Debug.Log("Can not find " + m1 + " or " + m2 + ". Check the files in asset folder.");
+            return null;
+        }
     }
 
     public void SetMaterial(Material shipMaterial)
     {
+        Debug.Log(materialSetter);
+        Debug.Log(controller);
         materialSetter.SetMaterial(shipMaterial);
     }
 

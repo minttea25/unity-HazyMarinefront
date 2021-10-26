@@ -26,6 +26,8 @@ public class Map : MonoBehaviour
     private Ship[,] grid;
     private Ship selectedShip;
 
+    //private MoveShipController controller;
+
 
     private void Start()
     {
@@ -33,6 +35,7 @@ public class Map : MonoBehaviour
         grid = new Ship[mapSize.x, mapSize.y];
         spawnLeastInterval = mapLayout.spawnLeastInterval;
         areaSize = mapLayout.areaSize;
+        //controller = GetComponent<MoveShipController>();
     }
 
     public Ship GetSelectedShip()
@@ -40,13 +43,14 @@ public class Map : MonoBehaviour
         return selectedShip;
     }
 
-    public void SpawnShipRandomCoord(GameObject prefab)
+    public void SpawnShipRandomCoord(GameObject prefab, Team team)
     {
         // ÁÂÇ¥ Á¤ÇÏ±â
 
         GameObject shipObj = (GameObject)Instantiate(prefab);
         Ship ship = shipObj.GetComponent<Ship>();
         // Debug.Log(ship.name + ": " + ship);
+        ship.team = team;
         ship.Init();
 
         //List<Vector2Int> temp = ship.GetPosibleShipSpawnCoordsList(this);
@@ -102,8 +106,13 @@ public class Map : MonoBehaviour
             return;
         }
 
+
+        //controller.shipTransform = selectedShip.transform;
         selectedShip.MoveShipInCoord(dirType, amount, this);
         selectedShip.MoveShipInPosition(this);
+        //controller.desPosition = selectedShip.shipCenterPosition;
+        //controller.moveNow = true;
+        
         selectedShip.MoveShipInField();
     }
 
@@ -149,7 +158,7 @@ public class Map : MonoBehaviour
         return true;
     }
 
-    public bool SetSelectedShip(ShipType type)
+    public bool SetSelectedShip(ShipType type, Team team)
     {
         // grid Å½»ö - ºñÈ¿À²...
         for (int i = 0; i < grid.GetLength(0); i++)
@@ -158,7 +167,7 @@ public class Map : MonoBehaviour
             {
                 if (grid[i, j] == null)
                     continue;
-                if (grid[i, j].shipType == type)
+                if (grid[i, j].shipType == type && grid[i, j].team == team)
                 {
                     selectedShip = grid[i, j];
                     Debug.Log(selectedShip + " is selected");

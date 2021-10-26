@@ -7,14 +7,15 @@ public class GameManager : MonoBehaviour
 {
     const int SHIP_COUNT = 4;
 
-    public GameObject[] shipPrefabs;
+    public GameObject[] teamAShipPrefabs;
+    public GameObject[] teamBShipPrefabs;
 
     public Map map;
 
     // Start is called before the first frame update
     void Start()
     {
-        if (SHIP_COUNT != shipPrefabs.Length)
+        if (SHIP_COUNT != teamAShipPrefabs.Length || SHIP_COUNT != teamBShipPrefabs.Length)
         {
             Debug.Log("SHIP_COUNT != shipRefabs.Length");
             return;
@@ -22,7 +23,8 @@ public class GameManager : MonoBehaviour
 
         for (int i=0; i<SHIP_COUNT; i++)
         {
-            map.SpawnShipRandomCoord(shipPrefabs[i]);
+            map.SpawnShipRandomCoord(teamAShipPrefabs[i], Team.ATeam);
+            map.SpawnShipRandomCoord(teamBShipPrefabs[i], Team.BTeam);
         }
     }
 
