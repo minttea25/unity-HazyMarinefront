@@ -13,13 +13,12 @@ public class Map : MonoBehaviour
     public Transform bottomLeftSquareTransform;
 
 
-
     public Vector2Int mapSize { get; set; }
 
     // 배치 가능 주변 탐색범위 (n*n)
     private int spawnLeastInterval { set; get; }
 
-    
+
 
     public float areaSize { get; set; }
 
@@ -50,30 +49,34 @@ public class Map : MonoBehaviour
         // Debug.Log(ship.name + ": " + ship);
         ship.Init();
 
-        List<Vector2Int> temp = ship.GetPosibleShipSpawnCoordsList(this);
+        //List<Vector2Int> temp = ship.GetPosibleShipSpawnCoordsList(this);
+        List<Vector3Int> temp = ship.GetPosibleShipSpawnCoordsList(this);
 
         // deep copy
         ship.shipCoords.Clear();
-        ship.shipCoords = temp.ConvertAll(o => new Vector2Int(o.x, o.y));
+        //ship.shipCoords = temp.ConvertAll(o => new Vector2Int(o.x, o.y));
+        ship.shipCoords = temp.ConvertAll(o => new Vector3Int(o.x, o.y, o.z));
 
-        for (int i=0; i<ship.shipCoords.Count; i++)
+        for (int i = 0; i < ship.shipCoords.Count; i++)
         {
             grid[ship.shipCoords[i].x, ship.shipCoords[i].y] = ship;
-            Debug.Log(prefab.name + ": " + ship.shipCoords[i]);
+            Debug.Log(prefab.name + "(relative pos): " + ship.shipCoords[i]);
         }
 
         ship.shipCenterPosition = ship.GetShipCenterPositionFromCoord(ship.shipCoords, this);
 
         Vector3 pos = ship.shipCenterPosition;
-        Debug.Log(prefab.name + ": " + pos);
+        Debug.Log(prefab.name + " (real pos): " + pos);
         ship.transform.position = pos;
 
         // selectedShip = grid[ship.shipCoords[0].x, ship.shipCoords[0].y];
 
         ship.transform.parent = shipHolder.transform;
+        // new code
+        ship.transform.localScale = new Vector3(1, 1, 1);
     }
 
-    
+
     // 지정 좌표에 실제로 배가 있는지 확인 후 반환(조건 수정 필요)
     private Ship GetShipOnArea(Vector2Int coord)
     {
@@ -90,33 +93,42 @@ public class Map : MonoBehaviour
         if (selectedShip == null)
             return;
 
+        bool canMove = selectedShip.checkAvailableToMove(dirType, amount, mapLayout.mapSize);
+
+        // unavailable to move 
+        if (!canMove)
+        {
+            Debug.Log(selectedShip.name + " can't go there!");
+            return;
+        }
+
         selectedShip.MoveShipInCoord(dirType, amount, this);
         selectedShip.MoveShipInPosition(this);
         selectedShip.MoveShipInField();
     }
 
-    public void UpdateShipOnGrid(List<Vector2Int> oldCoords, List<Vector2Int> newCoords, Ship ship)
+    public void UpdateShipOnGrid(List<Vector3Int> oldCoords, List<Vector3Int> newCoords, Ship ship)
     {
         // 기존 grid의 ship null 값으로 변경
-        for (int i=0; i<oldCoords.Count; i++)
+        for (int i = 0; i < oldCoords.Count; i++)
         {
             grid[oldCoords[i].x, oldCoords[i].y] = null;
         }
 
-        for (int i=0; i<newCoords.Count; i++)
+        for (int i = 0; i < newCoords.Count; i++)
         {
             grid[newCoords[i].x, newCoords[i].y] = ship;
         }
     }
 
-    public bool CheckIsShipNear(Vector2Int coord)
+    public bool CheckIsShipNear(Vector3Int coord)
     {
         int moveX = -1;
         int moveY = -1;
 
-        for (int i=0; i<spawnLeastInterval; i++)
+        for (int i = 0; i < spawnLeastInterval; i++)
         {
-            for(int j=0; j<spawnLeastInterval; j++)
+            for (int j = 0; j < spawnLeastInterval; j++)
             {
                 int x = coord.x + moveX + i;
                 int y = coord.y + moveY + j;
@@ -140,20 +152,35 @@ public class Map : MonoBehaviour
     public bool SetSelectedShip(ShipType type)
     {
         // grid 탐색 - 비효율...
-        for (int i=0; i<grid.GetLength(0); i++)
+        for (int i = 0; i < grid.GetLength(0); i++)
         {
-            for (int j=0; j<grid.GetLength(1); j++)
+            for (int j = 0; j < grid.GetLength(1); j++)
             {
                 if (grid[i, j] == null)
                     continue;
                 if (grid[i, j].shipType == type)
                 {
                     selectedShip = grid[i, j];
+                    Debug.Log(selectedShip + " is selected");
                     return true;
                 }
             }
         }
 
         return false;
+    }
+
+    public void AttackCoord(Vector2Int coord)
+    {
+        selectedShip = GetShipOnArea(coord);
+        if (selectedShip != null)
+        {
+            for (int i = 0; i < selectedShip.shipCoords.Count; i++)
+            {
+                if (selectedShip.shipCoords[i].x == coord.x && selectedShip.shipCoords[i].y == coord.y)
+                    selectedShip.DamageShip(i, this);
+            }
+        }
+
     }
 }

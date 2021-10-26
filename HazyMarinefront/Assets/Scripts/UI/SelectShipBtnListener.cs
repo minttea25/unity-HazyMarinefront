@@ -59,22 +59,22 @@ public class SelectShipBtnListener : MonoBehaviour
 
     private void HighlightOnlyOneBtn(Button btn, int typeInt, ShipType type)
     {
-        Debug.Log("HIGHTLIGHT");
         for (int i=0; i<shipBtns.Length; i++)
         {
             if (i == typeInt)
+            {
+                ColorBlock cb2 = btn.colors;
+                cb2.normalColor = Color.blue;
+                btn.colors = cb2;
                 continue;
+            }
             ColorBlock cb = shipBtns[i].colors;
             cb.normalColor = Color.white;
             shipBtns[i].colors = cb;
         }
-        ColorBlock cb2 = btn.colors;
-        cb2.normalColor = Color.blue;
-        btn.colors = cb2;
+        
 
         ShowSelectedShipText(type);
-
-        Debug.Log(map);
 
         bool thereIs = map.SetSelectedShip(type);
         Debug.Log("ThereIs: " + thereIs + " - " + map.GetSelectedShip());

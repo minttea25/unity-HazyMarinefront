@@ -142,9 +142,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   availableArea: []
-  centerX: 2
-  centerY: 1
-  centerZ: 2
 --- !u!114 &5534445129423513407
 MonoBehaviour:
   m_ObjectHideFlags: 0

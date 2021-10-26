@@ -33,7 +33,7 @@ public class MapLayout : MonoBehaviour
     const int SIZE_X = 10;
     const int SIZE_Y = 10;
 
-    const int AREA_SIZE = 1;
+    const int AREA_SIZE = 100;
 
     const int SPAWN_LEAST_INTERVAL = 3;
 
