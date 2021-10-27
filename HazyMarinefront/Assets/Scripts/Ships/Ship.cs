@@ -91,8 +91,11 @@ public abstract class Ship : MonoBehaviour
     }
 
     // 실제 필드에서 옮기기
-    public void MoveShipInField()
+    public void MoveShipInField(Transform oldTransform, Vector3 desPosition)
     {
+        controller.shipTransform = oldTransform;
+        controller.desPosition = desPosition;
+        controller.moveFlag = true;
         controller.MoveTo(transform, shipCenterPosition);
     }
 

@@ -12,21 +12,24 @@ public class Map : MonoBehaviour
     // 기준 좌표
     public Transform bottomLeftSquareTransform;
 
+    public GameObject fogBlocks;
+    public FixedFogManager fixedFogManager;
 
-    public Vector2Int mapSize { get; set; }
+
+    public Vector2Int mapSize { get; private set; }
 
     // 배치 가능 주변 탐색범위 (n*n)
     private int spawnLeastInterval { set; get; }
 
-
-
-    public float areaSize { get; set; }
+    public float areaSize { get; private set; }
 
     // map info
     private Ship[,] grid;
     private Ship selectedShip;
 
-    //private MoveShipController controller;
+    private MoveShipController controller;
+
+    
 
 
     private void Start()
@@ -35,7 +38,9 @@ public class Map : MonoBehaviour
         grid = new Ship[mapSize.x, mapSize.y];
         spawnLeastInterval = mapLayout.spawnLeastInterval;
         areaSize = mapLayout.areaSize;
-        //controller = GetComponent<MoveShipController>();
+        controller = GetComponent<MoveShipController>();
+
+        fixedFogManager.SetFixedFogBlock(null);
     }
 
     public Ship GetSelectedShip()
@@ -107,13 +112,11 @@ public class Map : MonoBehaviour
         }
 
 
-        //controller.shipTransform = selectedShip.transform;
+        Transform oldTransform = selectedShip.transform;
+        
         selectedShip.MoveShipInCoord(dirType, amount, this);
         selectedShip.MoveShipInPosition(this);
-        //controller.desPosition = selectedShip.shipCenterPosition;
-        //controller.moveNow = true;
-        
-        selectedShip.MoveShipInField();
+        selectedShip.MoveShipInField(oldTransform, selectedShip.shipCenterPosition); ;
     }
 
     public void UpdateShipOnGrid(List<Vector3Int> oldCoords, List<Vector3Int> newCoords, Ship ship)

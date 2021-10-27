@@ -12,7 +12,6 @@ public class MainShip : Ship
         shipSizeY = 1;
         shipHealth = shipSizeX * shipSizeY;
 
-
         shipType = ShipType.MainShip;
     }
 
