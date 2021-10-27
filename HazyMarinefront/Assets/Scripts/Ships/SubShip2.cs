@@ -9,27 +9,28 @@ public class SubShip2 : Ship
     {
         shipSizeX = 1;
         shipSizeY = 2;
+        shipHealth = shipSizeX * shipSizeY;
 
         shipType = ShipType.SubShip2;
     }
 
-    public override Vector3 GetShipCenterPositionFromCoord(List<Vector2Int> coords, Map map)
+    public override Vector3 GetShipCenterPositionFromCoord(List<Vector3Int> coords, Map map)
     {
         float avgCoordX = coords[0].x; // coords[0].x = coords[1].x
         float avgCoordY = (coords[0].y + coords[1].y) / 2f;
 
         // 이부분은 배마다 다르게
-        float x = map.bottomLeftSquareTransform.transform.position.x + map.areaSize * (avgCoordX + map.areaSize / 2f);
-        float z = map.bottomLeftSquareTransform.transform.position.z + map.areaSize * (avgCoordY + map.areaSize / 2f);
+        float x = map.bottomLeftSquareTransform.transform.position.x + map.areaSize * (avgCoordX + +0.5f);
+        float z = map.bottomLeftSquareTransform.transform.position.z + map.areaSize * (avgCoordY + +0.5f);
 
         return new Vector3(x, map.bottomLeftSquareTransform.transform.position.y, z);
     }
 
-    public override List<Vector2Int> GetPosibleShipSpawnCoordsList(Map map)
+    public override List<Vector3Int> GetPosibleShipSpawnCoordsList(Map map)
     {
         // 먼저 좌표 하나뽑고 만약 가능한 좌표면 위로으로 한칸 추가해서 다시 그 칸 가능한 좌표인지 확인
 
-        List<Vector2Int> list = new List<Vector2Int>();
+        List<Vector3Int> list = new List<Vector3Int>();
 
         while (true)
         {
@@ -37,7 +38,7 @@ public class SubShip2 : Ship
             int x = Random.Range(0, map.mapSize.x);
             int y = Random.Range(0, map.mapSize.y - 1);
 
-            bool posible1 = map.CheckIsShipNear(new Vector2Int(x, y));
+            bool posible1 = map.CheckIsShipNear(new Vector3Int(x, y, 0));
 
             if (!posible1)
             {
@@ -46,15 +47,15 @@ public class SubShip2 : Ship
 
             y += 1;
 
-            bool posible2 = map.CheckIsShipNear(new Vector2Int(x, y));
+            bool posible2 = map.CheckIsShipNear(new Vector3Int(x, y, 0));
 
             if (!posible2)
             {
                 continue;
             }
 
-            list.Add(new Vector2Int(x, y - 1));
-            list.Add(new Vector2Int(x, y));
+            list.Add(new Vector3Int(x, y - 1, 0));
+            list.Add(new Vector3Int(x, y, 0));
 
             break;
         }

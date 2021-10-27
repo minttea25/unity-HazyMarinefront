@@ -7,43 +7,24 @@ public class MoveBtnEventListener : MonoBehaviour
 {
     public Button moveBtn;
     public GameManager manager;
-    public Dropdown dirDropDown;
 
+    public DropDownEventListener ddel;
     private const int amount = 1; // 움직임 1칸 고정
-    private DirectionType dirType;
 
-    private void Awake()
-    {
-        // 기본 선택 (나중에 선택/front/back/right/left로 할지 선택 부분 뺄지 결정)
-        dirType = DirectionType.Front;
-    }
 
     public void MoveShip()
     {
-        manager.map.MoveShip(dirType, amount);
-    }
+        bool exist = manager.map.SetSelectedShip(ddel.shipType, ddel.team);
 
-    // 일단 하드 코딩...
-    public void SelectedDirectionChanged()
-    {
-        switch(dirDropDown.captionText.text)
+        if (exist)
         {
-            case "Front":
-                dirType = DirectionType.Front;
-                break;
-            case "Back":
-                dirType = DirectionType.Back;
-                break;
-            case "Right":
-                dirType = DirectionType.Right;
-                break;
-            case "Left":
-                dirType = DirectionType.Left;
-                break;
-            default:
-                Debug.Log("dir error - MoveBtnEventListener");
-                return;
+            manager.map.MoveShip(ddel.dirType, amount);
         }
+        else
+        {
+            Debug.Log("There is no ship: " + ddel.shipType + " " + ddel.team);
+            return;
+        }
+        
     }
-    
 }
