@@ -12,18 +12,19 @@ public class FixedFogManager : MonoBehaviour
     FixedFog[,] fixedFogGrid;
     
 
-    private void Start()
+    private void Awake()
     {
         if (fogPrefabs.Length == 0)
         {
             Debug.Log("There are no fog prefabs.");
         }
-
+        Debug.Log("SDFSDF");
         fixedFogGrid = new FixedFog[mapLayout.mapSize.x, mapLayout.mapSize.y];
     }
 
     public void SetFixedFogBlock(List<Vector2Int> exceptCoords)
     {
+        Debug.Log(fixedFogGrid);
         for (int i=0; i<fixedFogGrid.GetLength(0); i++)
         {
             for (int j=0; j<fixedFogGrid.GetLength(1); j++)
