@@ -30,10 +30,12 @@ public class MapLayout : MonoBehaviour
 {
     // 가능하면 설정관련 파일은 따로 저장하여 불러오는 방식으로
 
+    // 맵 상대좌표 사이즈
     const int SIZE_X = 10;
     const int SIZE_Y = 10;
 
-    const int AREA_SIZE = 100;
+    // 이 값은 실제 position에 대한 값임! 맵 크기 조절 시 변경 필요
+    const int AREA_SIZE = 10;
 
     const int SPAWN_LEAST_INTERVAL = 3;
 
