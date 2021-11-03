@@ -68,12 +68,30 @@ public class FixedFogManager : MonoBehaviour
         Vector3 pos = new Vector3(x, map.bottomLeftSquareTransform.transform.position.y + 10, z);
 
         fixedFogGrid[coord.x, coord.y].transform.position = pos;
-        fixedFogGrid[coord.x, coord.y].transform.localScale = new Vector3(100, 100, 100);
+        fixedFogGrid[coord.x, coord.y].transform.localScale = new Vector3(mapLayout.areaSize, mapLayout.areaSize, mapLayout.areaSize);
     }
 
     private void ClearFog(Vector2Int coords)
     {
+        if (fixedFogGrid[coords.x, coords.y] != null)
+        {
+            Destroy(fixedFogGrid[coords.x, coords.y].gameObject);
 
+            // for test
+            Debug.Log(coords + " fog is destroyed.");
+        }
+        else
+        {
+            Debug.Log("There is no fog at " + coords);
+        }
+    }
+
+    // for test (clearFog)
+    public void ClearFogTest()
+    {
+        int x = Random.Range(0, mapLayout.mapSize.x);
+        int y = Random.Range(0, mapLayout.mapSize.y);
+        ClearFog(new Vector2Int(x, y));
     }
 }
 

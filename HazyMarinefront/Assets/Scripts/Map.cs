@@ -29,9 +29,6 @@ public class Map : MonoBehaviour
 
     private MoveShipController controller;
 
-    
-
-
     private void Start()
     {
         mapSize = new Vector2Int(mapLayout.mapSize.x, mapLayout.mapSize.y);
