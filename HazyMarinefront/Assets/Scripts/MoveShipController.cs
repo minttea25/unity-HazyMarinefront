@@ -6,12 +6,11 @@ public class MoveShipController : MonoBehaviour
     public Vector3 desPosition;
     public Transform shipTransform;
 
-    private float speed;
+    public float speed = 1;
 
     private void Start()
     {
         moveFlag = false;
-        speed = 50;
     }
 
     private void Update()
