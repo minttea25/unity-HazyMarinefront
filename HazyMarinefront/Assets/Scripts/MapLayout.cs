@@ -29,24 +29,32 @@ public enum DirectionType
 public class MapLayout : MonoBehaviour
 {
     // 가능하면 설정관련 파일은 따로 저장하여 불러오는 방식으로
+    // 일단 에디터에서 직접 수정 가능하도록 public을 붙이고 const 제외 (temp)
 
     // 맵 상대좌표 사이즈
-    const int SIZE_X = 10;
-    const int SIZE_Y = 10;
+    public int SIZE_X = 10;
+    public int SIZE_Y = 10;
 
     // 이 값은 실제 position에 대한 값임! 맵 크기 조절 시 변경 필요
-    const int AREA_SIZE = 10;
+    public int AREA_SIZE = 1;
 
-    const int SPAWN_LEAST_INTERVAL = 3;
+    // 배 초기 스폰 조건 (주변 n*n 으로 다른 배가 없어야함)
+    public int SPAWN_LEAST_INTERVAL = 3;
+
+    // 안개와 바다 사이의 거리
+    public float OCEAN_FOG_INTERVAL = 1f;
+
 
     public Vector2Int mapSize { get; set; }
     public int areaSize { get; set; }
     public int spawnLeastInterval { get; set; }
+    public float oceanFogInterval { get; set; }
 
     private void Awake()
     {
         mapSize = new Vector2Int(SIZE_X, SIZE_Y);
         areaSize = AREA_SIZE;
         spawnLeastInterval = SPAWN_LEAST_INTERVAL;
+        oceanFogInterval = OCEAN_FOG_INTERVAL;
     }
 }

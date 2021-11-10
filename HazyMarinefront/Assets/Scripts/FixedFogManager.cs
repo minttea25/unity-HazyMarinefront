@@ -65,7 +65,7 @@ public class FixedFogManager : MonoBehaviour
         float x = map.bottomLeftSquareTransform.transform.position.x + map.areaSize * (coord.x + 0.5f);
         float z = map.bottomLeftSquareTransform.transform.position.z + map.areaSize * (coord.y + 0.5f);
 
-        Vector3 pos = new Vector3(x, map.bottomLeftSquareTransform.transform.position.y + 10, z);
+        Vector3 pos = new Vector3(x, map.bottomLeftSquareTransform.transform.position.y + mapLayout.oceanFogInterval, z);
 
         fixedFogGrid[coord.x, coord.y].transform.position = pos;
         fixedFogGrid[coord.x, coord.y].transform.localScale = new Vector3(mapLayout.areaSize, mapLayout.areaSize, mapLayout.areaSize);
