@@ -14,7 +14,8 @@ public class MoveBtnEventListener : MonoBehaviour
 
     public void MoveShip()
     {
-        bool exist = manager.map.SetSelectedShip(ddel.shipType, ddel.team);
+        ShipSymbol s = MapLayout.GetSymbolByShiptypeTeam(ddel.shipType, ddel.team);
+        bool exist = manager.map.SetSelectedShip(s);
 
         if (exist)
         {
