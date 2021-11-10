@@ -12,15 +12,16 @@ public abstract class Ship : MonoBehaviour
 
     public ShipType shipType { get; set; }
 
-    public bool isMainShip { get; set; }
-
-    public bool visibility { get; set; }
-
     public int shipSizeX { get; protected set; }
     public int shipSizeY { get; protected set; }
 
+    public ShipSymbol Symbol { get; set; }
+
     public int shipHealth { get; set; }
     public bool isDestroyed { get; set; }
+
+    private bool RevealedToA { get; set; }
+    private bool RevealedToB { get; set; }
 
     // 로직에 필요 요소
     public List<Vector2Int> availableArea;
@@ -39,12 +40,9 @@ public abstract class Ship : MonoBehaviour
         materialSetter = GetComponent<MaterialSetter>();
         controller = GetComponent<MoveShipController>();
 
-        if (shipType == ShipType.MainShip)
-            isMainShip = true;
-        visibility = isMainShip;
+        Symbol = MapLayout.GetSymbolByShiptypeTeam(this.shipType, team);
 
         Material m = GetMaterial(team);
-
 
 
         if (m != null)
@@ -71,8 +69,6 @@ public abstract class Ship : MonoBehaviour
             m = Resources.Load<Material>(m2);
         }
 
-        Debug.Log(m);
-
         if (m != null)
         {
             return m;
@@ -85,8 +81,6 @@ public abstract class Ship : MonoBehaviour
 
     public void SetMaterial(Material shipMaterial)
     {
-        Debug.Log(materialSetter);
-        Debug.Log(controller);
         materialSetter.SetMaterial(shipMaterial);
     }
 
@@ -107,7 +101,7 @@ public abstract class Ship : MonoBehaviour
     }
 
     // 배의 칸수(크기) 반환
-    public int getShipSize()
+    public int GetShipSize()
     {
         return shipSizeX * shipSizeY;
     }
@@ -142,7 +136,7 @@ public abstract class Ship : MonoBehaviour
         shipCenterPosition = GetShipCenterPositionFromCoord(shipCoords, map);
     }
 
-    internal bool checkAvailableToMove(DirectionType dirType, int amount, Vector2Int mapSize)
+    internal bool CheckAvailableToMove(DirectionType dirType, int amount, Vector2Int mapSize)
     {
         float x = 0;
         float y = 0;
@@ -222,11 +216,8 @@ public abstract class Ship : MonoBehaviour
         return a;
     }
 
-    // util list를 target에 복사
     private void ChangeOldNewCoords(List<Vector3Int> newCoords)
     {
-
-
         oldShipCoords.Clear();
         for (int i = 0; i < shipCoords.Count; i++)
         {
@@ -237,6 +228,21 @@ public abstract class Ship : MonoBehaviour
         for (int i = 0; i < newCoords.Count; i++)
         {
             shipCoords.Add(new Vector3Int(newCoords[i].x, newCoords[i].y, newCoords[i].z));
+        }
+    }
+
+    // 위치가 노출 되었을 경우 상태 변경
+    public void SetRevealedState(Team ToTeam, bool visible)
+    {
+        switch (ToTeam) {
+            case Team.ATeam:
+                RevealedToA = visible;
+                break;
+            case Team.BTeam:
+                RevealedToB = visible;
+                break;
+            default:
+                return;
         }
     }
 }

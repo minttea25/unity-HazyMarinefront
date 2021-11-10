@@ -26,6 +26,23 @@ public enum DirectionType
     Right, Left, Front, Back
 }
 
+public enum ShipSymbol
+{
+    NoShip = 0, // no ship
+
+    A0 = 1, // Mainship of A
+    A1 = 2,
+    A2 = 3,
+    A3 = 4,
+    A4 = 5,
+
+    B0 = 11, // Mainship of B
+    B1 = 12,
+    B2 = 13,
+    B3 = 14,
+    B4 = 15
+}
+
 public class MapLayout : MonoBehaviour
 {
     // 가능하면 설정관련 파일은 따로 저장하여 불러오는 방식으로
@@ -56,5 +73,57 @@ public class MapLayout : MonoBehaviour
         areaSize = AREA_SIZE;
         spawnLeastInterval = SPAWN_LEAST_INTERVAL;
         oceanFogInterval = OCEAN_FOG_INTERVAL;
+    }
+
+    public static ShipSymbol GetSymbolByShiptypeTeam(ShipType type, Team team)
+    {
+        ShipSymbol s = ShipSymbol.NoShip;
+
+        switch (team)
+        {
+            case Team.ATeam:
+                switch (type)
+                {
+                    case ShipType.MainShip:
+                        s = ShipSymbol.A0;
+                        break;
+                    case ShipType.SubShip1:
+                        s = ShipSymbol.A1;
+                        break;
+                    case ShipType.SubShip2:
+                        s = ShipSymbol.A2;
+                        break;
+                    case ShipType.SubShip3:
+                        s = ShipSymbol.A3;
+                        break;
+                    case ShipType.SubShip4:
+                        s = ShipSymbol.A4;
+                        break;
+                }
+                break;
+
+            case Team.BTeam:
+                switch (type)
+                {
+                    case ShipType.MainShip:
+                        s = ShipSymbol.B0;
+                        break;
+                    case ShipType.SubShip1:
+                        s = ShipSymbol.B1;
+                        break;
+                    case ShipType.SubShip2:
+                        s = ShipSymbol.B2;
+                        break;
+                    case ShipType.SubShip3:
+                        s = ShipSymbol.B3;
+                        break;
+                    case ShipType.SubShip4:
+                        s = ShipSymbol.B4;
+                        break;
+                }
+                break;
+        }
+
+        return s;
     }
 }
