@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 960372855561934094}
   - component: {fileID: 960372855561934093}
   - component: {fileID: 3822979905891616732}
+  - component: {fileID: -2702274745795872531}
   m_Layer: 0
   m_Name: Fog Block
   m_TagString: Untagged
@@ -108,3 +109,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 677acbf4727ecfe40bf00774c9391e97, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-2702274745795872531
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 960372855561934092}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  NetworkInstanceId: 0
+  PrefabHash: 17436120641540937540
+  PrefabHashGenerator: Fog Block
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0

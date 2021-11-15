@@ -2,11 +2,17 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using MLAPI;
+using MLAPI.Messaging;
 using Random = UnityEngine.Random;
 
-public class Map : MonoBehaviour
+public class Map : NetworkBehaviour
 {
-    public MapLayout mapLayout;
+    public NetworkObject[] teamAShipPrefabs;
+    public NetworkObject[] teamBShipPrefabs;
+    /// <summary>
+    /// /////////////
+    /// </summary>
     public GameObject shipHolder;
 
     // 기준 좌표
@@ -15,35 +21,29 @@ public class Map : MonoBehaviour
     public GameObject fogBlocks;
     public FixedFogManager fixedFogManager;
 
-
-    public Vector2Int mapSize { get; private set; }
-
-    // 배치 가능 주변 탐색범위 (n*n)
-    private int spawnLeastInterval { set; get; }
-
-    public float areaSize { get; private set; }
+    public Vector2Int mapSize = new Vector2Int(MapLayout.mapSize.x, MapLayout.mapSize.y);
 
     // map info
-    //private Ship[,] grid;
     private Ship selectedShip;
 
-    private ShipSymbol[,] grid { get; set; }
-    private List<Ship> ShipsInFieldList { get; set; }
+    [SerializeField] public ShipSymbol[,] grid = new ShipSymbol[MapLayout.mapSize.x, MapLayout.mapSize.y];
+    [SerializeField] public List<Ship> ShipsInFieldList = new List<Ship>();
 
-    private MoveShipController controller;
-
-    private void Start()
+    private void Awake()
     {
-        mapSize = new Vector2Int(mapLayout.mapSize.x, mapLayout.mapSize.y);
-        //grid = new Ship[mapSize.x, mapSize.y];
-        grid = new ShipSymbol[mapSize.x, mapSize.y]; // new
-        ShipsInFieldList = new List<Ship>(); // new
+        //fixedFogManager.SetFixedFogBlock(null);
+        SetShipSymbolDefault();
 
-        spawnLeastInterval = mapLayout.spawnLeastInterval;
-        areaSize = mapLayout.areaSize;
-        controller = GetComponent<MoveShipController>();
-
-        fixedFogManager.SetFixedFogBlock(null);
+    }
+    private void SetShipSymbolDefault()
+    {
+        for (int i = 0; i < grid.GetLength(0); i++)
+        {
+            for (int j = 0; j < grid.GetLength(1); j++)
+            {
+                grid[i, j] = ShipSymbol.NoShip;
+            }
+        }
     }
 
     public Ship GetSelectedShip()
@@ -61,12 +61,10 @@ public class Map : MonoBehaviour
         ship.team = team;
         ship.Init();
 
-        //List<Vector2Int> temp = ship.GetPosibleShipSpawnCoordsList(this);
         List<Vector3Int> temp = ship.GetPosibleShipSpawnCoordsList(this);
 
         // deep copy
         ship.shipCoords.Clear();
-        //ship.shipCoords = temp.ConvertAll(o => new Vector2Int(o.x, o.y));
         ship.shipCoords = temp.ConvertAll(o => new Vector3Int(o.x, o.y, o.z));
 
         // new
@@ -75,9 +73,9 @@ public class Map : MonoBehaviour
         for (int i = 0; i < ship.shipCoords.Count; i++)
         {
             //new
+            Debug.Log(ship.shipCoords.Count);
             grid[ship.shipCoords[i].x, ship.shipCoords[i].y] = MapLayout.GetSymbolByShiptypeTeam(ship.shipType, team);
 
-            //grid[ship.shipCoords[i].x, ship.shipCoords[i].y] = ship;
             Debug.Log(prefab.name + "(relative pos): " + ship.shipCoords[i]);
         }
 
@@ -107,18 +105,19 @@ public class Map : MonoBehaviour
         }
     }
 
-    public void MoveShip(DirectionType dirType, int amount)
+    // 이동에 성공 시 true 반환
+    public bool MoveShip(DirectionType dirType, int amount)
     {
         if (selectedShip == null)
-            return;
+            return false;
 
-        bool canMove = selectedShip.CheckAvailableToMove(dirType, amount, mapLayout.mapSize);
+        bool canMove = selectedShip.CheckAvailableToMove(dirType, amount, MapLayout.mapSize);
 
         // unavailable to move 
         if (!canMove)
         {
             Debug.Log(selectedShip.name + " can't go there!");
-            return;
+            return false;
         }
 
 
@@ -127,6 +126,8 @@ public class Map : MonoBehaviour
         selectedShip.MoveShipInCoord(dirType, amount, this);
         selectedShip.MoveShipInPosition(this);
         selectedShip.MoveShipInField(oldTransform, selectedShip.shipCenterPosition); ;
+
+        return true;
     }
 
     public void UpdateShipOnGrid(List<Vector3Int> oldCoords, List<Vector3Int> newCoords, Ship ship)
@@ -148,27 +149,30 @@ public class Map : MonoBehaviour
         int moveX = -1;
         int moveY = -1;
 
-        for (int i = 0; i < spawnLeastInterval; i++)
+        for (int i = 0; i < MapLayout.spawnLeastInterval; i++)
         {
-            for (int j = 0; j < spawnLeastInterval; j++)
+            for (int j = 0; j < MapLayout.spawnLeastInterval; j++)
             {
                 int x = coord.x + moveX + i;
                 int y = coord.y + moveY + j;
 
                 // 배열 bound 확인
-                if (x < 0 || y < 0 || x > mapSize.x - 1 || y > mapSize.y - 1)
+                if (x < 0 || y < 0 || x > MapLayout.mapSize.x - 1 || y > MapLayout.mapSize.y - 1)
                 {
                     continue;
                 }
                 else
                 {
                     if (grid[x, y] != ShipSymbol.NoShip)
-                        return false;
+                    {
+                        return true;
+                    }
+
                 }
             }
         }
 
-        return true;
+        return false;
     }
 
     public bool SetSelectedShip(ShipSymbol s)
@@ -208,7 +212,7 @@ public class Map : MonoBehaviour
 
     /*@param
      */
-    private Ship GetShipBySymbol(ShipSymbol s)
+    public Ship GetShipBySymbol(ShipSymbol s)
     {
         for (int i = 0; i < ShipsInFieldList.Count; i++)
         {
