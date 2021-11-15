@@ -2,8 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using MLAPI;
 
-public abstract class Ship : MonoBehaviour
+public abstract class Ship : NetworkBehaviour
 {
     public List<Vector3Int> oldShipCoords { get; set; }
     public List<Vector3Int> shipCoords { get; set; }

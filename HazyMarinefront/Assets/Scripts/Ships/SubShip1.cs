@@ -22,8 +22,8 @@ public class SubShip1 : Ship
         float avgCoordY = coords[0].y; // coords[0].y = coords[1].y
 
         // 이부분은 배마다 다르게
-        float x = map.bottomLeftSquareTransform.transform.position.x + map.areaSize * (avgCoordX + +0.5f);
-        float z = map.bottomLeftSquareTransform.transform.position.z + map.areaSize * (avgCoordY + +0.5f);
+        float x = map.bottomLeftSquareTransform.transform.position.x + MapLayout.areaSize * (avgCoordX + +0.5f);
+        float z = map.bottomLeftSquareTransform.transform.position.z + MapLayout.areaSize * (avgCoordY + +0.5f);
         // Debug.Log(map.bottomLeftSquareTransform.transform.position.y); = 2
 
         return new Vector3(x, map.bottomLeftSquareTransform.transform.position.y, z);
@@ -38,21 +38,19 @@ public class SubShip1 : Ship
         while (true)
         {
             // 양옆으로 2칸이므로 오른쪽에 항상 한 칸 놓을 수 있도록 x 값은 -1해서 가져오기
-            int x = Random.Range(0, map.mapSize.x - 1);
-            int y = Random.Range(0, map.mapSize.y);
+            int x = Random.Range(0, MapLayout.mapSize.x - 1);
+            int y = Random.Range(0, MapLayout.mapSize.y);
 
-            bool posible1 = map.CheckIsShipNear(new Vector3Int(x, y, 0));
 
-            if (!posible1)
+            if (map.CheckIsShipNear(new Vector3Int(x, y, 0)))
             {
                 continue;
             }
 
             x += 1;
 
-            bool posible2 = map.CheckIsShipNear(new Vector3Int(x, y, 0));
 
-            if (!posible2)
+            if (map.CheckIsShipNear(new Vector3Int(x, y, 0)))
             {
                 continue;
             }
@@ -62,7 +60,6 @@ public class SubShip1 : Ship
 
             break;
         }
-
         return list;
 
     }

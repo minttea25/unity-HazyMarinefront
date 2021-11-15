@@ -5,11 +5,10 @@ using Random = UnityEngine.Random;
 
 public class FixedFogManager : MonoBehaviour
 {
-    public MapLayout mapLayout;
     public GameObject[] fogPrefabs;
     public Map map;
 
-    FixedFog[,] fixedFogGrid;
+    public FixedFog[,] fixedFogGrid = new FixedFog[MapLayout.mapSize.x, MapLayout.mapSize.y];
     
 
     private void Awake()
@@ -18,7 +17,7 @@ public class FixedFogManager : MonoBehaviour
         {
             Debug.Log("There are no fog prefabs.");
         }
-        fixedFogGrid = new FixedFog[mapLayout.mapSize.x, mapLayout.mapSize.y];
+        //fixedFogGrid = new FixedFog[MapLayout.mapSize.x, MapLayout.mapSize.y];
     }
 
     public void SetFixedFogBlock(List<Vector2Int> exceptCoords)
@@ -60,13 +59,13 @@ public class FixedFogManager : MonoBehaviour
 
     private void RevealFixedFogBlocks(Vector2Int coord)
     {
-        float x = map.bottomLeftSquareTransform.transform.position.x + map.areaSize * (coord.x + 0.5f);
-        float z = map.bottomLeftSquareTransform.transform.position.z + map.areaSize * (coord.y + 0.5f);
+        float x = map.bottomLeftSquareTransform.transform.position.x + MapLayout.areaSize * (coord.x + 0.5f);
+        float z = map.bottomLeftSquareTransform.transform.position.z + MapLayout.areaSize * (coord.y + 0.5f);
 
-        Vector3 pos = new Vector3(x, map.bottomLeftSquareTransform.transform.position.y + mapLayout.oceanFogInterval, z);
+        Vector3 pos = new Vector3(x, map.bottomLeftSquareTransform.transform.position.y + MapLayout.oceanFogInterval, z);
 
         fixedFogGrid[coord.x, coord.y].transform.position = pos;
-        fixedFogGrid[coord.x, coord.y].transform.localScale = new Vector3(mapLayout.areaSize, mapLayout.areaSize, mapLayout.areaSize);
+        fixedFogGrid[coord.x, coord.y].transform.localScale = new Vector3(MapLayout.areaSize, MapLayout.areaSize, MapLayout.areaSize);
     }
 
     private void ClearFog(Vector2Int coords)
@@ -87,8 +86,8 @@ public class FixedFogManager : MonoBehaviour
     // for test (clearFog)
     public void ClearFogTest()
     {
-        int x = Random.Range(0, mapLayout.mapSize.x);
-        int y = Random.Range(0, mapLayout.mapSize.y);
+        int x = Random.Range(0, MapLayout.mapSize.x);
+        int y = Random.Range(0, MapLayout.mapSize.y);
         ClearFog(new Vector2Int(x, y));
     }
 }
