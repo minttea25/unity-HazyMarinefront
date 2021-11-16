@@ -3,6 +3,7 @@ ScriptsOnlyBuild:
     Assembly-CSharp-firstpass.dll:
     - UnityStandardAssets.Water.WaterBasic
     Assembly-CSharp.dll:
+    - AttackBtnEventListner
     - ClearFogTestBtnListener
     - DropDownEventListener
     - FixedFog
@@ -19,6 +20,7 @@ ScriptsOnlyBuild:
     - SubShip1
     - SubShip2
     - SubShip3
+    - Tile
     Unity.Multiplayer.MLAPI.Prototyping.dll:
     - MLAPI.Prototyping.NetworkTransform
     Unity.Multiplayer.MLAPI.Runtime.dll:
@@ -86,87 +88,91 @@ ScriptsOnlyBuild:
     - Class: 108
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 1502}
+      Script: {instanceID: 1492}
     - Class: 114
-      Script: {instanceID: 1522}
+      Script: {instanceID: 1558}
     - Class: 114
-      Script: {instanceID: 1598}
+      Script: {instanceID: 1636}
     - Class: 114
-      Script: {instanceID: 1614}
+      Script: {instanceID: 1652}
     - Class: 114
-      Script: {instanceID: 1746}
+      Script: {instanceID: 1786}
     - Class: 114
-      Script: {instanceID: 2034}
+      Script: {instanceID: 2076}
     - Class: 114
-      Script: {instanceID: 2048}
+      Script: {instanceID: 2090}
     - Class: 114
-      Script: {instanceID: 2194}
+      Script: {instanceID: 2236}
     - Class: 114
-      Script: {instanceID: 2360}
+      Script: {instanceID: 2280}
     - Class: 114
-      Script: {instanceID: 2480}
-    - Class: 114
-      Script: {instanceID: 2514}
+      Script: {instanceID: 2404}
     - Class: 114
       Script: {instanceID: 2528}
     - Class: 114
-      Script: {instanceID: 2538}
+      Script: {instanceID: 2562}
     - Class: 114
-      Script: {instanceID: 2550}
+      Script: {instanceID: 2578}
     - Class: 114
-      Script: {instanceID: 2552}
+      Script: {instanceID: 2588}
     - Class: 114
-      Script: {instanceID: 2670}
+      Script: {instanceID: 2600}
     - Class: 114
-      Script: {instanceID: 2786}
+      Script: {instanceID: 2602}
     - Class: 114
-      Script: {instanceID: 2876}
+      Script: {instanceID: 2724}
     - Class: 114
-      Script: {instanceID: 2886}
+      Script: {instanceID: 2840}
     - Class: 114
-      Script: {instanceID: 2902}
+      Script: {instanceID: 2930}
     - Class: 114
-      Script: {instanceID: 2966}
+      Script: {instanceID: 2940}
     - Class: 114
-      Script: {instanceID: 3172}
+      Script: {instanceID: 2956}
     - Class: 114
-      Script: {instanceID: 3242}
+      Script: {instanceID: 3020}
     - Class: 114
-      Script: {instanceID: 3320}
+      Script: {instanceID: 3236}
     - Class: 114
-      Script: {instanceID: 3506}
+      Script: {instanceID: 3304}
     - Class: 114
-      Script: {instanceID: 3572}
+      Script: {instanceID: 3384}
     - Class: 114
-      Script: {instanceID: 3586}
+      Script: {instanceID: 3570}
     - Class: 114
-      Script: {instanceID: 3594}
+      Script: {instanceID: 3580}
     - Class: 114
-      Script: {instanceID: 3752}
+      Script: {instanceID: 3638}
     - Class: 114
-      Script: {instanceID: 3760}
+      Script: {instanceID: 3652}
     - Class: 114
-      Script: {instanceID: 3898}
+      Script: {instanceID: 3660}
     - Class: 114
-      Script: {instanceID: 3930}
+      Script: {instanceID: 3770}
     - Class: 114
-      Script: {instanceID: 3982}
+      Script: {instanceID: 3820}
     - Class: 114
-      Script: {instanceID: 4002}
+      Script: {instanceID: 3828}
     - Class: 114
-      Script: {instanceID: 4054}
+      Script: {instanceID: 3906}
     - Class: 114
-      Script: {instanceID: 4234}
+      Script: {instanceID: 3972}
     - Class: 114
-      Script: {instanceID: 4280}
+      Script: {instanceID: 4004}
     - Class: 114
-      Script: {instanceID: 4402}
+      Script: {instanceID: 4056}
     - Class: 114
-      Script: {instanceID: 18736}
+      Script: {instanceID: 4076}
     - Class: 114
-      Script: {instanceID: 18738}
+      Script: {instanceID: 4128}
     - Class: 114
-      Script: {instanceID: 18740}
+      Script: {instanceID: 4286}
+    - Class: 114
+      Script: {instanceID: 4312}
+    - Class: 114
+      Script: {instanceID: 4358}
+    - Class: 114
+      Script: {instanceID: 4480}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -176,6 +182,10 @@ ScriptsOnlyBuild:
     - Class: 157
       Script: {instanceID: 0}
     - Class: 196
+      Script: {instanceID: 0}
+    - Class: 198
+      Script: {instanceID: 0}
+    - Class: 199
       Script: {instanceID: 0}
     - Class: 213
       Script: {instanceID: 0}
@@ -188,16 +198,16 @@ ScriptsOnlyBuild:
   scriptHashData:
   - hash:
       serializedVersion: 2
-      Hash: 5ab533713adae59372fb3e10a585c186
-    assemblyName: Unity.Timeline.dll
-    namespaceName: UnityEngine.Timeline
-    className: AnimationPlayableAsset
-  - hash:
-      serializedVersion: 2
       Hash: a6e561615949734e9f12f9b61661f43e
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.UI
     className: Image
+  - hash:
+      serializedVersion: 2
+      Hash: 5ab533713adae59372fb3e10a585c186
+    assemblyName: Unity.Timeline.dll
+    namespaceName: UnityEngine.Timeline
+    className: AnimationPlayableAsset
   - hash:
       serializedVersion: 2
       Hash: 77aaaaa51f7a8d8ff333a879741e47d2
@@ -240,6 +250,12 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Multiplayer.MLAPI.Prototyping.dll
     namespaceName: MLAPI.Prototyping
     className: NetworkAnimator
+  - hash:
+      serializedVersion: 2
+      Hash: bb1f0eabf586c59f439d232ff8a83b3b
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: SimpleCharacterMotor
   - hash:
       serializedVersion: 2
       Hash: 3164bc883ff663a5cdb32d1ef7e7c0c5
@@ -302,10 +318,22 @@ ScriptsOnlyBuild:
     className: MoveBtnEventListener
   - hash:
       serializedVersion: 2
+      Hash: ca08645882e06ec2386ebe72382370b7
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: HostClientNetworkManager
+  - hash:
+      serializedVersion: 2
       Hash: a1aa98c78061c6f03a8c124cda576e67
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.UI
     className: CanvasScaler
+  - hash:
+      serializedVersion: 2
+      Hash: 498da3fe40fc83ad3a4de930efd7d267
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: ProximityActivate
   - hash:
       serializedVersion: 2
       Hash: 14d684e5eb706041b258044f3a2d3861
@@ -344,7 +372,7 @@ ScriptsOnlyBuild:
     className: TimelineAsset
   - hash:
       serializedVersion: 2
-      Hash: 06eda1a3a5d69d940717c1ac7623e3db
+      Hash: ca0a2c6bb54089400417d9ef20cfdecb
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: MapLayout
@@ -482,13 +510,19 @@ ScriptsOnlyBuild:
     className: TextContainer
   - hash:
       serializedVersion: 2
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: AdjustTimeScale
+  - hash:
+      serializedVersion: 2
       Hash: 8aa3d6ccbcb54ee8db6c1229854adaaa
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.UI
     className: ContentSizeFitter
   - hash:
       serializedVersion: 2
-      Hash: 82661042d41084d3660ca5b2a2e4e847
+      Hash: 4d8cad0f918cf1a8de99f0aaf9dd723a
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: FixedFogManager
@@ -512,7 +546,7 @@ ScriptsOnlyBuild:
     className: NetworkNavMeshAgent
   - hash:
       serializedVersion: 2
-      Hash: d5a46236de8fe577c82bf497cefcfb08
+      Hash: 7c28cc2af5723f53fd336b7ac7c2a850
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: SubShip1
@@ -522,6 +556,12 @@ ScriptsOnlyBuild:
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.UI
     className: VerticalLayoutGroup
+  - hash:
+      serializedVersion: 2
+      Hash: 7b3216bb34fdd4bb3a48518a010216c7
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: RampAsset
   - hash:
       serializedVersion: 2
       Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
@@ -542,7 +582,7 @@ ScriptsOnlyBuild:
     className: BaseInput
   - hash:
       serializedVersion: 2
-      Hash: d5a46236de8fe577c82bf497cefcfb08
+      Hash: 7c28cc2af5723f53fd336b7ac7c2a850
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: SubShip3
@@ -590,6 +630,12 @@ ScriptsOnlyBuild:
     className: NetworkManager
   - hash:
       serializedVersion: 2
+      Hash: c959596b786ee9c9253ac067620e2cd4
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: AttackBtnEventListner
+  - hash:
+      serializedVersion: 2
       Hash: 34432c2a124a26f51569ac01fc6fcc4a
     assemblyName: Unity.Multiplayer.MLAPI.Runtime.dll
     namespaceName: MLAPI.Transports.Multiplex
@@ -608,7 +654,7 @@ ScriptsOnlyBuild:
     className: EventTrigger
   - hash:
       serializedVersion: 2
-      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+      Hash: f13f3753277423fb78529339e021fc77
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: FixedFog
@@ -638,7 +684,13 @@ ScriptsOnlyBuild:
     className: SignalTrack
   - hash:
       serializedVersion: 2
-      Hash: 07343c16c583d73db3ad300bd7cf5f5c
+      Hash: 98cff0c05d12f88f40549621fab63e29
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: Player
+  - hash:
+      serializedVersion: 2
+      Hash: 519bb413af6d88d1d10a42631b37ecc7
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Map
@@ -654,6 +706,18 @@ ScriptsOnlyBuild:
     assemblyName: Assembly-CSharp-firstpass.dll
     namespaceName: UnityStandardAssets.Water
     className: GerstnerDisplace
+  - hash:
+      serializedVersion: 2
+      Hash: 8860633d29a22ff64e02e18da3716cdf
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: UnityTemplateProjects
+    className: SimpleCameraController
+  - hash:
+      serializedVersion: 2
+      Hash: f21d7223e921d7ff73ed9a1cf9656f15
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: PlayManager
   - hash:
       serializedVersion: 2
       Hash: c3d3430df9e3ea95e3e3d587961390fb
@@ -680,7 +744,7 @@ ScriptsOnlyBuild:
     className: ScrollRect
   - hash:
       serializedVersion: 2
-      Hash: d5a46236de8fe577c82bf497cefcfb08
+      Hash: 7c28cc2af5723f53fd336b7ac7c2a850
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: MainShip
@@ -710,7 +774,7 @@ ScriptsOnlyBuild:
     className: TMP_Settings
   - hash:
       serializedVersion: 2
-      Hash: d5a46236de8fe577c82bf497cefcfb08
+      Hash: 7c28cc2af5723f53fd336b7ac7c2a850
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: SubShip2
@@ -720,6 +784,18 @@ ScriptsOnlyBuild:
     assemblyName: Unity.TextMeshPro.dll
     namespaceName: TMPro
     className: TMP_SubMeshUI
+  - hash:
+      serializedVersion: 2
+      Hash: 36808e0bceda2a44a651d2c754474786
+    assemblyName: Assembly-CSharp-firstpass.dll
+    namespaceName: 
+    className: SpawnEffect
+  - hash:
+      serializedVersion: 2
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: Tile
   - hash:
       serializedVersion: 2
       Hash: e7182e6d337b73771f0d7b32eb22e341
@@ -774,24 +850,6 @@ ScriptsOnlyBuild:
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.EventSystems
     className: TouchInputModule
-  - hash:
-      serializedVersion: 2
-      Hash: 41926c14ff385a82da19f03a6e47ccad
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: PlayManager
-  - hash:
-      serializedVersion: 2
-      Hash: a2b8083cf406f7b4688f3118f64f872f
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: HostClientNetworkManager
-  - hash:
-      serializedVersion: 2
-      Hash: 98cff0c05d12f88f40549621fab63e29
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: Player
   platform: 19
   scenePathNames:
   - Assets/Scenes/TestScene2.unity

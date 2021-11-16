@@ -160,4 +160,9 @@ MonoBehaviour:
     type: 3}
   FogPrefab: {fileID: 2400606252213217424, guid: 9682873c0e3f3f747aacb67abd68c595,
     type: 3}
-  MapInstance: {fileID: 0}
+  ExplosionPrefab: {fileID: -504975087462010295, guid: 64891a0eb28db934898420d80ca07cb3,
+    type: 3}
+  BigExplosionPrefab: {fileID: 1002316723137342078, guid: e1b08032bec16ba4eb1ae23cbd572664,
+    type: 3}
+  WaterSplashPrefab: {fileID: -1831579963455581370, guid: c1c88308ebb5d2541a282905b854ee4c,
+    type: 3}

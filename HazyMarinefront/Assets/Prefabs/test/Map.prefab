@@ -368,9 +368,10 @@ MonoBehaviour:
   bottomLeftSquareTransform: {fileID: 5359853882974637132}
   fogBlocks: {fileID: 4299850730263092910}
   tiles: {fileID: 7537477161541683482, guid: 13d79ae379cd4564cbef25c84a045e20, type: 3}
-  waterSplash: {fileID: 1722726733478836, guid: c1c88308ebb5d2541a282905b854ee4c,
+  waterSplash: {fileID: -1831579963455581370, guid: c1c88308ebb5d2541a282905b854ee4c,
     type: 3}
   fixedFogManager: {fileID: 4817176836448938639}
+  Attack: 0
   mapSize: {x: 0, y: 0}
   ShipsInFieldList: []
 --- !u!114 &-4952535041585469654

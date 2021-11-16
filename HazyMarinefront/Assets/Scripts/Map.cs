@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using MLAPI;
+using MLAPI.Connection;
 using MLAPI.Messaging;
 using Random = UnityEngine.Random;
 
@@ -18,12 +19,11 @@ public class Map : NetworkBehaviour
     // 기준 좌표
     public Transform bottomLeftSquareTransform;
 
-    public GameObject fogBlocks;
-    public GameObject tiles;
-    public GameObject waterSplash;
-    public FixedFogManager fixedFogManager;
+    public GameObject fogBlocks; // not used yet...
 
-    public bool Attack = false;
+    public GameObject tiles; // not yet no reference
+    public NetworkObject waterSplash;
+    public FixedFogManager fixedFogManager;
 
     public Vector2Int mapSize = new Vector2Int(MapLayout.mapSize.x, MapLayout.mapSize.y);
 
@@ -136,9 +136,29 @@ public class Map : NetworkBehaviour
                 grid[selectedShip.shipCoords[i].x + xAxis, selectedShip.shipCoords[i].y + yAxis] != selectedShip.Symbol)
             {
                 Debug.Log("충돌");
-                selectedShip.DamageShip(i, this);
+
+                ulong localClientId = NetworkManager.Singleton.LocalClientId;
+
+                if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(localClientId, out NetworkClient networkClient))
+                {
+                    Debug.Log("Cannot find NetworkClient");
+                    return false;
+                }
+
+                if (!networkClient.PlayerObject.TryGetComponent<PlayManager>(out var PlayManager))
+                {
+                    Debug.Log("Cannot find PlayerManager");
+                    return false;
+                }
+
+                //selectedShip.DamageShip(i);
+                PlayManager.DamageShipServerRpc(i);
+
                 var loc = new Vector2Int(selectedShip.shipCoords[i].x + xAxis, selectedShip.shipCoords[i].y + yAxis);
-                AttackCoord(loc);
+                
+                //AttackCoord(loc);
+                PlayManager.AttackCoordServerRpc(loc.x, loc.y);
+
                 collision = true;
             }
         }
@@ -204,7 +224,6 @@ public class Map : NetworkBehaviour
 
     public bool SetSelectedShip(ShipSymbol s)
     {
-        // grid 탐색 - 비효율...
         for (int i = 0; i < grid.GetLength(0); i++)
         {
             for (int j = 0; j < grid.GetLength(1); j++)
@@ -232,16 +251,15 @@ public class Map : NetworkBehaviour
             {
                 if (selectedShip.shipCoords[i].x == coord.x && selectedShip.shipCoords[i].y == coord.y)
                 {
-                    selectedShip.DamageShip(i, this);
+                    selectedShip.DamageShip(i);
                     Debug.Log("damaged ship : " + coord);
                 }
-                    
             }
         }
         else
         {
             Vector3 loc = new Vector3((float)(coord.x - 4.5), 1.5f, (float)(coord.y - 4.5));
-            Instantiate(waterSplash, loc, Quaternion.identity);
+            Instantiate(waterSplash, loc, Quaternion.identity).Spawn();
         }
         
     }
@@ -260,4 +278,10 @@ public class Map : NetworkBehaviour
         Debug.Log("There is no Ship: " + s);
         return null;
     }
+
+    public ShipSymbol GetShipSymbolByCoords(Vector2Int coord)
+    {
+        return grid[coord.x, coord.y];
+    }
+
 }
