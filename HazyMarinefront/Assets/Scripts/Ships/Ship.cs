@@ -2,8 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using MLAPI;
 
-public abstract class Ship : MonoBehaviour
+public abstract class Ship : NetworkBehaviour
 {
     public List<Vector3Int> oldShipCoords { get; set; }
     public List<Vector3Int> shipCoords { get; set; }
@@ -27,6 +28,9 @@ public abstract class Ship : MonoBehaviour
     public List<Vector2Int> availableArea;
     private MaterialSetter materialSetter;
     private MoveShipController controller;
+
+    public GameObject Explosion;
+    public GameObject BigExplosion;
 
     public abstract Vector3 GetShipCenterPositionFromCoord(List<Vector3Int> coords, Map map);
     public abstract List<Vector3Int> GetPosibleShipSpawnCoordsList(Map map);
@@ -185,14 +189,30 @@ public abstract class Ship : MonoBehaviour
         if (shipCoords[index].z == 0)
             shipHealth--;
         if (shipHealth == 0)
-            this.isDestroyed = true;
+        {
+            if (!this.isDestroyed)
+            {
+                this.isDestroyed = true;
+                Instantiate(BigExplosion, gameObject.transform.position, Quaternion.identity);
+                //Destroy(GameObject.Find("BigExplosion(Clone)"), 1f);
+                Debug.Log("ship destroyed");
+            }
+            
+        }
+        else
+        {
+            var curCoord = new Vector3((float)(shipCoords[index].x - 4.5), 2f, (float)(shipCoords[index].y - 4.5));
+            Instantiate(Explosion, curCoord, Quaternion.identity);
+            //Debug.Log("coord: " + gameObject.transform.position);
+            //Destroy(GameObject.Find("SmallExplosion(Clone)"), 1f);
+        }
         shipCoords[index] = new Vector3Int(shipCoords[index].x, shipCoords[index].y, shipCoords[index].z + 1);
         //prefab 으로 배 색상 변경 (붉은색 혹은 검은색/피탄 리소스 있으면 적용해보기)
         //이펙트 추가?
 
     }
 
-    private int[] GetDirectionAmount(DirectionType dirType, int amount)
+    public int[] GetDirectionAmount(DirectionType dirType, int amount)
     {
         int xAxis = 0;
         int yAxis = 0;

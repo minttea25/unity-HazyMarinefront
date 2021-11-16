@@ -19,8 +19,8 @@ public class MainShip : Ship
     {
         //Debug.Log(map.bottomLeftSquareTransform.transform.position);
         // 이부분은 배마다 다르게
-        float x = map.bottomLeftSquareTransform.transform.position.x + map.areaSize * (coords[0].x + 0.5f);
-        float z = map.bottomLeftSquareTransform.transform.position.z + map.areaSize * (coords[0].y + 0.5f);
+        float x = map.bottomLeftSquareTransform.transform.position.x + MapLayout.areaSize * (coords[0].x + 0.5f);
+        float z = map.bottomLeftSquareTransform.transform.position.z + MapLayout.areaSize * (coords[0].y + 0.5f);
         // Debug.Log(map.bottomLeftSquareTransform.transform.position.y); = 2
 
         return new Vector3(x, map.bottomLeftSquareTransform.transform.position.y, z);
@@ -32,14 +32,11 @@ public class MainShip : Ship
 
         while (true)
         {
-            int x = Random.Range(0, map.mapSize.x);
-            int y = Random.Range(0, map.mapSize.y);
+            int x = Random.Range(0, MapLayout.mapSize.x);
+            int y = Random.Range(0, MapLayout.mapSize.y);
 
-            bool posible = map.CheckIsShipNear(new Vector3Int(x, y, 0));
-
-            if (!posible)
+            if (map.CheckIsShipNear(new Vector3Int(x, y, 0)))
                 continue;
-
 
             list.Add(new Vector3Int(x, y, 0));
 

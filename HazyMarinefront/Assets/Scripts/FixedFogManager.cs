@@ -5,12 +5,14 @@ using Random = UnityEngine.Random;
 
 public class FixedFogManager : MonoBehaviour
 {
-    public MapLayout mapLayout;
     public GameObject[] fogPrefabs;
+    public GameObject tilePrefab;
     public Map map;
 
-    FixedFog[,] fixedFogGrid;
-    
+    public FixedFog[,] fixedFogGrid = new FixedFog[MapLayout.mapSize.x, MapLayout.mapSize.y];
+
+    public Tile[,] tileGrid = new Tile[MapLayout.mapSize.x, MapLayout.mapSize.y];
+
 
     private void Awake()
     {
@@ -18,7 +20,7 @@ public class FixedFogManager : MonoBehaviour
         {
             Debug.Log("There are no fog prefabs.");
         }
-        fixedFogGrid = new FixedFog[mapLayout.mapSize.x, mapLayout.mapSize.y];
+        //fixedFogGrid = new FixedFog[MapLayout.mapSize.x, MapLayout.mapSize.y];
     }
 
     public void SetFixedFogBlock(List<Vector2Int> exceptCoords)
@@ -32,6 +34,7 @@ public class FixedFogManager : MonoBehaviour
                     if (exceptCoords.Contains(new Vector2Int(i, j)))
                     {
                         fixedFogGrid[i, j] = null;
+                        //tileGrid[i, j] = null;
                         continue;
                     }
                 }
@@ -39,8 +42,10 @@ public class FixedFogManager : MonoBehaviour
                 {
                     // set fog in array
                     fixedFogGrid[i, j] = GetFixedFog();
+                    //tileGrid[i, j] = GetTile();
                     RevealFixedFogBlocks(new Vector2Int(i, j));
                     fixedFogGrid[i, j].transform.parent = map.fogBlocks.transform;
+                    //tileGrid[i, j].transform.parent = map.tiles.transform;
                 }
             }
         }
@@ -58,18 +63,32 @@ public class FixedFogManager : MonoBehaviour
         return fog;
     }
 
-    private void RevealFixedFogBlocks(Vector2Int coord)
+    private Tile GetTile()
     {
-        float x = map.bottomLeftSquareTransform.transform.position.x + map.areaSize * (coord.x + 0.5f);
-        float z = map.bottomLeftSquareTransform.transform.position.z + map.areaSize * (coord.y + 0.5f);
+        //int r = Random.Range(0, fogPrefabs.Length);
+        GameObject tileObj = (GameObject)Instantiate(tilePrefab);
+        Tile tile = tileObj.GetComponent<Tile>();
 
-        Vector3 pos = new Vector3(x, map.bottomLeftSquareTransform.transform.position.y + mapLayout.oceanFogInterval, z);
-
-        fixedFogGrid[coord.x, coord.y].transform.position = pos;
-        fixedFogGrid[coord.x, coord.y].transform.localScale = new Vector3(mapLayout.areaSize, mapLayout.areaSize, mapLayout.areaSize);
+        return tile;
     }
 
-    private void ClearFog(Vector2Int coords)
+    private void RevealFixedFogBlocks(Vector2Int coord)
+    {
+        float x = map.bottomLeftSquareTransform.transform.position.x + MapLayout.areaSize * (coord.x + 0.5f);
+        float z = map.bottomLeftSquareTransform.transform.position.z + MapLayout.areaSize * (coord.y + 0.5f);
+
+        Vector3 pos = new Vector3(x, map.bottomLeftSquareTransform.transform.position.y + MapLayout.oceanFogInterval, z);
+
+        fixedFogGrid[coord.x, coord.y].transform.position = pos;
+        fixedFogGrid[coord.x, coord.y].transform.localScale = new Vector3(MapLayout.areaSize, MapLayout.areaSize, MapLayout.areaSize);
+
+        //Vector3 pos2 = new Vector3(x, map.bottomLeftSquareTransform.transform.position.y + MapLayout.oceanTileInterval, z);
+
+        //tileGrid[coord.x, coord.y].transform.position = pos2;
+        //tileGrid[coord.x, coord.y].transform.localScale = new Vector3(MapLayout.areaSize, MapLayout.areaSize, MapLayout.areaSize);
+    }
+
+    internal void ClearFog(Vector2Int coords)
     {
         if (fixedFogGrid[coords.x, coords.y] != null)
         {
@@ -87,8 +106,8 @@ public class FixedFogManager : MonoBehaviour
     // for test (clearFog)
     public void ClearFogTest()
     {
-        int x = Random.Range(0, mapLayout.mapSize.x);
-        int y = Random.Range(0, mapLayout.mapSize.y);
+        int x = Random.Range(0, MapLayout.mapSize.x);
+        int y = Random.Range(0, MapLayout.mapSize.y);
         ClearFog(new Vector2Int(x, y));
     }
 }

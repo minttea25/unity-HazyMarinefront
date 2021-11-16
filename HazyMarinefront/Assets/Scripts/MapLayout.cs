@@ -61,18 +61,47 @@ public class MapLayout : MonoBehaviour
     // 안개와 바다 사이의 거리
     public float OCEAN_FOG_INTERVAL = 1f;
 
+    public float OCEAN_TILE_INTERVAL = 2f;
 
-    public Vector2Int mapSize { get; set; }
-    public int areaSize { get; set; }
-    public int spawnLeastInterval { get; set; }
-    public float oceanFogInterval { get; set; }
 
-    private void Awake()
+    public static Vector2Int mapSize { get; set; }
+    public static int areaSize { get; set; }
+    public static int spawnLeastInterval { get; set; }
+    public static float oceanFogInterval { get; set; }
+    public static float oceanTileInterval { get; set; }
+
+    MapLayout()
     {
         mapSize = new Vector2Int(SIZE_X, SIZE_Y);
         areaSize = AREA_SIZE;
         spawnLeastInterval = SPAWN_LEAST_INTERVAL;
         oceanFogInterval = OCEAN_FOG_INTERVAL;
+        oceanTileInterval = OCEAN_TILE_INTERVAL;
+    }
+
+   /* private void Awake()
+    {
+        mapSize = new Vector2Int(SIZE_X, SIZE_Y);
+        areaSize = AREA_SIZE;
+        spawnLeastInterval = SPAWN_LEAST_INTERVAL;
+        oceanFogInterval = OCEAN_FOG_INTERVAL;
+    }*/
+
+    public static Team GetTeamByShipSymbol(ShipSymbol s)
+    {
+        if (s == ShipSymbol.NoShip)
+        {
+            return Team.ATeam;
+        }
+
+        if (s == ShipSymbol.A0 || s == ShipSymbol.A1 || s == ShipSymbol.A2 || s == ShipSymbol.A3)
+        {
+            return Team.ATeam;
+        }
+        else
+        {
+            return Team.BTeam;
+        }
     }
 
     public static ShipSymbol GetSymbolByShiptypeTeam(ShipType type, Team team)
