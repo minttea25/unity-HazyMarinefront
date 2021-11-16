@@ -61,11 +61,14 @@ public class MapLayout : MonoBehaviour
     // 안개와 바다 사이의 거리
     public float OCEAN_FOG_INTERVAL = 1f;
 
+    public float OCEAN_TILE_INTERVAL = 2f;
+
 
     public static Vector2Int mapSize { get; set; }
     public static int areaSize { get; set; }
     public static int spawnLeastInterval { get; set; }
     public static float oceanFogInterval { get; set; }
+    public static float oceanTileInterval { get; set; }
 
     MapLayout()
     {
@@ -73,6 +76,7 @@ public class MapLayout : MonoBehaviour
         areaSize = AREA_SIZE;
         spawnLeastInterval = SPAWN_LEAST_INTERVAL;
         oceanFogInterval = OCEAN_FOG_INTERVAL;
+        oceanTileInterval = OCEAN_TILE_INTERVAL;
     }
 
    /* private void Awake()

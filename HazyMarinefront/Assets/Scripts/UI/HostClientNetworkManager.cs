@@ -8,12 +8,16 @@ public class HostClientNetworkManager : MonoBehaviour
     [SerializeField] private TMP_InputField roomcodeInputField;
     [SerializeField] private GameObject roomcodeEntryUI;
     [SerializeField] private GameObject leaveButton;
+    [SerializeField] private GameObject attackBtn;
 
     private void Start()
     {
         NetworkManager.Singleton.OnServerStarted += HandleServerStarted;
         NetworkManager.Singleton.OnClientConnectedCallback += HandleClientConnected;
         NetworkManager.Singleton.OnClientDisconnectCallback += HandleClientDisconnect;
+
+        leaveButton.SetActive(false);
+        attackBtn.SetActive(false);
     }
 
     private void OnDestroy()
@@ -72,6 +76,8 @@ public class HostClientNetworkManager : MonoBehaviour
         {
             roomcodeEntryUI.SetActive(false);
             leaveButton.SetActive(true);
+
+            attackBtn.SetActive(true);
         }
     }
 

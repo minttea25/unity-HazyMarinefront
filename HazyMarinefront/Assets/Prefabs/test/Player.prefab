@@ -158,7 +158,6 @@ MonoBehaviour:
   - {fileID: 4789653886291661079, guid: 7d28da919f69dbc4286051ba3565099b, type: 3}
   MapPrfab: {fileID: -4952535041585469654, guid: 17cc90735397fc54fb57af6f558e94e0,
     type: 3}
-  FogPrefab: {fileID: -2702274745795872531, guid: e47e8b8cbb3521a42b67d4fb977806f8,
+  FogPrefab: {fileID: 2400606252213217424, guid: 9682873c0e3f3f747aacb67abd68c595,
     type: 3}
-  MapInstance:
-    m_InternalValue: {fileID: 0}
+  MapInstance: {fileID: 0}

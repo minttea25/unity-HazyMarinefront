@@ -10,6 +10,12 @@ public class ClearFogTestBtnListener : MonoBehaviour
     public Button clearFogButton;
     public FixedFogManager ffm;
 
+    private void Start()
+    {
+        // 테스트 기능 비활성화
+        clearFogButton.gameObject.SetActive(false);
+    }
+
     public void ClearRandomFog()
     {
         ulong localClientId = NetworkManager.Singleton.LocalClientId;
