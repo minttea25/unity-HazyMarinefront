@@ -19,7 +19,11 @@ public class Map : NetworkBehaviour
     public Transform bottomLeftSquareTransform;
 
     public GameObject fogBlocks;
+    public GameObject tiles;
+    public GameObject waterSplash;
     public FixedFogManager fixedFogManager;
+
+    public bool Attack = false;
 
     public Vector2Int mapSize = new Vector2Int(MapLayout.mapSize.x, MapLayout.mapSize.y);
 
@@ -108,11 +112,11 @@ public class Map : NetworkBehaviour
     // 이동에 성공 시 true 반환
     public bool MoveShip(DirectionType dirType, int amount)
     {
-        if (selectedShip == null)
+        if (selectedShip == null || selectedShip.isDestroyed)
             return false;
 
         bool canMove = selectedShip.CheckAvailableToMove(dirType, amount, MapLayout.mapSize);
-
+        bool collision = false;
         // unavailable to move 
         if (!canMove)
         {
@@ -120,12 +124,35 @@ public class Map : NetworkBehaviour
             return false;
         }
 
+        int[] axisValue = selectedShip.GetDirectionAmount(dirType, amount);
+        int xAxis = axisValue[0];
+        int yAxis = axisValue[1];
+
+        for (int i = 0; i < selectedShip.shipCoords.Count; i++)
+        {
+            Debug.Log("count: " + i + "/" + grid[selectedShip.shipCoords[i].x + xAxis, selectedShip.shipCoords[i].y + yAxis]);
+            //여러개 동시에 충돌하는 경우 보완 필요 
+            if (grid[selectedShip.shipCoords[i].x + xAxis, selectedShip.shipCoords[i].y + yAxis] != ShipSymbol.NoShip && 
+                grid[selectedShip.shipCoords[i].x + xAxis, selectedShip.shipCoords[i].y + yAxis] != selectedShip.Symbol)
+            {
+                Debug.Log("충돌");
+                selectedShip.DamageShip(i, this);
+                var loc = new Vector2Int(selectedShip.shipCoords[i].x + xAxis, selectedShip.shipCoords[i].y + yAxis);
+                AttackCoord(loc);
+                collision = true;
+            }
+        }
+        
+        if(collision)
+            return false;
 
         Transform oldTransform = selectedShip.transform;
-        
+
         selectedShip.MoveShipInCoord(dirType, amount, this);
         selectedShip.MoveShipInPosition(this);
         selectedShip.MoveShipInField(oldTransform, selectedShip.shipCenterPosition); ;
+        
+        
 
         return true;
     }
@@ -196,7 +223,7 @@ public class Map : NetworkBehaviour
         return false;
     }
 
-    public void AttackCoord(Vector2Int coord)
+    internal void AttackCoord(Vector2Int coord)
     {
         selectedShip = GetShipOnArea(coord);
         if (selectedShip != null)
@@ -204,10 +231,19 @@ public class Map : NetworkBehaviour
             for (int i = 0; i < selectedShip.shipCoords.Count; i++)
             {
                 if (selectedShip.shipCoords[i].x == coord.x && selectedShip.shipCoords[i].y == coord.y)
+                {
                     selectedShip.DamageShip(i, this);
+                    Debug.Log("damaged ship : " + coord);
+                }
+                    
             }
         }
-
+        else
+        {
+            Vector3 loc = new Vector3((float)(coord.x - 4.5), 1.5f, (float)(coord.y - 4.5));
+            Instantiate(waterSplash, loc, Quaternion.identity);
+        }
+        
     }
 
     /*@param
