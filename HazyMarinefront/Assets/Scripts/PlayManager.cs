@@ -15,6 +15,7 @@ public class PlayManager : NetworkBehaviour
 
     [SerializeField] public NetworkObject MapPrfab;
     [SerializeField] public NetworkObject FogPrefab;
+    [SerializeField] public NetworkObject TilePrefab;
 
     [SerializeField] private NetworkObject MapInstance;
 
@@ -140,6 +141,7 @@ public class PlayManager : NetworkBehaviour
     {
         float x = MapInstance.GetComponent<Map>().bottomLeftSquareTransform.transform.position.x;
         float y = MapInstance.GetComponent<Map>().bottomLeftSquareTransform.transform.position.y + MapLayout.oceanFogInterval;
+        float y2 = MapInstance.GetComponent<Map>().bottomLeftSquareTransform.transform.position.y + MapLayout.oceanTileInterval;
         float z = MapInstance.GetComponent<Map>().bottomLeftSquareTransform.transform.position.z;
 
         for (int i = 0; i < MapLayout.mapSize.x; i++)
@@ -158,6 +160,16 @@ public class PlayManager : NetworkBehaviour
                 FixedFog fog = FogInstance.GetComponent<FixedFog>();
                 MapInstance.GetComponent<Map>().fixedFogManager.fixedFogGrid[i, j] = fog;
                 fog.transform.parent = MapInstance.GetComponent<Map>().fogBlocks.transform;
+
+                NetworkObject TileInstance = Instantiate(
+                    TilePrefab,
+                    new Vector3(vx, y2, vz),
+                    Quaternion.identity);
+                TileInstance.Spawn();
+
+                Tile tile = TileInstance.GetComponent<Tile>();
+                MapInstance.GetComponent<Map>().fixedFogManager.tileGrid[i, j] = tile;
+                tile.transform.parent = MapInstance.GetComponent<Map>().tiles.transform;
             }
         }
     }

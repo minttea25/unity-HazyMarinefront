@@ -371,6 +371,7 @@ MonoBehaviour:
   waterSplash: {fileID: 1722726733478836, guid: c1c88308ebb5d2541a282905b854ee4c,
     type: 3}
   fixedFogManager: {fileID: 4817176836448938639}
+  Attack: 0
   mapSize: {x: 0, y: 0}
   ShipsInFieldList: []
 --- !u!114 &-4952535041585469654

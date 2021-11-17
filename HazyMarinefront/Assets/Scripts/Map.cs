@@ -243,7 +243,7 @@ public class Map : NetworkBehaviour
             Vector3 loc = new Vector3((float)(coord.x - 4.5), 1.5f, (float)(coord.y - 4.5));
             Instantiate(waterSplash, loc, Quaternion.identity);
         }
-        
+       
     }
 
     /*@param
