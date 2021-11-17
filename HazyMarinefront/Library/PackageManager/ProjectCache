@@ -5,16 +5,16 @@ m_ProjectFiles:
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 637726628288605501
-    m_Hash: 3443403259
+      ticks: 637727561814300002
+    m_Hash: 2568846202
   m_LockFileStatus:
     m_FilePath: C:/Users/s_kwy3381/Desktop/Workplace/Unity/unity-HazyMarinefront/HazyMarinefront/Packages/packages-lock.json
     m_PathExists: 1
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 637726628288655365
-    m_Hash: 2004902327
+      ticks: 637727561814359851
+    m_Hash: 2251167041
 m_EmbeddedPackageManifests:
   m_ManifestsStatus: {}
 m_PackageAssets:

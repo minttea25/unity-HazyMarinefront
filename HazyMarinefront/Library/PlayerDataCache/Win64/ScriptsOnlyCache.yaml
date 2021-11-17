@@ -21,6 +21,8 @@ ScriptsOnlyBuild:
     - SubShip2
     - SubShip3
     - Tile
+    ParrelSync.dll:
+    - ParrelSync.ClonesManagerWindow
     Unity.Multiplayer.MLAPI.Prototyping.dll:
     - MLAPI.Prototyping.NetworkTransform
     Unity.Multiplayer.MLAPI.Runtime.dll:
@@ -90,89 +92,89 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 1492}
     - Class: 114
-      Script: {instanceID: 1558}
+      Script: {instanceID: 1560}
     - Class: 114
-      Script: {instanceID: 1636}
+      Script: {instanceID: 1638}
     - Class: 114
-      Script: {instanceID: 1652}
+      Script: {instanceID: 1654}
     - Class: 114
-      Script: {instanceID: 1786}
+      Script: {instanceID: 1788}
     - Class: 114
-      Script: {instanceID: 2076}
+      Script: {instanceID: 2078}
     - Class: 114
-      Script: {instanceID: 2090}
+      Script: {instanceID: 2092}
     - Class: 114
-      Script: {instanceID: 2236}
+      Script: {instanceID: 2238}
     - Class: 114
-      Script: {instanceID: 2280}
+      Script: {instanceID: 2282}
     - Class: 114
-      Script: {instanceID: 2404}
+      Script: {instanceID: 2406}
     - Class: 114
-      Script: {instanceID: 2528}
+      Script: {instanceID: 2530}
     - Class: 114
-      Script: {instanceID: 2562}
+      Script: {instanceID: 2564}
     - Class: 114
-      Script: {instanceID: 2578}
+      Script: {instanceID: 2580}
     - Class: 114
-      Script: {instanceID: 2588}
-    - Class: 114
-      Script: {instanceID: 2600}
+      Script: {instanceID: 2590}
     - Class: 114
       Script: {instanceID: 2602}
     - Class: 114
-      Script: {instanceID: 2724}
+      Script: {instanceID: 2604}
     - Class: 114
-      Script: {instanceID: 2840}
+      Script: {instanceID: 2726}
     - Class: 114
-      Script: {instanceID: 2930}
+      Script: {instanceID: 2842}
     - Class: 114
-      Script: {instanceID: 2940}
+      Script: {instanceID: 2932}
     - Class: 114
-      Script: {instanceID: 2956}
+      Script: {instanceID: 2942}
     - Class: 114
-      Script: {instanceID: 3020}
+      Script: {instanceID: 2958}
     - Class: 114
-      Script: {instanceID: 3236}
+      Script: {instanceID: 3022}
     - Class: 114
-      Script: {instanceID: 3304}
+      Script: {instanceID: 3238}
     - Class: 114
-      Script: {instanceID: 3384}
+      Script: {instanceID: 3306}
     - Class: 114
-      Script: {instanceID: 3570}
+      Script: {instanceID: 3386}
     - Class: 114
-      Script: {instanceID: 3580}
+      Script: {instanceID: 3572}
     - Class: 114
-      Script: {instanceID: 3638}
+      Script: {instanceID: 3582}
     - Class: 114
-      Script: {instanceID: 3652}
+      Script: {instanceID: 3640}
     - Class: 114
-      Script: {instanceID: 3660}
+      Script: {instanceID: 3654}
     - Class: 114
-      Script: {instanceID: 3770}
+      Script: {instanceID: 3662}
     - Class: 114
-      Script: {instanceID: 3820}
+      Script: {instanceID: 3772}
     - Class: 114
-      Script: {instanceID: 3828}
+      Script: {instanceID: 3822}
     - Class: 114
-      Script: {instanceID: 3906}
+      Script: {instanceID: 3830}
     - Class: 114
-      Script: {instanceID: 3972}
+      Script: {instanceID: 3908}
     - Class: 114
-      Script: {instanceID: 4004}
+      Script: {instanceID: 3974}
     - Class: 114
-      Script: {instanceID: 4056}
+      Script: {instanceID: 4006}
     - Class: 114
-      Script: {instanceID: 4076}
+      Script: {instanceID: 4058}
     - Class: 114
-      Script: {instanceID: 4128}
+      Script: {instanceID: 4078}
     - Class: 114
-      Script: {instanceID: 4286}
+      Script: {instanceID: 4130}
     - Class: 114
-      Script: {instanceID: 4312}
+      Script: {instanceID: 4288}
     - Class: 114
-      Script: {instanceID: 4358}
+      Script: {instanceID: 4314}
     - Class: 114
-      Script: {instanceID: 4480}
+      Script: {instanceID: 4360}
+    - Class: 114
+      Script: {instanceID: 4482}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -522,7 +524,7 @@ ScriptsOnlyBuild:
     className: ContentSizeFitter
   - hash:
       serializedVersion: 2
-      Hash: 4d8cad0f918cf1a8de99f0aaf9dd723a
+      Hash: 403e5bb25f1f9703b1890aecd021acfd
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: FixedFogManager
@@ -654,7 +656,7 @@ ScriptsOnlyBuild:
     className: EventTrigger
   - hash:
       serializedVersion: 2
-      Hash: f13f3753277423fb78529339e021fc77
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: FixedFog
@@ -853,4 +855,4 @@ ScriptsOnlyBuild:
   platform: 19
   scenePathNames:
   - Assets/Scenes/TestScene2.unity
-  playerPath: C:/Users/s_kwy3381/Desktop/gp prj/HazyMarinefront.exe
+  playerPath: C:/Users/s_kwy3381/Desktop/gp prj/mid2/HazyMarinefront.exe
