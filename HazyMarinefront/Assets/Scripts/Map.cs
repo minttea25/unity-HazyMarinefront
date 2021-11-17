@@ -284,4 +284,6 @@ public class Map : NetworkBehaviour
         return grid[coord.x, coord.y];
     }
 
+
+
 }

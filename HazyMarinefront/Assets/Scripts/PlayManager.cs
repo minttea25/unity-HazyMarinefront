@@ -242,7 +242,6 @@ public class PlayManager : NetworkBehaviour
             Instantiate(ExplosionPrefab, curCoord, Quaternion.identity).Spawn();
         }
         ship.shipCoords[index] = new Vector3Int(ship.shipCoords[index].x, ship.shipCoords[index].y, ship.shipCoords[index].z + 1);
-
     }
 
     // Update is called once per frame

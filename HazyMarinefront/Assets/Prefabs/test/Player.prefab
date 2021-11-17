@@ -158,7 +158,7 @@ MonoBehaviour:
   - {fileID: 4789653886291661079, guid: 7d28da919f69dbc4286051ba3565099b, type: 3}
   MapPrfab: {fileID: -4952535041585469654, guid: 17cc90735397fc54fb57af6f558e94e0,
     type: 3}
-  FogPrefab: {fileID: 2400606252213217424, guid: 9682873c0e3f3f747aacb67abd68c595,
+  FogPrefab: {fileID: 1156299195809612299, guid: 2f249478da1a3b14e85ec26b0b023f02,
     type: 3}
   ExplosionPrefab: {fileID: -504975087462010295, guid: 64891a0eb28db934898420d80ca07cb3,
     type: 3}

@@ -6,9 +6,8 @@ public class FixedFog: NetworkBehaviour
 {
     // animation 이용
 
-    Vector2Int curCoord;
-    public FixedFogManager fixedFogManager;
-    public Map map;
+    //Vector2Int curCoord;
+    //public Map map;
 
     private void Start()
     {
@@ -30,6 +29,8 @@ public class FixedFog: NetworkBehaviour
 
     void OnMouseDown()
     {
+        return;
+/*
         //transform.GetComponent<Renderer>().material.color = Color.clear;
         curCoord = new Vector2Int(((int)(transform.localPosition.x + 4.5)), (int)(transform.localPosition.z + 4.5));
         Debug.Log("clicked coord :" + curCoord);
@@ -50,21 +51,6 @@ public class FixedFog: NetworkBehaviour
 
         // RPC method parameter does not support serialization: UnityEngine.Vector2Int
         // -> int 값 2개 사용
-        PlayManager.AttackServerRpc(curCoord.x, curCoord.y);
-
-
-        /*if (GameObject.Find("Map(Clone)").GetComponent<Map>().Attack)
-        {
-            GameObject.Find("FixedFogManager").GetComponent<FixedFogManager>().ClearFog(curCoord);
-
-            GameObject.Find("Map(Clone)").GetComponent<Map>().AttackCoord(curCoord);
-            GameObject.Find("Map(Clone)").GetComponent<Map>().Attack = false;
-        }*/
-
-        //fixedFogManager.attack = true;
-        //fixedFogManager.atkCoord = curCoord;
-
-
-        //FixedFogManager.ClearFog(curCoord);
+        PlayManager.AttackServerRpc(curCoord.x, curCoord.y);*/
     }
 }
