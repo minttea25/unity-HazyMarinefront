@@ -5,9 +5,10 @@ using Random = UnityEngine.Random;
 
 public class FixedFogManager : MonoBehaviour
 {
-    public GameObject[] fogPrefabs;
-    public GameObject[] tilePrefabs;
+    //public GameObject[] fogPrefabs;
+    public GameObject tilePrefab;
     public Map map;
+    public GameObject Tiles;
 
     public FixedFog[,] fixedFogGrid = new FixedFog[MapLayout.mapSize.x, MapLayout.mapSize.y];
 
@@ -16,14 +17,14 @@ public class FixedFogManager : MonoBehaviour
 
     private void Awake()
     {
-        if (fogPrefabs.Length == 0)
-        {
-            Debug.Log("There are no fog prefabs.");
-        }
-        //fixedFogGrid = new FixedFog[MapLayout.mapSize.x, MapLayout.mapSize.y];
     }
 
-    public void SetFixedFogBlock(List<Vector2Int> exceptCoords)
+    private void Start()
+    {
+        SpawnTiles();
+    }
+
+    /*public void SetFixedFogBlock(List<Vector2Int> exceptCoords)
     {
         for (int i=0; i<fixedFogGrid.GetLength(0); i++)
         {
@@ -42,37 +43,58 @@ public class FixedFogManager : MonoBehaviour
                 {
                     // set fog in array
                     fixedFogGrid[i, j] = GetFixedFog();
-                    tileGrid[i, j] = GetTile();
                     RevealFixedFogBlocks(new Vector2Int(i, j));
                     fixedFogGrid[i, j].transform.parent = map.fogBlocks.transform;
-                    tileGrid[i, j].transform.parent = map.tiles.transform;
                 }
             }
         }
 
         // set on the map
 
+    }*/
+
+    private void SpawnTiles()
+    {
+        for (int i = 0; i < fixedFogGrid.GetLength(0); i++)
+        {
+            for (int j = 0; j < fixedFogGrid.GetLength(1); j++)
+            {
+                // set fog in array
+                tileGrid[i, j] = GetTile();
+
+                float x = map.bottomLeftSquareTransform.transform.position.x + MapLayout.areaSize * (i + 0.5f);
+                float z = map.bottomLeftSquareTransform.transform.position.z + MapLayout.areaSize * (j + 0.5f);
+
+                Vector3 pos = new Vector3(x, map.bottomLeftSquareTransform.transform.position.y + MapLayout.oceanTileInterval, z);
+
+                tileGrid[i, j].transform.position = pos;
+                tileGrid[i, j].transform.localScale = new Vector3(MapLayout.areaSize, MapLayout.areaSize* 0.1f, MapLayout.areaSize);
+
+
+                tileGrid[i, j].transform.parent = Tiles.transform;
+            }
+        }
     }
 
-    private FixedFog GetFixedFog()
+    /*private FixedFog GetFixedFog()
     {
         int r = Random.Range(0, fogPrefabs.Length);
         GameObject fogObj = (GameObject)Instantiate(fogPrefabs[r]);
         FixedFog fog = fogObj.GetComponent<FixedFog>();
 
         return fog;
-    }
+    }*/
 
     private Tile GetTile()
     {
-        int r = Random.Range(0, tilePrefabs.Length);
-        GameObject tileObj = (GameObject)Instantiate(tilePrefabs[r]);
+        GameObject tileObj = (GameObject)Instantiate(tilePrefab);
         Tile tile = tileObj.GetComponent<Tile>();
 
         return tile;
     }
 
-    private void RevealFixedFogBlocks(Vector2Int coord)
+
+    /*private void RevealFixedFogBlocks(Vector2Int coord)
     {
         float x = map.bottomLeftSquareTransform.transform.position.x + MapLayout.areaSize * (coord.x + 0.5f);
         float z = map.bottomLeftSquareTransform.transform.position.z + MapLayout.areaSize * (coord.y + 0.5f);
@@ -86,7 +108,7 @@ public class FixedFogManager : MonoBehaviour
 
         tileGrid[coord.x, coord.y].transform.position = pos2;
         tileGrid[coord.x, coord.y].transform.localScale = new Vector3(MapLayout.areaSize, MapLayout.areaSize, MapLayout.areaSize);
-    }
+    }*/
 
     internal void ClearFog(Vector2Int coords)
     {

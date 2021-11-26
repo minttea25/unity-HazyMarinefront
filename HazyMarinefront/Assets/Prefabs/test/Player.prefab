@@ -158,8 +158,11 @@ MonoBehaviour:
   - {fileID: 4789653886291661079, guid: 7d28da919f69dbc4286051ba3565099b, type: 3}
   MapPrfab: {fileID: -4952535041585469654, guid: 17cc90735397fc54fb57af6f558e94e0,
     type: 3}
-  FogPrefab: {fileID: 1156299195809612299, guid: 505f3cb6b4a4db74d8e1b9fd1ebccd1e,
+  FogPrefab: {fileID: 1156299195809612299, guid: 2f249478da1a3b14e85ec26b0b023f02,
     type: 3}
-  TilePrefab: {fileID: 6106507714326713167, guid: 13d79ae379cd4564cbef25c84a045e20,
+  ExplosionPrefab: {fileID: -504975087462010295, guid: 64891a0eb28db934898420d80ca07cb3,
     type: 3}
-  MapInstance: {fileID: 0}
+  BigExplosionPrefab: {fileID: 1002316723137342078, guid: e1b08032bec16ba4eb1ae23cbd572664,
+    type: 3}
+  WaterSplashPrefab: {fileID: -1831579963455581370, guid: c1c88308ebb5d2541a282905b854ee4c,
+    type: 3}

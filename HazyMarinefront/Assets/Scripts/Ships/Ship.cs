@@ -29,8 +29,8 @@ public abstract class Ship : NetworkBehaviour
     private MaterialSetter materialSetter;
     private MoveShipController controller;
 
-    public GameObject Explosion;
-    public GameObject BigExplosion;
+    public NetworkObject Explosion;
+    public NetworkObject BigExplosion;
 
     public abstract Vector3 GetShipCenterPositionFromCoord(List<Vector3Int> coords, Map map);
     public abstract List<Vector3Int> GetPosibleShipSpawnCoordsList(Map map);
@@ -184,7 +184,7 @@ public abstract class Ship : NetworkBehaviour
         return true;
     }
 
-    public void DamageShip(int index, Map map)
+    public void DamageShip(int index)
     {
         if (shipCoords[index].z == 0)
             shipHealth--;
@@ -193,7 +193,7 @@ public abstract class Ship : NetworkBehaviour
             if (!this.isDestroyed)
             {
                 this.isDestroyed = true;
-                Instantiate(BigExplosion, gameObject.transform.position, Quaternion.identity);
+                Instantiate(BigExplosion, gameObject.transform.position, Quaternion.identity).Spawn();
                 //Destroy(GameObject.Find("BigExplosion(Clone)"), 1f);
                 Debug.Log("ship destroyed");
             }
@@ -202,7 +202,8 @@ public abstract class Ship : NetworkBehaviour
         else
         {
             var curCoord = new Vector3((float)(shipCoords[index].x - 4.5), 2f, (float)(shipCoords[index].y - 4.5));
-            Instantiate(Explosion, curCoord, Quaternion.identity);
+            NetworkObject explosionIst = Instantiate(Explosion, curCoord, Quaternion.identity);
+            explosionIst.Spawn();
             //Debug.Log("coord: " + gameObject.transform.position);
             //Destroy(GameObject.Find("SmallExplosion(Clone)"), 1f);
         }

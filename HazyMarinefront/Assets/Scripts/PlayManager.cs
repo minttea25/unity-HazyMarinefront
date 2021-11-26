@@ -9,19 +9,21 @@ using MLAPI.NetworkVariable.Collections;
 
 public class PlayManager : NetworkBehaviour
 {
-
     [SerializeField] public NetworkObject[] teamAShipPrefabs;
     [SerializeField] public NetworkObject[] teamBShipPrefabs;
 
     [SerializeField] public NetworkObject MapPrfab;
     [SerializeField] public NetworkObject FogPrefab;
-    [SerializeField] public NetworkObject TilePrefab;
+    [SerializeField] public NetworkObject ExplosionPrefab;
+    [SerializeField] public NetworkObject BigExplosionPrefab;
+    [SerializeField] public NetworkObject WaterSplashPrefab;
 
-    [SerializeField] private NetworkObject MapInstance;
+    [SerializeField] public NetworkObject MapInstance { get; private set; }
+
+    //public bool AttackMode { get; set; }
 
     private void Awake()
     {
-
     }
 
     // Start is called before the first frame update
@@ -33,7 +35,7 @@ public class PlayManager : NetworkBehaviour
         {
             SpawnMapServerRpc();
 
-            SpawnShipRandomCoordServerRpc();
+            //SpawnShipRandomCoordServerRpc();
 
             SpawnFogServerRpc();
 
@@ -62,7 +64,7 @@ public class PlayManager : NetworkBehaviour
     }
 
     [ServerRpc]
-    private void SpawnShipRandomCoordServerRpc()
+    public void SpawnShipRandomCoordServerRpc()
     {
         for (int k = 0; k < teamAShipPrefabs.Length; k++)
         {
@@ -141,7 +143,6 @@ public class PlayManager : NetworkBehaviour
     {
         float x = MapInstance.GetComponent<Map>().bottomLeftSquareTransform.transform.position.x;
         float y = MapInstance.GetComponent<Map>().bottomLeftSquareTransform.transform.position.y + MapLayout.oceanFogInterval;
-        float y2 = MapInstance.GetComponent<Map>().bottomLeftSquareTransform.transform.position.y + MapLayout.oceanTileInterval;
         float z = MapInstance.GetComponent<Map>().bottomLeftSquareTransform.transform.position.z;
 
         for (int i = 0; i < MapLayout.mapSize.x; i++)
@@ -160,16 +161,6 @@ public class PlayManager : NetworkBehaviour
                 FixedFog fog = FogInstance.GetComponent<FixedFog>();
                 MapInstance.GetComponent<Map>().fixedFogManager.fixedFogGrid[i, j] = fog;
                 fog.transform.parent = MapInstance.GetComponent<Map>().fogBlocks.transform;
-
-                NetworkObject TileInstance = Instantiate(
-                    TilePrefab,
-                    new Vector3(vx, y2, vz),
-                    Quaternion.identity);
-                TileInstance.Spawn();
-
-                Tile tile = TileInstance.GetComponent<Tile>();
-                MapInstance.GetComponent<Map>().fixedFogManager.tileGrid[i, j] = tile;
-                tile.transform.parent = MapInstance.GetComponent<Map>().tiles.transform;
             }
         }
     }
@@ -187,8 +178,75 @@ public class PlayManager : NetworkBehaviour
             Debug.Log("MOVED: " + moved);
         }
     }
+
+    // for only clicking fog
+    [ServerRpc]
+    public void AttackServerRpc(int x, int y)
+    {
+        Map map = NetworkManager.Singleton.ConnectedClients[0].PlayerObject.GetComponent<PlayManager>().MapInstance.GetComponent<Map>();
+
+        map.fixedFogManager.ClearFog(new Vector2Int(x, y));
+
+        //map.AttackCoord(new Vector2Int(x, y));
+        AttackCoordServerRpc(x, y);
+    }
+
+    [ServerRpc]
+    public void AttackCoordServerRpc(int x, int y)
+    {
+        Map map = NetworkManager.Singleton.ConnectedClients[0].PlayerObject.GetComponent<PlayManager>().MapInstance.GetComponent<Map>();
+
+        bool exist = map.SetSelectedShip(map.GetShipSymbolByCoords(new Vector2Int(x, y)));
+        if (exist)
+        {
+            for (int i = 0; i < map.GetSelectedShip().shipCoords.Count; i++)
+            {
+                if (map.GetSelectedShip().shipCoords[i].x == x && map.GetSelectedShip().shipCoords[i].y == y)
+                {
+                    //map.GetSelectedShip().DamageShip(i);
+                    DamageShipServerRpc(i);
+                    Debug.Log("damaged ship : Vector(" + x + ", " + y + ")");
+                }
+            }
+        }
+        else
+        {
+            Vector3 loc = new Vector3((float)(x - 4.5), 1.5f, (float)(y - 4.5));
+            Instantiate(WaterSplashPrefab, loc, Quaternion.identity).Spawn();
+        }
+    }
+
+    [ServerRpc]
+    public void DamageShipServerRpc(int index)
+    {
+        Map map = NetworkManager.Singleton.ConnectedClients[0].PlayerObject.GetComponent<PlayManager>().MapInstance.GetComponent<Map>();
+        Ship ship = map.GetSelectedShip();
+
+        if (ship.shipCoords[index].z == 0)
+        {
+            ship.shipHealth--;
+        }
+        if (ship.shipHealth == 0)
+        {
+            if (!ship.isDestroyed)
+            {
+                ship.isDestroyed = true;
+                Instantiate(BigExplosionPrefab, ship.transform.position, Quaternion.identity).Spawn();
+                Debug.Log("ship destroyed");
+
+            }
+        }
+        else
+        {
+            var curCoord = new Vector3((float)(ship.shipCoords[index].x - 4.5), 2f, (float)(ship.shipCoords[index].y - 4.5));
+            Instantiate(ExplosionPrefab, curCoord, Quaternion.identity).Spawn();
+        }
+        ship.shipCoords[index] = new Vector3Int(ship.shipCoords[index].x, ship.shipCoords[index].y, ship.shipCoords[index].z + 1);
+    }
+
     // Update is called once per frame
     void Update()
     {
     }
+
 }

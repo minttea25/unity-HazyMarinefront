@@ -1,0 +1,211 @@
+[33mcommit bb3766f15ce1f82310b31c7d5fa2328f41170fd3[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/main[m[33m)[m
+Merge: d8e32f9b 6e1223be
+Author: minttea25 <70805688+minttea25@users.noreply.github.com>
+Date:   Wed Nov 17 21:18:12 2021 +0900
+
+    Merge pull request #7 from minttea25/ojy
+    
+    Ojy
+
+[33mcommit 6e1223be939db5924f89fe39a3f24eff0c671144[m
+Author: Kev9171 <kevsms.oh@gmail.com>
+Date:   Wed Nov 17 19:10:25 2021 +0900
+
+    Fog
+
+[33mcommit 6565e581c86c978446b8e88bc7032de7a38f7526[m
+Merge: 20c63b3d d8e32f9b
+Author: Kev9171 <kevsms.oh@gmail.com>
+Date:   Tue Nov 16 22:37:25 2021 +0900
+
+    Merge branch 'main' into ojy
+
+[33mcommit d8e32f9b8a1c3cf83480e2f3c88d88a70797b942[m
+Merge: df2393b1 acee1bc6
+Author: minttea25 <70805688+minttea25@users.noreply.github.com>
+Date:   Tue Nov 16 20:58:32 2021 +0900
+
+    Merge pull request #6 from minttea25/kwy
+    
+    kwy + ojy
+
+[33mcommit acee1bc607db2afd567ff3f4d764ff28fe06730c[m
+Author: minttea25 <minttea.dev@gmail.com>
+Date:   Tue Nov 16 20:56:43 2021 +0900
+
+    kwy + ojy
+    
+    added
+    attack, collision + effects
+
+[33mcommit 20c63b3d54a363778059ee2065f9b0c877f12c0b[m
+Merge: df2393b1 dff6b3e2
+Author: Kev9171 <kevsms.oh@gmail.com>
+Date:   Mon Nov 15 18:24:10 2021 +0900
+
+    Merge branch 'kwy' into ojy
+
+[33mcommit dff6b3e28c1229970994898765b44bbc1305d980[m
+Author: minttea25 <minttea.dev@gmail.com>
+Date:   Mon Nov 15 13:45:06 2021 +0900
+
+    Host-Client module added - not completed
+    
+    host - clinet UI 테스트 가능
+    
+    관련 UI 추가
+    MLAPI 사용
+    Map 프리팹화 (내부에 fixedManager도 포함)
+    Player 프리팹 추가
+    
+    - 그 외 변경사항
+    - Map::IsNearShip 함수의 반환값을 반대로 변경
+    기존: 근처에 있으면 false 없으면 true
+    변경: 근처에 있으면 true, 없으면 false
+    
+    - MapLayout static 맴버로 변경
+    
+    ------
+    Usage
+    ------
+    2개 클라이언트 필요
+    한쪽은 Host로 서버 열고 나머지 한쪽은 Client로 host에 접속
+
+[33mcommit df2393b151e76bcbb548cc68178a49d22b511ad9[m
+Merge: 4cd3a202 c06b155d
+Author: minttea25 <70805688+minttea25@users.noreply.github.com>
+Date:   Wed Nov 10 20:10:32 2021 +0900
+
+    Merge pull request #5 from minttea25/kwy
+    
+    modified type map::grid
+
+[33mcommit c06b155d88d2496c56c42e82d1120bc8782d4289[m
+Author: minttea25 <minttea.dev@gmail.com>
+Date:   Wed Nov 10 20:10:06 2021 +0900
+
+    modified type map::grid
+
+[33mcommit 4cd3a202629991e24fd60c1f5d9559d419ef8319[m
+Merge: 2fb734d6 89f634c2
+Author: minttea25 <70805688+minttea25@users.noreply.github.com>
+Date:   Wed Nov 10 18:34:41 2021 +0900
+
+    Merge pull request #4 from minttea25/kwy
+    
+    map resized
+
+[33mcommit 89f634c2db338ff142c14a0b48d79e65472e5d88[m
+Author: minttea25 <minttea.dev@gmail.com>
+Date:   Wed Nov 10 17:19:14 2021 +0900
+
+    map resized
+    
+    map resized
+    aresize = 1
+    real transform 10*10
+
+[33mcommit 2fb734d6b7253a204d46a435094aba0e8e414a1d[m
+Merge: 0cb03e94 c7a22b06
+Author: minttea25 <70805688+minttea25@users.noreply.github.com>
+Date:   Wed Nov 3 17:36:48 2021 +0900
+
+    Merge pull request #3 from minttea25/kwy
+    
+    added water field, test clearfog + map resized + fog spawn size code …
+
+[33mcommit c7a22b06039559ef8333296d476b4c17d77d4ba0[m
+Author: minttea25 <minttea.dev@gmail.com>
+Date:   Wed Nov 3 17:36:16 2021 +0900
+
+    added water field, test clearfog + map resized + fog spawn size code edited
+    
+    Standard Unity Asset 사용하여 물 반영
+    안개 제거 테스트 버튼 추가 및 완료
+    
+    물 추가에 따른 애니메이션 잘 보이도록 맵 사이즈 100*100 -> 10*10 으로 재조정
+    
+    안개 스폰 시 사이즈 셋팅관련 코드 오류 수정
+
+[33mcommit 0cb03e94a39d99059541d2cae42220d89f519816[m
+Merge: 25abe23d 5e0b5796
+Author: minttea25 <70805688+minttea25@users.noreply.github.com>
+Date:   Wed Oct 27 22:53:26 2021 +0900
+
+    Merge pull request #2 from minttea25/kwy
+    
+    fog set error edited
+
+[33mcommit 5e0b579699a7f1669d10edea7b89acbe6737054e[m
+Author: minttea25 <minttea.dev@gmail.com>
+Date:   Wed Oct 27 22:52:59 2021 +0900
+
+    fog set error edited
+
+[33mcommit 25abe23dc840481b01d28659b3110e86fa8408a6[m
+Merge: caec79a6 bb4ebe47
+Author: minttea25 <70805688+minttea25@users.noreply.github.com>
+Date:   Wed Oct 27 21:22:58 2021 +0900
+
+    Merge pull request #1 from minttea25/kwy
+    
+    main update
+
+[33mcommit bb4ebe47dbf576568d15872d4fe8cd9add627e84[m
+Author: minttea25 <minttea.dev@gmail.com>
+Date:   Wed Oct 27 20:19:58 2021 +0900
+
+    Move Update + test Fog
+
+[33mcommit 9a5e04d52df6d5e699a7b141055ead75bd10c2c7[m
+Author: minttea25 <minttea.dev@gmail.com>
+Date:   Tue Oct 26 22:08:31 2021 +0900
+
+    added MoveUI for Team (temp)
+    
+    팀별로 움직일 수 있도록 UI 수정 (임시, 테스트용으로 사용할 것)
+    
+    ship의 prefab을 아예 팀으로 나누어 놓았음
+
+[33mcommit ebb5853a86deb8d1e4f1141ded8a7767b81db3e5[m
+Merge: b1d9fde0 e0f8faad
+Author: minttea25 <minttea.dev@gmail.com>
+Date:   Tue Oct 26 17:21:54 2021 +0900
+
+    Merge branch 'kwy' of https://github.com/minttea25/unity-HazyMarinefront into kwy
+
+[33mcommit b1d9fde0e987fa93988ca2a8acad9d6041d4d8e5[m
+Author: minttea25 <minttea.dev@gmail.com>
+Date:   Tue Oct 26 17:21:38 2021 +0900
+
+    map  scale-up and edited code
+    
+    맵 사이즈 크기 100*100으로 늘림
+    
+    배 움직임 및 소환 좌표 오류 수정
+
+[33mcommit e0f8faada28fb4313986687adb6557d7166cb2b3[m
+Author: minttea25 <70805688+minttea25@users.noreply.github.com>
+Date:   Thu Oct 14 09:01:08 2021 +0900
+
+    Add base.png
+
+[33mcommit caec79a6e3d56233b4599705327f8f9c6d96ced8[m
+Author: minttea25 <minttea.dev@gmail.com>
+Date:   Thu Oct 14 08:57:06 2021 +0900
+
+    Base Code
+
+[33mcommit 9965a09aa93d36dcbcb098e7151691b1d6d54608[m
+Author: minttea25 <minttea.dev@gmail.com>
+Date:   Tue Oct 5 20:49:07 2021 +0900
+
+    INITIAL
+    
+    initial
+
+[33mcommit ab3bacb009b30dffa6818626712740be13a31cfb[m
+Author: minttea25 <70805688+minttea25@users.noreply.github.com>
+Date:   Tue Oct 5 20:42:36 2021 +0900
+
+    Initial commit
