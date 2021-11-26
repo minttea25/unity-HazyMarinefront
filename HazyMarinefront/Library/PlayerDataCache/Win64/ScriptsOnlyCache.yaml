@@ -630,7 +630,7 @@ ScriptsOnlyBuild:
     className: NetworkManager
   - hash:
       serializedVersion: 2
-      Hash: c959596b786ee9c9253ac067620e2cd4
+      Hash: fd14382df22450900d35294eac7b43a9
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: AttackBtnEventListner
