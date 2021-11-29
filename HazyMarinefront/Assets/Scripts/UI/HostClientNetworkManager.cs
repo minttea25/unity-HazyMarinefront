@@ -2,6 +2,9 @@ using UnityEngine;
 using MLAPI;
 using TMPro;
 using System.Text;
+using MLAPI.NetworkVariable;
+using MLAPI.Messaging;
+using MLAPI.Connection;
 
 public class HostClientNetworkManager : MonoBehaviour
 {
@@ -9,6 +12,10 @@ public class HostClientNetworkManager : MonoBehaviour
     [SerializeField] private GameObject roomcodeEntryUI;
     [SerializeField] private GameObject leaveButton;
     [SerializeField] private GameObject attackBtn;
+    [SerializeField] private GameObject spawnButton;
+
+    [SerializeField] private NetworkVariable<int> ClientsNum = new NetworkVariable<int>(0);
+
 
     private void Start()
     {
@@ -18,6 +25,9 @@ public class HostClientNetworkManager : MonoBehaviour
 
         leaveButton.SetActive(false);
         attackBtn.SetActive(false);
+        spawnButton.SetActive(false);
+
+        ClientsNum.OnValueChanged += ClientsNumValueChanged;
     }
 
     private void OnDestroy()
@@ -28,6 +38,7 @@ public class HostClientNetworkManager : MonoBehaviour
         NetworkManager.Singleton.OnServerStarted -= HandleServerStarted;
         NetworkManager.Singleton.OnClientConnectedCallback -= HandleClientConnected;
         NetworkManager.Singleton.OnClientDisconnectCallback -= HandleClientDisconnect;
+        ClientsNum.OnValueChanged -= ClientsNumValueChanged;
     }
 
     public void Host()
@@ -58,6 +69,7 @@ public class HostClientNetworkManager : MonoBehaviour
 
         roomcodeEntryUI.SetActive(true);
         leaveButton.SetActive(false);
+        spawnButton.SetActive(false);
     }
 
     private void HandleServerStarted()
@@ -65,6 +77,9 @@ public class HostClientNetworkManager : MonoBehaviour
         // Temporary workaround to treat host as client
         if (NetworkManager.Singleton.IsHost)
         {
+            ClientsNum.Value = 0;
+
+            Debug.Log("server start");
             HandleClientConnected(NetworkManager.Singleton.ServerClientId);
         }
     }
@@ -79,6 +94,7 @@ public class HostClientNetworkManager : MonoBehaviour
 
             attackBtn.SetActive(true);
         }
+        ClientsNum.Value++;
     }
 
     private void HandleClientDisconnect(ulong clientId)
@@ -91,7 +107,7 @@ public class HostClientNetworkManager : MonoBehaviour
         }
     }
 
-    private void ApprovalCheck(byte[] connectionData, ulong clientId, MLAPI.NetworkManager.ConnectionApprovedDelegate callback)
+    private void ApprovalCheck(byte[] connectionData, ulong clientId, NetworkManager.ConnectionApprovedDelegate callback)
     {
         string password = Encoding.ASCII.GetString(connectionData);
 
@@ -114,5 +130,45 @@ public class HostClientNetworkManager : MonoBehaviour
                 break;
         }
         callback(true, null, approveConnection, spawnPos, spawnRot);
+    }
+
+    [ServerRpc]
+    private void CheckClientsNumServerRpc(int num)
+    {
+        if (NetworkManager.Singleton.IsServer)
+        {
+            Debug.Log(num);
+            if (num >= 2)
+            {
+                spawnButton.SetActive(true);
+            }
+            else
+            {
+                spawnButton.SetActive(false);
+            }
+        }
+    }
+
+    private void ClientsNumValueChanged(int previousValue, int newValue)
+    {
+        CheckClientsNumServerRpc(newValue);
+    }
+    public void SpawnShip()
+    {
+        ulong localClientId = NetworkManager.Singleton.LocalClientId;
+
+        if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(localClientId, out NetworkClient networkClient))
+        {
+            return;
+        }
+
+        if (!networkClient.PlayerObject.TryGetComponent<PlayManager>(out var PlayManager))
+        {
+            return;
+        }
+
+        PlayManager.SpawnShipRandomCoordServerRpc();
+
+        spawnButton.SetActive(false);
     }
 }

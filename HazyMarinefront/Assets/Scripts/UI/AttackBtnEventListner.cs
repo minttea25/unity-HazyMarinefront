@@ -11,12 +11,25 @@ public class AttackBtnEventListner : MonoBehaviour
     public Button attackBtn;
     public Text attackText;
 
-    public DropDownEventListener ddel;
+    public bool AttackMode;
 
-    public void setAttack()
+    // 일단 안개 클릭 시마다 공격 가능하도록 (나중에 서버에서 제어하는 방식으로 변경 필요)
+    public void SetAttack()
     {
+        Debug.Log(AttackMode);
+
+        if (AttackMode)
+        {
+            attackText.text = "ATTACK";
+            AttackMode = false;
+        }
+        else
+        {
+            attackText.text = "CANCEL";
+            AttackMode = true;
+        }
         // attack 이후 cancel -> attack으로 다시 바꿔주는 기능 아직 x
-        if (!GameObject.Find("Map(Clone)").GetComponent<Map>().Attack)
+        /*if (!GameObject.Find("Map(Clone)").GetComponent<Map>().Attack)
         {
             GameObject.Find("Map(Clone)").GetComponent<Map>().Attack = true;
             attackText.text = "CANCEL";
@@ -25,13 +38,27 @@ public class AttackBtnEventListner : MonoBehaviour
         {
             GameObject.Find("Map(Clone)").GetComponent<Map>().Attack = false;
             attackText.text = "ATTACK";
+        }*/
+    }
+
+    public void SetAttackMode(bool atk)
+    {
+        if (atk)
+        {
+            attackText.text = "CANCEL";
+            AttackMode = true;
+        }
+        else
+        {
+            attackText.text = "ATTACK";
+            AttackMode = false;
         }
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        AttackMode = false;
     }
 
     // Update is called once per frame
