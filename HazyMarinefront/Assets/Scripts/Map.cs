@@ -285,5 +285,33 @@ public class Map : NetworkBehaviour
     }
 
 
+    public bool IsThereLeftShip(Team team)
+    {
+        bool flag = false;
 
+        foreach (var s in ShipsInFieldList)
+        {
+            if (s.team == team)
+            {
+                flag = true;
+                break;
+            }
+        }
+
+        return flag;
+    }
+
+    public bool RemoveShipInList(ShipSymbol s)
+    {
+        foreach (var ship in ShipsInFieldList)
+        {
+            if (ship.Symbol == s)
+            {
+                ShipsInFieldList.Remove(ship);
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using MLAPI;
 using MLAPI.Messaging;
-using MLAPI.NetworkVariable;
-using MLAPI.NetworkVariable.Collections;
+using MLAPI.Connection;
+using UnityEngine.UI;
 
 public class PlayManager : NetworkBehaviour
 {
@@ -20,10 +20,14 @@ public class PlayManager : NetworkBehaviour
 
     [SerializeField] public NetworkObject MapInstance { get; private set; }
 
-    //public bool AttackMode { get; set; }
+    [SerializeField] public bool IsTurn;
+
+    [SerializeField] private Dictionary<ShipSymbol, NetworkObject> SymbolNetworkObject = new Dictionary<ShipSymbol, NetworkObject>();
+
 
     private void Awake()
     {
+        IsTurn = false;
     }
 
     // Start is called before the first frame update
@@ -100,6 +104,10 @@ public class PlayManager : NetworkBehaviour
 
             ship.transform.parent = MapInstance.GetComponent<Map>().shipHolder.transform;
             ship.transform.localScale = new Vector3(1, 1, 1);
+
+            shipInstance.tag = ship.Symbol.ToString();
+
+            SymbolNetworkObject.Add(ship.Symbol, shipInstance);
         }
 
         for (int k = 0; k < teamBShipPrefabs.Length; k++)
@@ -135,6 +143,10 @@ public class PlayManager : NetworkBehaviour
 
             ship.transform.parent = MapInstance.GetComponent<Map>().shipHolder.transform;
             ship.transform.localScale = new Vector3(1, 1, 1);
+
+            shipInstance.tag = ship.Symbol.ToString();
+
+            SymbolNetworkObject.Add(ship.Symbol, shipInstance);
         }
     }
 
@@ -186,8 +198,6 @@ public class PlayManager : NetworkBehaviour
         Map map = NetworkManager.Singleton.ConnectedClients[0].PlayerObject.GetComponent<PlayManager>().MapInstance.GetComponent<Map>();
 
         map.fixedFogManager.ClearFog(new Vector2Int(x, y));
-
-        //map.AttackCoord(new Vector2Int(x, y));
         AttackCoordServerRpc(x, y);
     }
 
@@ -198,12 +208,14 @@ public class PlayManager : NetworkBehaviour
 
         bool exist = map.SetSelectedShip(map.GetShipSymbolByCoords(new Vector2Int(x, y)));
         if (exist)
-        {
+        { 
+            // ERROR
+            // 아래 구문에서 동일한 지점 공격시 nullpoint exception 발생!!
+
             for (int i = 0; i < map.GetSelectedShip().shipCoords.Count; i++)
             {
                 if (map.GetSelectedShip().shipCoords[i].x == x && map.GetSelectedShip().shipCoords[i].y == y)
                 {
-                    //map.GetSelectedShip().DamageShip(i);
                     DamageShipServerRpc(i);
                     Debug.Log("damaged ship : Vector(" + x + ", " + y + ")");
                 }
@@ -234,6 +246,26 @@ public class PlayManager : NetworkBehaviour
                 Instantiate(BigExplosionPrefab, ship.transform.position, Quaternion.identity).Spawn();
                 Debug.Log("ship destroyed");
 
+                // list 에서 파괴된 배 삭제
+                bool removed = map.RemoveShipInList(ship.Symbol);
+                if (removed)
+                {
+                    Debug.Log(ship.Symbol + " is removed in list");
+                }
+                else
+                {
+                    Debug.Log("Remove ship in list error...");
+                }
+
+                if (NetworkManager.Singleton.IsServer)
+                {
+                    Destroy(GameObject.FindGameObjectWithTag(ship.Symbol.ToString()));
+                }
+                else
+                {
+                    SymbolNetworkObject.TryGetValue(ship.Symbol, out NetworkObject obj);
+                    obj.Despawn();
+                }
             }
         }
         else
@@ -242,7 +274,70 @@ public class PlayManager : NetworkBehaviour
             Instantiate(ExplosionPrefab, curCoord, Quaternion.identity).Spawn();
         }
         ship.shipCoords[index] = new Vector3Int(ship.shipCoords[index].x, ship.shipCoords[index].y, ship.shipCoords[index].z + 1);
+
+        CheckGameOver();
     }
+
+    public void CheckGameOver()
+    {
+        Map map = NetworkManager.Singleton.ConnectedClients[0].PlayerObject.GetComponent<PlayManager>().MapInstance.GetComponent<Map>();
+
+        foreach(var m in map.ShipsInFieldList)
+        {
+            Debug.Log("List in : " + m.Symbol);
+        }
+
+        bool ATeamShips = map.IsThereLeftShip(Team.ATeam);
+        bool BTeamShips = map.IsThereLeftShip(Team.BTeam);
+
+        if (ATeamShips && !BTeamShips)
+        {
+            WinLoseEvent(1);
+        }
+        else if (!ATeamShips && BTeamShips)
+        {
+            WinLoseEvent(2);
+        }
+        else if (map.ShipsInFieldList.Count == 0)
+        {
+            WinLoseEvent(0);
+        }
+    }
+
+    // 0: 무승부
+    // 1: ATeam 승리
+    // 2: BTeam 승리
+    public void WinLoseEvent(int winLose) 
+    {
+        if (winLose < 0 || winLose > 2)
+        {
+            Debug.Log("argument error in WinLoseEventServerRpc");
+            return;
+        }
+        else
+        {
+            ulong localClientId = NetworkManager.Singleton.LocalClientId;
+
+            if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(localClientId, out NetworkClient networkClient))
+            {
+                return;
+            }
+
+            if (!networkClient.PlayerObject.TryGetComponent<TurnManager>(out var TurnManager))
+            {
+                return;
+            }
+
+            // who win?
+            TurnManager.SetWinLose(winLose);
+
+            // GameOver Turn
+            TurnManager.SetGameState(4);
+        }
+    }
+
+
+
 
     // Update is called once per frame
     void Update()
