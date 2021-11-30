@@ -40,7 +40,9 @@ public enum ShipSymbol
     B1 = 12,
     B2 = 13,
     B3 = 14,
-    B4 = 15
+    B4 = 15,
+
+    NM = 10 // Naval Mine
 }
 
 public class MapLayout : MonoBehaviour

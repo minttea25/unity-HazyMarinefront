@@ -58,6 +58,7 @@ public class Tile : MonoBehaviour
         // RPC method parameter does not support serialization: UnityEngine.Vector2Int
         // -> int 값 2개 사용
         PlayManager.AttackServerRpc(curCoord.x, curCoord.y);
+        GameObject.Find("Map(Clone)").GetComponent<Map>().selectedCoord = curCoord;
 
 
 

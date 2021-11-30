@@ -29,6 +29,7 @@ public class Map : NetworkBehaviour
 
     // map info
     private Ship selectedShip;
+    public Vector2Int selectedCoord;
 
     [SerializeField] public ShipSymbol[,] grid = new ShipSymbol[MapLayout.mapSize.x, MapLayout.mapSize.y];
     [SerializeField] public List<Ship> ShipsInFieldList = new List<Ship>();
@@ -117,6 +118,8 @@ public class Map : NetworkBehaviour
 
         bool canMove = selectedShip.CheckAvailableToMove(dirType, amount, MapLayout.mapSize);
         bool collision = false;
+        bool mine = false;
+        int minehit = -1;
         // unavailable to move 
         if (!canMove)
         {
@@ -132,7 +135,8 @@ public class Map : NetworkBehaviour
         {
             Debug.Log("count: " + i + "/" + grid[selectedShip.shipCoords[i].x + xAxis, selectedShip.shipCoords[i].y + yAxis]);
             //여러개 동시에 충돌하는 경우 보완 필요 
-            if (grid[selectedShip.shipCoords[i].x + xAxis, selectedShip.shipCoords[i].y + yAxis] != ShipSymbol.NoShip && 
+            if (grid[selectedShip.shipCoords[i].x + xAxis, selectedShip.shipCoords[i].y + yAxis] != ShipSymbol.NoShip &&
+                grid[selectedShip.shipCoords[i].x + xAxis, selectedShip.shipCoords[i].y + yAxis] != ShipSymbol.NM &&
                 grid[selectedShip.shipCoords[i].x + xAxis, selectedShip.shipCoords[i].y + yAxis] != selectedShip.Symbol)
             {
                 Debug.Log("충돌");
@@ -155,12 +159,18 @@ public class Map : NetworkBehaviour
                 PlayManager.DamageShipServerRpc(i);
 
                 var loc = new Vector2Int(selectedShip.shipCoords[i].x + xAxis, selectedShip.shipCoords[i].y + yAxis);
-                
+
                 //AttackCoord(loc);
                 PlayManager.AttackCoordServerRpc(loc.x, loc.y);
 
                 collision = true;
             }
+            else if (grid[selectedShip.shipCoords[i].x + xAxis, selectedShip.shipCoords[i].y + yAxis] == ShipSymbol.NM)
+            {
+                minehit = i;
+                mine = true;
+            }
+                
         }
         
         if(collision)
@@ -171,8 +181,26 @@ public class Map : NetworkBehaviour
         selectedShip.MoveShipInCoord(dirType, amount, this);
         selectedShip.MoveShipInPosition(this);
         selectedShip.MoveShipInField(oldTransform, selectedShip.shipCenterPosition); ;
-        
-        
+
+        if (mine && minehit != -1)
+        {
+
+            ulong localClientId = NetworkManager.Singleton.LocalClientId;
+
+            if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(localClientId, out NetworkClient networkClient))
+            {
+                Debug.Log("Cannot find NetworkClient");
+                return false;
+            }
+
+            if (!networkClient.PlayerObject.TryGetComponent<PlayManager>(out var PlayManager))
+            {
+                Debug.Log("Cannot find PlayerManager");
+                return false;
+            }
+
+            PlayManager.DamageShipServerRpc(minehit);
+        }
 
         return true;
     }

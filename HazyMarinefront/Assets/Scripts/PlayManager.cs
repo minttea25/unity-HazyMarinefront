@@ -68,8 +68,32 @@ public class PlayManager : NetworkBehaviour
     {
         for (int k = 0; k < teamAShipPrefabs.Length; k++)
         {
+            Ship ship = createShip(k, true);
+
+            List<Vector3Int> temp = ship.GetPosibleShipSpawnCoordsList(MapInstance.GetComponent<Map>());
+
+            // deep copy
+            placeShip(ship, temp);
+        }
+
+        for (int k = 0; k < teamBShipPrefabs.Length; k++)
+        {
+            Ship ship = createShip(k, false);
+
+            List<Vector3Int> temp = ship.GetPosibleShipSpawnCoordsList(MapInstance.GetComponent<Map>());
+
+
+            // deep copy
+            placeShip(ship, temp);
+        }
+    }
+
+    public Ship createShip(int num, bool shipType)
+    {
+        if (shipType)
+        {
             NetworkObject shipInstance = Instantiate(
-            teamAShipPrefabs[k],
+            teamAShipPrefabs[num],
             new Vector3(0, 0, 0),
             Quaternion.identity);
             //shipInstance.SpawnWithOwnership(OwnerClientId);
@@ -79,33 +103,12 @@ public class PlayManager : NetworkBehaviour
             ship.team = Team.ATeam;
             ship.Init();
 
-            List<Vector3Int> temp = ship.GetPosibleShipSpawnCoordsList(MapInstance.GetComponent<Map>());
-
-            // deep copy
-            ship.shipCoords.Clear();
-            ship.shipCoords = temp.ConvertAll(o => new Vector3Int(o.x, o.y, o.z));
-
-
-            MapInstance.GetComponent<Map>().ShipsInFieldList.Add(ship);
-
-            for (int i = 0; i < ship.shipCoords.Count; i++)
-            {
-                MapInstance.GetComponent<Map>().grid[ship.shipCoords[i].x, ship.shipCoords[i].y] = MapLayout.GetSymbolByShiptypeTeam(ship.shipType, ship.team);
-            }
-
-            ship.shipCenterPosition = ship.GetShipCenterPositionFromCoord(ship.shipCoords, MapInstance.GetComponent<Map>());
-
-            Vector3 pos = ship.shipCenterPosition;
-            ship.transform.position = pos;
-
-            ship.transform.parent = MapInstance.GetComponent<Map>().shipHolder.transform;
-            ship.transform.localScale = new Vector3(1, 1, 1);
+            return ship;
         }
-
-        for (int k = 0; k < teamBShipPrefabs.Length; k++)
+        else
         {
             NetworkObject shipInstance = Instantiate(
-            teamBShipPrefabs[k],
+            teamBShipPrefabs[num],
             new Vector3(0, 0, 0),
             Quaternion.identity);
             //shipInstance.SpawnWithOwnership(OwnerClientId);
@@ -115,27 +118,31 @@ public class PlayManager : NetworkBehaviour
             ship.team = Team.BTeam;
             ship.Init();
 
-            List<Vector3Int> temp = ship.GetPosibleShipSpawnCoordsList(MapInstance.GetComponent<Map>());
-
-
-            // deep copy
-            ship.shipCoords.Clear();
-            ship.shipCoords = temp.ConvertAll(o => new Vector3Int(o.x, o.y, o.z));
-            MapInstance.GetComponent<Map>().ShipsInFieldList.Add(ship);
-
-            for (int i = 0; i < ship.shipCoords.Count; i++)
-            {
-                MapInstance.GetComponent<Map>().grid[ship.shipCoords[i].x, ship.shipCoords[i].y] = MapLayout.GetSymbolByShiptypeTeam(ship.shipType, ship.team);
-            }
-
-            ship.shipCenterPosition = ship.GetShipCenterPositionFromCoord(ship.shipCoords, MapInstance.GetComponent<Map>());
-
-            Vector3 pos = ship.shipCenterPosition;
-            ship.transform.position = pos;
-
-            ship.transform.parent = MapInstance.GetComponent<Map>().shipHolder.transform;
-            ship.transform.localScale = new Vector3(1, 1, 1);
+            return ship;
         }
+        
+    }
+
+    public void placeShip(Ship ship, List<Vector3Int> coords)
+    {
+        ship.shipCoords.Clear();
+        ship.shipCoords = coords.ConvertAll(o => new Vector3Int(o.x, o.y, o.z));
+
+
+        MapInstance.GetComponent<Map>().ShipsInFieldList.Add(ship);
+
+        for (int i = 0; i < ship.shipCoords.Count; i++)
+        {
+            MapInstance.GetComponent<Map>().grid[ship.shipCoords[i].x, ship.shipCoords[i].y] = MapLayout.GetSymbolByShiptypeTeam(ship.shipType, ship.team);
+        }
+
+        ship.shipCenterPosition = ship.GetShipCenterPositionFromCoord(ship.shipCoords, MapInstance.GetComponent<Map>());
+
+        Vector3 pos = ship.shipCenterPosition;
+        ship.transform.position = pos;
+
+        ship.transform.parent = MapInstance.GetComponent<Map>().shipHolder.transform;
+        ship.transform.localScale = new Vector3(1, 1, 1);
     }
 
     [ServerRpc]

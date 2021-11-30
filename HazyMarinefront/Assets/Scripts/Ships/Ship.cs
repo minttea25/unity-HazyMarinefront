@@ -35,6 +35,7 @@ public abstract class Ship : NetworkBehaviour
     public abstract Vector3 GetShipCenterPositionFromCoord(List<Vector3Int> coords, Map map);
     public abstract List<Vector3Int> GetPosibleShipSpawnCoordsList(Map map);
 
+    public abstract void ActivateAbility();
 
     public void Init()
     {
@@ -266,4 +267,5 @@ public abstract class Ship : NetworkBehaviour
                 return;
         }
     }
+
 }
