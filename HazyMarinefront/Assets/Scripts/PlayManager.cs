@@ -1,11 +1,8 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using MLAPI;
 using MLAPI.Messaging;
 using MLAPI.Connection;
-using UnityEngine.UI;
 
 public class PlayManager : NetworkBehaviour
 {
@@ -38,9 +35,6 @@ public class PlayManager : NetworkBehaviour
         if (NetworkManager.Singleton.IsServer)
         {
             SpawnMapServerRpc();
-
-            //SpawnShipRandomCoordServerRpc();
-
             SpawnFogServerRpc();
 
         }
@@ -63,7 +57,6 @@ public class PlayManager : NetworkBehaviour
             MapPrfab,
             new Vector3(0, 0, 0),
             Quaternion.identity);
-        //MapInstance.SpawnWithOwnership(OwnerClientId);
         MapInstance.Spawn();
     }
 
@@ -76,7 +69,6 @@ public class PlayManager : NetworkBehaviour
             teamAShipPrefabs[k],
             new Vector3(0, 0, 0),
             Quaternion.identity);
-            //shipInstance.SpawnWithOwnership(OwnerClientId);
             shipInstance.Spawn();
 
             Ship ship = shipInstance.GetComponent<Ship>();
@@ -116,7 +108,6 @@ public class PlayManager : NetworkBehaviour
             teamBShipPrefabs[k],
             new Vector3(0, 0, 0),
             Quaternion.identity);
-            //shipInstance.SpawnWithOwnership(OwnerClientId);
             shipInstance.Spawn();
 
             Ship ship = shipInstance.GetComponent<Ship>();
@@ -150,6 +141,60 @@ public class PlayManager : NetworkBehaviour
         }
     }
 
+    public Ship createShip(int num, bool shipType)
+    {
+        if (shipType)
+        {
+            NetworkObject shipInstance = Instantiate(
+            teamAShipPrefabs[num],
+            new Vector3(0, 0, 0),
+            Quaternion.identity);
+            shipInstance.Spawn();
+
+            Ship ship = shipInstance.GetComponent<Ship>();
+            ship.team = Team.ATeam;
+            ship.Init();
+
+            return ship;
+        }
+        else
+        {
+            NetworkObject shipInstance = Instantiate(
+            teamBShipPrefabs[num],
+            new Vector3(0, 0, 0),
+            Quaternion.identity);
+            shipInstance.Spawn();
+
+            Ship ship = shipInstance.GetComponent<Ship>();
+            ship.team = Team.BTeam;
+            ship.Init();
+
+            return ship;
+        }
+    }
+
+    public void placeShip(Ship ship, List<Vector3Int> coords)
+    {
+        ship.shipCoords.Clear();
+        ship.shipCoords = coords.ConvertAll(o => new Vector3Int(o.x, o.y, o.z));
+
+
+        MapInstance.GetComponent<Map>().ShipsInFieldList.Add(ship);
+
+        for (int i = 0; i < ship.shipCoords.Count; i++)
+        {
+            MapInstance.GetComponent<Map>().grid[ship.shipCoords[i].x, ship.shipCoords[i].y] = MapLayout.GetSymbolByShiptypeTeam(ship.shipType, ship.team);
+        }
+
+        ship.shipCenterPosition = ship.GetShipCenterPositionFromCoord(ship.shipCoords, MapInstance.GetComponent<Map>());
+
+        Vector3 pos = ship.shipCenterPosition;
+        ship.transform.position = pos;
+
+        ship.transform.parent = MapInstance.GetComponent<Map>().shipHolder.transform;
+        ship.transform.localScale = new Vector3(1, 1, 1);
+    }
+
     [ServerRpc]
     private void SpawnFogServerRpc()
     {
@@ -167,7 +212,6 @@ public class PlayManager : NetworkBehaviour
                     FogPrefab,
                     new Vector3(vx, y, vz),
                     Quaternion.identity);
-                //FogInstance.SpawnWithOwnership(OwnerClientId);
                 FogInstance.Spawn();
 
                 FixedFog fog = FogInstance.GetComponent<FixedFog>();
@@ -180,7 +224,7 @@ public class PlayManager : NetworkBehaviour
     [ServerRpc]
     public void SetMoveShipServerRpc(ShipSymbol s, DirectionType dirType, int amount)
     {
-        Debug.Log("SetMove: "+this.GetHashCode());
+        Debug.Log("SetMove: " + this.GetHashCode());
 
         bool exist = NetworkManager.Singleton.ConnectedClients[0].PlayerObject.GetComponent<PlayManager>().MapInstance.GetComponent<Map>().SetSelectedShip(s);
         if (exist)

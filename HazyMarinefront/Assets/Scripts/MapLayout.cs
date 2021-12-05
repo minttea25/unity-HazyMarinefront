@@ -40,7 +40,9 @@ public enum ShipSymbol
     B1 = 12,
     B2 = 13,
     B3 = 14,
-    B4 = 15
+    B4 = 15,
+
+    NM = 10 // Naval Mine
 }
 
 public class MapLayout : MonoBehaviour
@@ -78,14 +80,6 @@ public class MapLayout : MonoBehaviour
         oceanFogInterval = OCEAN_FOG_INTERVAL;
         oceanTileInterval = OCEAN_TILE_INTERVAL;
     }
-
-   /* private void Awake()
-    {
-        mapSize = new Vector2Int(SIZE_X, SIZE_Y);
-        areaSize = AREA_SIZE;
-        spawnLeastInterval = SPAWN_LEAST_INTERVAL;
-        oceanFogInterval = OCEAN_FOG_INTERVAL;
-    }*/
 
     public static Team GetTeamByShipSymbol(ShipSymbol s)
     {

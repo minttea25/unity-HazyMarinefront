@@ -11,31 +11,29 @@ public class Map : NetworkBehaviour
 {
     public NetworkObject[] teamAShipPrefabs;
     public NetworkObject[] teamBShipPrefabs;
-    /// <summary>
-    /// /////////////
-    /// </summary>
+
     public GameObject shipHolder;
 
     // 기준 좌표
     public Transform bottomLeftSquareTransform;
 
-    public GameObject fogBlocks; // not used yet...
+    public GameObject fogBlocks; 
 
-    public GameObject tiles; // not yet no reference
     public NetworkObject waterSplash;
+
     public FixedFogManager fixedFogManager;
 
     public Vector2Int mapSize = new Vector2Int(MapLayout.mapSize.x, MapLayout.mapSize.y);
 
     // map info
     private Ship selectedShip;
+    public Vector2Int selectedCoord;
 
     [SerializeField] public ShipSymbol[,] grid = new ShipSymbol[MapLayout.mapSize.x, MapLayout.mapSize.y];
     [SerializeField] public List<Ship> ShipsInFieldList = new List<Ship>();
 
     private void Awake()
     {
-        //fixedFogManager.SetFixedFogBlock(null);
         SetShipSymbolDefault();
 
     }
@@ -55,53 +53,11 @@ public class Map : NetworkBehaviour
         return selectedShip;
     }
 
-    public void SpawnShipRandomCoord(GameObject prefab, Team team)
-    {
-        // 좌표 정하기
-
-        GameObject shipObj = (GameObject)Instantiate(prefab);
-        Ship ship = shipObj.GetComponent<Ship>();
-        // Debug.Log(ship.name + ": " + ship);
-        ship.team = team;
-        ship.Init();
-
-        List<Vector3Int> temp = ship.GetPosibleShipSpawnCoordsList(this);
-
-        // deep copy
-        ship.shipCoords.Clear();
-        ship.shipCoords = temp.ConvertAll(o => new Vector3Int(o.x, o.y, o.z));
-
-        // new
-        ShipsInFieldList.Add(ship);
-
-        for (int i = 0; i < ship.shipCoords.Count; i++)
-        {
-            //new
-            Debug.Log(ship.shipCoords.Count);
-            grid[ship.shipCoords[i].x, ship.shipCoords[i].y] = MapLayout.GetSymbolByShiptypeTeam(ship.shipType, team);
-
-            Debug.Log(prefab.name + "(relative pos): " + ship.shipCoords[i]);
-        }
-
-        ship.shipCenterPosition = ship.GetShipCenterPositionFromCoord(ship.shipCoords, this);
-
-        Vector3 pos = ship.shipCenterPosition;
-        Debug.Log(prefab.name + " (real pos): " + pos);
-        ship.transform.position = pos;
-
-        ship.transform.parent = shipHolder.transform;
-        // new code
-        ship.transform.localScale = new Vector3(1, 1, 1);
-    }
-
     private Ship GetShipOnArea(Vector2Int Coord)
     {
-        //TODO: 조건 수정 필요
-
         if (grid[Coord.x, Coord.y] != ShipSymbol.NoShip)
         {
             return GetShipBySymbol(grid[Coord.x, Coord.y]);
-            //return grid[Coord.x, Coord.y]
         }
         else
         {
@@ -117,6 +73,8 @@ public class Map : NetworkBehaviour
 
         bool canMove = selectedShip.CheckAvailableToMove(dirType, amount, MapLayout.mapSize);
         bool collision = false;
+        bool mine = false;
+        int minehit = -1;
         // unavailable to move 
         if (!canMove)
         {
@@ -132,7 +90,8 @@ public class Map : NetworkBehaviour
         {
             Debug.Log("count: " + i + "/" + grid[selectedShip.shipCoords[i].x + xAxis, selectedShip.shipCoords[i].y + yAxis]);
             //여러개 동시에 충돌하는 경우 보완 필요 
-            if (grid[selectedShip.shipCoords[i].x + xAxis, selectedShip.shipCoords[i].y + yAxis] != ShipSymbol.NoShip && 
+            if (grid[selectedShip.shipCoords[i].x + xAxis, selectedShip.shipCoords[i].y + yAxis] != ShipSymbol.NoShip &&
+                grid[selectedShip.shipCoords[i].x + xAxis, selectedShip.shipCoords[i].y + yAxis] != ShipSymbol.NM &&
                 grid[selectedShip.shipCoords[i].x + xAxis, selectedShip.shipCoords[i].y + yAxis] != selectedShip.Symbol)
             {
                 Debug.Log("충돌");
@@ -151,15 +110,18 @@ public class Map : NetworkBehaviour
                     return false;
                 }
 
-                //selectedShip.DamageShip(i);
                 PlayManager.DamageShipServerRpc(i);
 
                 var loc = new Vector2Int(selectedShip.shipCoords[i].x + xAxis, selectedShip.shipCoords[i].y + yAxis);
                 
-                //AttackCoord(loc);
                 PlayManager.AttackCoordServerRpc(loc.x, loc.y);
 
                 collision = true;
+            }
+            else if (grid[selectedShip.shipCoords[i].x + xAxis, selectedShip.shipCoords[i].y + yAxis] == ShipSymbol.NM)
+            {
+                minehit = i;
+                mine = true;
             }
         }
         
@@ -171,15 +133,32 @@ public class Map : NetworkBehaviour
         selectedShip.MoveShipInCoord(dirType, amount, this);
         selectedShip.MoveShipInPosition(this);
         selectedShip.MoveShipInField(oldTransform, selectedShip.shipCenterPosition); ;
-        
-        
+
+        if (mine && minehit != -1)
+        {
+
+            ulong localClientId = NetworkManager.Singleton.LocalClientId;
+
+            if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(localClientId, out NetworkClient networkClient))
+            {
+                Debug.Log("Cannot find NetworkClient");
+                return false;
+            }
+
+            if (!networkClient.PlayerObject.TryGetComponent<PlayManager>(out var PlayManager))
+            {
+                Debug.Log("Cannot find PlayerManager");
+                return false;
+            }
+
+            PlayManager.DamageShipServerRpc(minehit);
+        }
 
         return true;
     }
 
     public void UpdateShipOnGrid(List<Vector3Int> oldCoords, List<Vector3Int> newCoords, Ship ship)
     {
-        // 기존 grid의 ship null 값으로 변경
         for (int i = 0; i < oldCoords.Count; i++)
         {
             grid[oldCoords[i].x, oldCoords[i].y] = ShipSymbol.NoShip;
@@ -240,28 +219,6 @@ public class Map : NetworkBehaviour
         }
 
         return false;
-    }
-
-    internal void AttackCoord(Vector2Int coord)
-    {
-        selectedShip = GetShipOnArea(coord);
-        if (selectedShip != null)
-        {
-            for (int i = 0; i < selectedShip.shipCoords.Count; i++)
-            {
-                if (selectedShip.shipCoords[i].x == coord.x && selectedShip.shipCoords[i].y == coord.y)
-                {
-                    selectedShip.DamageShip(i);
-                    Debug.Log("damaged ship : " + coord);
-                }
-            }
-        }
-        else
-        {
-            Vector3 loc = new Vector3((float)(coord.x - 4.5), 1.5f, (float)(coord.y - 4.5));
-            Instantiate(waterSplash, loc, Quaternion.identity).Spawn();
-        }
-        
     }
 
     /*@param

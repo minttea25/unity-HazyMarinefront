@@ -7,17 +7,6 @@ public class Tile : MonoBehaviour
 {
     Vector2Int curCoord;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        //transform.GetComponent<Renderer>().material.color = Color.clear;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
     private void OnMouseEnter()
     {
         transform.GetComponent<Renderer>().material.color = new Color(0, 0.5f, 1, 0.5f);
@@ -36,7 +25,6 @@ public class Tile : MonoBehaviour
             return;
         }
 
-        //transform.GetComponent<Renderer>().material.color = Color.clear;
         curCoord = new Vector2Int(((int)(transform.localPosition.x + 4.5)), (int)(transform.localPosition.z + 4.5));
         Debug.Log(" coord :" + curCoord);
 
@@ -55,9 +43,10 @@ public class Tile : MonoBehaviour
         // -> int 값 2개 사용
         PlayManager.AttackServerRpc(curCoord.x, curCoord.y);
 
+        // added (ojy)
+        GameObject.Find("Map(Clone)").GetComponent<Map>().selectedCoord = curCoord;
 
         transform.GetComponent<Renderer>().material.color = new Color(1, 1, 1, 0);
-
 
         GameObject.Find("EventSystem").GetComponent<AttackBtnEventListner>().SetAttackMode(false);
     }
