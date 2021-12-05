@@ -7,21 +7,8 @@ public class Tile : MonoBehaviour
 {
     Vector2Int curCoord;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        //transform.GetComponent<Renderer>().material.color = Color.clear;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
     private void OnMouseEnter()
     {
-        Debug.Log(" fog color :" + transform.GetComponent<Renderer>().material.color);
-        //Debug.Log(" coord :" + transform.localPosition);
         transform.GetComponent<Renderer>().material.color = new Color(0, 0.5f, 1, 0.5f);
     }
 
@@ -32,13 +19,12 @@ public class Tile : MonoBehaviour
 
     void OnMouseDown()
     {
-        if (!GameObject.Find("AttackBtnEventObject").GetComponent<AttackBtnEventListner>().AttackMode)
+        if (!GameObject.Find("EventSystem").GetComponent<AttackBtnEventListner>().AttackMode)
         {
             Debug.Log("Not AttackMode");
             return;
         }
 
-        //transform.GetComponent<Renderer>().material.color = Color.clear;
         curCoord = new Vector2Int(((int)(transform.localPosition.x + 4.5)), (int)(transform.localPosition.z + 4.5));
         Debug.Log(" coord :" + curCoord);
 
@@ -46,52 +32,23 @@ public class Tile : MonoBehaviour
 
         if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(localClientId, out NetworkClient networkClient))
         {
-            Debug.Log("Cannot find NetworkClient");
             return;
         }
 
         if (!networkClient.PlayerObject.TryGetComponent<PlayManager>(out var PlayManager))
         {
-            Debug.Log("Cannot find PlayerManager");
             return;
         }
         // RPC method parameter does not support serialization: UnityEngine.Vector2Int
         // -> int 값 2개 사용
         PlayManager.AttackServerRpc(curCoord.x, curCoord.y);
 
-
-
-        //GameObject.Find("FixedFogManager").GetComponent<FixedFogManager>().ClearFog(curCoord);
-
-        //GameObject.Find("Map(Clone)").GetComponent<Map>().AttackCoord(curCoord);
-
-        //GameObject.Find("Map(Clone)").GetComponent<Map>().Attack = false;
-        //GameObject.Find("AttackBtn").GetComponent<Button>().GetComponentInChildren<Text>().text = "ATTACK";
+        // added (ojy)
+        GameObject.Find("Map(Clone)").GetComponent<Map>().selectedCoord = curCoord;
 
         transform.GetComponent<Renderer>().material.color = new Color(1, 1, 1, 0);
 
-
-        GameObject.Find("AttackBtnEventObject").GetComponent<AttackBtnEventListner>().SetAttackMode(false);
-
-
-        /*if (GameObject.Find("Map(Clone)").GetComponent<Map>().Attack)
-        {
-            GameObject.Find("FixedFogManager").GetComponent<FixedFogManager>().ClearFog(curCoord);
-
-            GameObject.Find("Map(Clone)").GetComponent<Map>().AttackCoord(curCoord);
-            GameObject.Find("Map(Clone)").GetComponent<Map>().Attack = false;
-            GameObject.Find("AttackBtn").GetComponent<Button>().GetComponentInChildren<Text>().text = "ATTACK";
-
-            transform.GetComponent<Renderer>().material.color = new Color(1, 1, 1, 0);
-        }*/
-
-
-
-        //fixedFogManager.attack = true;
-        //fixedFogManager.atkCoord = curCoord;
-
-
-        //FixedFogManager.ClearFog(curCoord);
+        GameObject.Find("EventSystem").GetComponent<AttackBtnEventListner>().SetAttackMode(false);
     }
 
 }

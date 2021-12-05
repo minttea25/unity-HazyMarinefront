@@ -7,15 +7,30 @@ using MLAPI.Connection;
 
 public class MoveBtnEventListener : MonoBehaviour
 {
-    public Button moveBtn;
+    public GameObject MoveControllUICanvas;
 
-    public DropDownEventListener ddel;
+    public Button moveBtn;
+    public Dropdown dirDropDown;
+    public Dropdown teamDropDown;
+    public Dropdown shipDropDown;
+
     private const int amount = 1; // 움직임 1칸 고정
+
+    public DirectionType dirType { get; private set; }
+    public Team team { get; private set; }
+    public ShipType shipType { get; private set; }
+
+    private void Awake()
+    {
+        dirType = DirectionType.Front;
+        team = Team.ATeam;
+        shipType = ShipType.MainShip;
+    }
 
 
     public void MoveShip()
     {
-        ShipSymbol s = MapLayout.GetSymbolByShiptypeTeam(ddel.shipType, ddel.team);
+        ShipSymbol s = MapLayout.GetSymbolByShiptypeTeam(shipType, team);
 
         ulong localClientId = NetworkManager.Singleton.LocalClientId;
 
@@ -29,6 +44,55 @@ public class MoveBtnEventListener : MonoBehaviour
             return;
         }
 
-        PlayManager.SetMoveShipServerRpc(s, ddel.dirType, amount);
+        PlayManager.SetMoveShipServerRpc(s, dirType, amount);
+    }
+
+    public void SelectedShipTypeChanged()
+    {
+        switch (shipDropDown.captionText.text)
+        {
+            case "MainShip": shipType = ShipType.MainShip; break;
+            case "SubShip1": shipType = ShipType.SubShip1; break;
+            case "SubShip2": shipType = ShipType.SubShip2; break;
+            case "SubShip3": shipType = ShipType.SubShip3; break;
+            default: return;
+        }
+    }
+
+    public void SelectedDirectionChanged()
+    {
+        switch (dirDropDown.captionText.text)
+        {
+            case "Front":
+                dirType = DirectionType.Front;
+                break;
+            case "Back":
+                dirType = DirectionType.Back;
+                break;
+            case "Right":
+                dirType = DirectionType.Right;
+                break;
+            case "Left":
+                dirType = DirectionType.Left;
+                break;
+            default:
+                Debug.Log("dir error - MoveBtnEventListener");
+                return;
+        }
+    }
+
+    public void SelectedTeamChanged()
+    {
+        switch (teamDropDown.captionText.text)
+        {
+            case "Team A": team = Team.ATeam; break;
+            case "Team B": team = Team.BTeam; break;
+            default: return;
+        }
+    }
+
+    public void SetActiveMoveCanvas(bool act)
+    {
+        MoveControllUICanvas.SetActive(act);
     }
 }

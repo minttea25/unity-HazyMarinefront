@@ -18,7 +18,6 @@ public class MoveShipController : MonoBehaviour
     {
         if (moveFlag)
         {
-            //shipTransform.position += (desPosition = shipTransform.position).normalized * 10.0f * Time.deltaTime;
             shipTransform.position = Vector3.MoveTowards(shipTransform.position, desPosition, Time.deltaTime * speed);
         }
     }
@@ -27,11 +26,6 @@ public class MoveShipController : MonoBehaviour
     {
         transform.position += (desPosition - transform.position).normalized * 10.0f * Time.deltaTime;
         Debug.Log(transform.position);
-        
-        //transform.position = desPosition;
-        //transform.Translate(desPosition);
-        //Debug.Log(desPosition);
-        //transform.position = Vector3.MoveTowards(transform.position, desPosition, Time.deltaTime * speed);
     }
 
 }

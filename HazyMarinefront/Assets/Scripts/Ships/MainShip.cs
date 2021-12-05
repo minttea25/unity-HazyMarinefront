@@ -17,7 +17,6 @@ public class MainShip : Ship
 
     public override Vector3 GetShipCenterPositionFromCoord(List<Vector3Int> coords, Map map)
     {
-        //Debug.Log(map.bottomLeftSquareTransform.transform.position);
         // 이부분은 배마다 다르게
         float x = map.bottomLeftSquareTransform.transform.position.x + MapLayout.areaSize * (coords[0].x + 0.5f);
         float z = map.bottomLeftSquareTransform.transform.position.z + MapLayout.areaSize * (coords[0].y + 0.5f);
@@ -45,5 +44,22 @@ public class MainShip : Ship
 
         return list;
 
+    }
+
+    public override void ActivateAbility()
+    {
+        //아군 소환
+        if (this.team == Team.ATeam)
+        {
+            Ship newShip = GameObject.Find("NetworkManager").GetComponent<PlayManager>().createShip(Random.Range(1, 3), true);
+            List<Vector3Int> temp = newShip.GetPosibleShipSpawnCoordsList(GameObject.Find("NetworkManager").GetComponent<PlayManager>().MapInstance.GetComponent<Map>());
+            GameObject.Find("NetworkManager").GetComponent<PlayManager>().placeShip(newShip, temp);
+        }
+        else
+        {
+            Ship newShip = GameObject.Find("NetworkManager").GetComponent<PlayManager>().createShip(Random.Range(1, 3), false);
+            List<Vector3Int> temp = newShip.GetPosibleShipSpawnCoordsList(GameObject.Find("NetworkManager").GetComponent<PlayManager>().MapInstance.GetComponent<Map>());
+            GameObject.Find("NetworkManager").GetComponent<PlayManager>().placeShip(newShip, temp);
+        }
     }
 }

@@ -65,4 +65,19 @@ public class SubShip3 : Ship
 
         return list;
     }
+
+    public override void ActivateAbility()
+    {
+        //자가 수리
+        for (int i = 0; i < this.shipSizeY; i++)
+        {
+            if (this.shipCoords[i].z != 0)
+            {
+                //this.shipCoords[i].z = 0;
+                GameObject.Find("NetworkManager").GetComponent<PlayManager>().MapInstance.GetComponent<Map>().GetSelectedShip().shipCoords[i] = new Vector3Int(this.shipCoords[i].x, this.shipCoords[i].y, 0);
+                this.shipHealth++;
+                break;
+            }
+        }
+    }
 }

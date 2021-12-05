@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 4582510392780290801}
   - component: {fileID: -4084611409921321025}
   - component: {fileID: 211959420402820889}
+  - component: {fileID: -6763149102899802792}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -166,3 +167,56 @@ MonoBehaviour:
     type: 3}
   WaterSplashPrefab: {fileID: -1831579963455581370, guid: c1c88308ebb5d2541a282905b854ee4c,
     type: 3}
+  IsTurn: 0
+--- !u!114 &-6763149102899802792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7471178776487021017}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fa9d158100320b4688d909a61bd34fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DontDestroy: 1
+  RunInBackground: 1
+  LogLevel: 1
+  NetworkConfig:
+    ProtocolVersion: 0
+    NetworkTransport: {fileID: 0}
+    RegisteredScenes:
+    - Mid2
+    AllowRuntimeSceneChanges: 0
+    NetworkPrefabs: []
+    PlayerPrefabHash:
+      id: 0
+    CreatePlayerPrefab: 1
+    ReceiveTickrate: 64
+    NetworkTickIntervalSec: 0.05
+    MaxReceiveEventsPerTickRate: 500
+    EventTickrate: 64
+    ClientConnectionBufferTimeout: 10
+    ConnectionApproval: 0
+    ConnectionData: 
+    EnableTimeResync: 0
+    TimeResyncInterval: 30
+    EnableNetworkVariable: 1
+    EnsureNetworkVariableLengthSafety: 0
+    EnableSceneManagement: 1
+    ForceSamePrefabs: 1
+    UsePrefabSync: 0
+    RecycleNetworkIds: 1
+    NetworkIdRecycleDelay: 120
+    RpcHashSize: 0
+    LoadSceneTimeOut: 120
+    EnableMessageBuffering: 1
+    MessageBufferTimeout: 20
+    EnableNetworkLogs: 1
+  GameState:
+    m_InternalValue: 0
+  references:
+    version: 1
+    00000000:
+      type: {class: , ns: , asm: }

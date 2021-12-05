@@ -23,6 +23,8 @@ public class HostClientNetworkManager : MonoBehaviour
         NetworkManager.Singleton.OnClientConnectedCallback += HandleClientConnected;
         NetworkManager.Singleton.OnClientDisconnectCallback += HandleClientDisconnect;
 
+        GameObject.Find("EventSystem").GetComponent<MoveBtnEventListener>().MoveControllUICanvas.SetActive(false);
+
         leaveButton.SetActive(false);
         attackBtn.SetActive(false);
         spawnButton.SetActive(false);
@@ -46,6 +48,8 @@ public class HostClientNetworkManager : MonoBehaviour
         // Hook up password approval check
         NetworkManager.Singleton.ConnectionApprovalCallback += ApprovalCheck;
         NetworkManager.Singleton.StartHost(new Vector3(-2f, 0f, 0f), Quaternion.Euler(0f, 135f, 0f));
+
+        GetTurnManager().SetGameState(0);
     }
 
     public void Client()
@@ -119,12 +123,10 @@ public class HostClientNetworkManager : MonoBehaviour
         switch (NetworkManager.Singleton.ConnectedClients.Count)
         {
             case 1:
-                //spawnPos = new Vector3(0f, 0f, 0f);
                 spawnPos = new Vector3(6, 3, -2);
                 spawnRot = Quaternion.Euler(0f, 180f, 0f);
                 break;
             case 2:
-                //spawnPos = new Vector3(2f, 0f, 0f);
                 spawnPos = new Vector3(6, 3, 0);
                 spawnRot = Quaternion.Euler(0f, 225, 0f);
                 break;
@@ -137,14 +139,18 @@ public class HostClientNetworkManager : MonoBehaviour
     {
         if (NetworkManager.Singleton.IsServer)
         {
-            Debug.Log(num);
             if (num >= 2)
             {
                 spawnButton.SetActive(true);
+
+                // 일단 자동으로 상대 들어오면 ready 상태로
+                GetTurnManager().SetGameState(1);
+
             }
             else
             {
                 spawnButton.SetActive(false);
+                GetTurnManager().SetGameState(0);
             }
         }
     }
@@ -153,8 +159,15 @@ public class HostClientNetworkManager : MonoBehaviour
     {
         CheckClientsNumServerRpc(newValue);
     }
+
     public void SpawnShip()
     {
+        if ((GetTurnManager()?.GameState.Value ?? -1)!= 1)
+        {
+            // ready 상태가 아닐 경우
+            return;
+        }
+
         ulong localClientId = NetworkManager.Singleton.LocalClientId;
 
         if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(localClientId, out NetworkClient networkClient))
@@ -170,5 +183,25 @@ public class HostClientNetworkManager : MonoBehaviour
         PlayManager.SpawnShipRandomCoordServerRpc();
 
         spawnButton.SetActive(false);
+
+        // 임시로 host 먼저 턴 시작
+        GetTurnManager().SetGameState(2);
+    }
+
+    private TurnManager GetTurnManager()
+    {
+        ulong localClientId = NetworkManager.Singleton.LocalClientId;
+
+        if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(localClientId, out NetworkClient networkClient))
+        {
+            return null;
+        }
+
+        if (!networkClient.PlayerObject.TryGetComponent<TurnManager>(out var TurnManager))
+        {
+            return null;
+        }
+
+        return TurnManager;
     }
 }
