@@ -20,7 +20,7 @@ public class Tile : MonoBehaviour
     }
     private void OnMouseEnter()
     {
-        Debug.Log(" fog color :" + transform.GetComponent<Renderer>().material.color);
+        //Debug.Log(" fog color :" + transform.GetComponent<Renderer>().material.color);
         //Debug.Log(" coord :" + transform.localPosition);
         transform.GetComponent<Renderer>().material.color = new Color(0, 0.5f, 1, 0.5f);
     }
@@ -58,7 +58,22 @@ public class Tile : MonoBehaviour
         // RPC method parameter does not support serialization: UnityEngine.Vector2Int
         // -> int 값 2개 사용
         PlayManager.AttackServerRpc(curCoord.x, curCoord.y);
-        GameObject.Find("Map(Clone)").GetComponent<Map>().selectedCoord = curCoord;
+        //if (GameObject.Find("AbilityBtnEventObject").GetComponent<AbilityBtnEventListner>().CrossAttackMode)
+        if (PlayManager.crossAtk)
+        {
+            if(curCoord.x < MapLayout.mapSize.x)
+                PlayManager.AttackServerRpc(curCoord.x + 1, curCoord.y);
+            if (curCoord.x > 0)
+                PlayManager.AttackServerRpc(curCoord.x - 1, curCoord.y);
+            if (curCoord.y < MapLayout.mapSize.y)
+                PlayManager.AttackServerRpc(curCoord.x, curCoord.y + 1);
+            if (curCoord.y > 0)
+                PlayManager.AttackServerRpc(curCoord.x, curCoord.y - 1);
+            Debug.Log("십자공격 " + PlayManager.crossAtk);
+            PlayManager.crossAtk = false;
+            //GameObject.Find("AbilityBtnEventObject").GetComponent<AbilityBtnEventListner>().SetCrossAttackMode(false);
+        }
+        //PlayManager.GetComponent<Map>().selectedCoord = curCoord;
 
 
 

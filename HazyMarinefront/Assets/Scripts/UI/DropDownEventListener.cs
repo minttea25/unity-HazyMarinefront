@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using MLAPI;
+using MLAPI.Connection;
 
 public class DropDownEventListener : MonoBehaviour
 {
@@ -31,6 +33,20 @@ public class DropDownEventListener : MonoBehaviour
             case "SubShip3": shipType = ShipType.SubShip3; break;
             default: return;
         }
+        ulong localClientId = NetworkManager.Singleton.LocalClientId;
+
+        if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(localClientId, out NetworkClient networkClient))
+        {
+            Debug.Log("Cannot find NetworkClient");
+            return;
+        }
+
+        if (!networkClient.PlayerObject.TryGetComponent<PlayManager>(out var PlayManager))
+        {
+            Debug.Log("Cannot find PlayerManager");
+            return;
+        }
+        PlayManager.MapInstance.GetComponent<Map>().SetSelectedShip(MapLayout.GetSymbolByShiptypeTeam(shipType, team));
     }
 
     public void SelectedDirectionChanged()
@@ -63,5 +79,19 @@ public class DropDownEventListener : MonoBehaviour
             case "Team B": team = Team.BTeam; break;
             default: return;
         }
+        ulong localClientId = NetworkManager.Singleton.LocalClientId;
+
+        if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(localClientId, out NetworkClient networkClient))
+        {
+            Debug.Log("Cannot find NetworkClient");
+            return;
+        }
+
+        if (!networkClient.PlayerObject.TryGetComponent<PlayManager>(out var PlayManager))
+        {
+            Debug.Log("Cannot find PlayerManager");
+            return;
+        }
+        PlayManager.MapInstance.GetComponent<Map>().SetSelectedShip(MapLayout.GetSymbolByShiptypeTeam(shipType, team));
     }
 }

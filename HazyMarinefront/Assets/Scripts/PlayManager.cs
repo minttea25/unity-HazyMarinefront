@@ -21,6 +21,7 @@ public class PlayManager : NetworkBehaviour
     [SerializeField] public NetworkObject MapInstance { get; private set; }
 
     //public bool AttackMode { get; set; }
+    public bool crossAtk { get; set; }
 
     private void Awake()
     {
@@ -29,6 +30,7 @@ public class PlayManager : NetworkBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        crossAtk = false;
         if (!IsOwner) { return; }
 
         if (NetworkManager.Singleton.IsServer)
