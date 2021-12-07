@@ -5,7 +5,6 @@ using Random = UnityEngine.Random;
 
 public class FixedFogManager : MonoBehaviour
 {
-    //public GameObject[] fogPrefabs;
     public GameObject tilePrefab;
     public Map map;
     public GameObject Tiles;
@@ -23,35 +22,6 @@ public class FixedFogManager : MonoBehaviour
     {
         SpawnTiles();
     }
-
-    /*public void SetFixedFogBlock(List<Vector2Int> exceptCoords)
-    {
-        for (int i=0; i<fixedFogGrid.GetLength(0); i++)
-        {
-            for (int j=0; j<fixedFogGrid.GetLength(1); j++)
-            {
-                if (exceptCoords != null)
-                {
-                    if (exceptCoords.Contains(new Vector2Int(i, j)))
-                    {
-                        fixedFogGrid[i, j] = null;
-                        //tileGrid[i, j] = null;
-                        continue;
-                    }
-                }
-                else
-                {
-                    // set fog in array
-                    fixedFogGrid[i, j] = GetFixedFog();
-                    RevealFixedFogBlocks(new Vector2Int(i, j));
-                    fixedFogGrid[i, j].transform.parent = map.fogBlocks.transform;
-                }
-            }
-        }
-
-        // set on the map
-
-    }*/
 
     private void SpawnTiles()
     {
@@ -76,15 +46,6 @@ public class FixedFogManager : MonoBehaviour
         }
     }
 
-    /*private FixedFog GetFixedFog()
-    {
-        int r = Random.Range(0, fogPrefabs.Length);
-        GameObject fogObj = (GameObject)Instantiate(fogPrefabs[r]);
-        FixedFog fog = fogObj.GetComponent<FixedFog>();
-
-        return fog;
-    }*/
-
     private Tile GetTile()
     {
         GameObject tileObj = (GameObject)Instantiate(tilePrefab);
@@ -92,23 +53,6 @@ public class FixedFogManager : MonoBehaviour
 
         return tile;
     }
-
-
-    /*private void RevealFixedFogBlocks(Vector2Int coord)
-    {
-        float x = map.bottomLeftSquareTransform.transform.position.x + MapLayout.areaSize * (coord.x + 0.5f);
-        float z = map.bottomLeftSquareTransform.transform.position.z + MapLayout.areaSize * (coord.y + 0.5f);
-
-        Vector3 pos = new Vector3(x, map.bottomLeftSquareTransform.transform.position.y + MapLayout.oceanFogInterval, z);
-
-        fixedFogGrid[coord.x, coord.y].transform.position = pos;
-        fixedFogGrid[coord.x, coord.y].transform.localScale = new Vector3(MapLayout.areaSize, MapLayout.areaSize, MapLayout.areaSize);
-
-        Vector3 pos2 = new Vector3(x, map.bottomLeftSquareTransform.transform.position.y + MapLayout.oceanTileInterval, z);
-
-        tileGrid[coord.x, coord.y].transform.position = pos2;
-        tileGrid[coord.x, coord.y].transform.localScale = new Vector3(MapLayout.areaSize, MapLayout.areaSize, MapLayout.areaSize);
-    }*/
 
     internal void ClearFog(Vector2Int coords)
     {

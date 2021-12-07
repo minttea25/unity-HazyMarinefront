@@ -63,7 +63,22 @@ public class SubShip1 : Ship
             break;
         }
         return list;
+    }
 
+    public override void ActivateAbility()
+    {
+        //십자 포격
+        GameObject.Find("AttackBtnEventObject").GetComponent<AttackBtnEventListner>().SetAttackMode(true);
+
+        if (!GameObject.Find("AttackBtnEventObject").GetComponent<AttackBtnEventListner>().AttackMode)
+        {
+            Vector2Int curCoord = GameObject.Find("Map(Clone)").GetComponent<Map>().selectedCoord;
+
+            GameObject.Find("NetworkManager").GetComponent<PlayManager>().AttackServerRpc(curCoord.x + 1, curCoord.y);
+            GameObject.Find("NetworkManager").GetComponent<PlayManager>().AttackServerRpc(curCoord.x - 1, curCoord.y);
+            GameObject.Find("NetworkManager").GetComponent<PlayManager>().AttackServerRpc(curCoord.x, curCoord.y + 1);
+            GameObject.Find("NetworkManager").GetComponent<PlayManager>().AttackServerRpc(curCoord.x, curCoord.y - 1);
+        }
     }
 
     public override void ActivateAbility()

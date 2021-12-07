@@ -81,14 +81,6 @@ public class MapLayout : MonoBehaviour
         oceanTileInterval = OCEAN_TILE_INTERVAL;
     }
 
-   /* private void Awake()
-    {
-        mapSize = new Vector2Int(SIZE_X, SIZE_Y);
-        areaSize = AREA_SIZE;
-        spawnLeastInterval = SPAWN_LEAST_INTERVAL;
-        oceanFogInterval = OCEAN_FOG_INTERVAL;
-    }*/
-
     public static Team GetTeamByShipSymbol(ShipSymbol s)
     {
         if (s == ShipSymbol.NoShip)

@@ -1,11 +1,8 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using MLAPI;
 using MLAPI.Messaging;
-using MLAPI.NetworkVariable;
-using MLAPI.NetworkVariable.Collections;
+using MLAPI.Connection;
 
 public class PlayManager : NetworkBehaviour
 {
@@ -20,25 +17,24 @@ public class PlayManager : NetworkBehaviour
 
     [SerializeField] public NetworkObject MapInstance { get; private set; }
 
-    //public bool AttackMode { get; set; }
-    public bool crossAtk { get; set; }
+    [SerializeField] public bool IsTurn;
+
+    [SerializeField] private Dictionary<ShipSymbol, NetworkObject> SymbolNetworkObject = new Dictionary<ShipSymbol, NetworkObject>();
+
 
     private void Awake()
     {
+        IsTurn = false;
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        crossAtk = false;
         if (!IsOwner) { return; }
 
         if (NetworkManager.Singleton.IsServer)
         {
             SpawnMapServerRpc();
-
-            //SpawnShipRandomCoordServerRpc();
-
             SpawnFogServerRpc();
 
         }
@@ -61,7 +57,6 @@ public class PlayManager : NetworkBehaviour
             MapPrfab,
             new Vector3(0, 0, 0),
             Quaternion.identity);
-        //MapInstance.SpawnWithOwnership(OwnerClientId);
         MapInstance.Spawn();
     }
 
@@ -70,23 +65,79 @@ public class PlayManager : NetworkBehaviour
     {
         for (int k = 0; k < teamAShipPrefabs.Length; k++)
         {
-            Ship ship = createShip(k, true);
+            NetworkObject shipInstance = Instantiate(
+            teamAShipPrefabs[k],
+            new Vector3(0, 0, 0),
+            Quaternion.identity);
+            shipInstance.Spawn();
+
+            Ship ship = shipInstance.GetComponent<Ship>();
+            ship.team = Team.ATeam;
+            ship.Init();
 
             List<Vector3Int> temp = ship.GetPosibleShipSpawnCoordsList(MapInstance.GetComponent<Map>());
 
             // deep copy
-            placeShip(ship, temp);
+            ship.shipCoords.Clear();
+            ship.shipCoords = temp.ConvertAll(o => new Vector3Int(o.x, o.y, o.z));
+
+
+            MapInstance.GetComponent<Map>().ShipsInFieldList.Add(ship);
+
+            for (int i = 0; i < ship.shipCoords.Count; i++)
+            {
+                MapInstance.GetComponent<Map>().grid[ship.shipCoords[i].x, ship.shipCoords[i].y] = MapLayout.GetSymbolByShiptypeTeam(ship.shipType, ship.team);
+            }
+
+            ship.shipCenterPosition = ship.GetShipCenterPositionFromCoord(ship.shipCoords, MapInstance.GetComponent<Map>());
+
+            Vector3 pos = ship.shipCenterPosition;
+            ship.transform.position = pos;
+
+            ship.transform.parent = MapInstance.GetComponent<Map>().shipHolder.transform;
+            ship.transform.localScale = new Vector3(1, 1, 1);
+
+            shipInstance.tag = ship.Symbol.ToString();
+
+            SymbolNetworkObject.Add(ship.Symbol, shipInstance);
         }
 
         for (int k = 0; k < teamBShipPrefabs.Length; k++)
         {
-            Ship ship = createShip(k, false);
+            NetworkObject shipInstance = Instantiate(
+            teamBShipPrefabs[k],
+            new Vector3(0, 0, 0),
+            Quaternion.identity);
+            shipInstance.Spawn();
+
+            Ship ship = shipInstance.GetComponent<Ship>();
+            ship.team = Team.BTeam;
+            ship.Init();
 
             List<Vector3Int> temp = ship.GetPosibleShipSpawnCoordsList(MapInstance.GetComponent<Map>());
 
 
             // deep copy
-            placeShip(ship, temp);
+            ship.shipCoords.Clear();
+            ship.shipCoords = temp.ConvertAll(o => new Vector3Int(o.x, o.y, o.z));
+            MapInstance.GetComponent<Map>().ShipsInFieldList.Add(ship);
+
+            for (int i = 0; i < ship.shipCoords.Count; i++)
+            {
+                MapInstance.GetComponent<Map>().grid[ship.shipCoords[i].x, ship.shipCoords[i].y] = MapLayout.GetSymbolByShiptypeTeam(ship.shipType, ship.team);
+            }
+
+            ship.shipCenterPosition = ship.GetShipCenterPositionFromCoord(ship.shipCoords, MapInstance.GetComponent<Map>());
+
+            Vector3 pos = ship.shipCenterPosition;
+            ship.transform.position = pos;
+
+            ship.transform.parent = MapInstance.GetComponent<Map>().shipHolder.transform;
+            ship.transform.localScale = new Vector3(1, 1, 1);
+
+            shipInstance.tag = ship.Symbol.ToString();
+
+            SymbolNetworkObject.Add(ship.Symbol, shipInstance);
         }
     }
 
@@ -98,7 +149,6 @@ public class PlayManager : NetworkBehaviour
             teamAShipPrefabs[num],
             new Vector3(0, 0, 0),
             Quaternion.identity);
-            //shipInstance.SpawnWithOwnership(OwnerClientId);
             shipInstance.Spawn();
 
             Ship ship = shipInstance.GetComponent<Ship>();
@@ -113,7 +163,6 @@ public class PlayManager : NetworkBehaviour
             teamBShipPrefabs[num],
             new Vector3(0, 0, 0),
             Quaternion.identity);
-            //shipInstance.SpawnWithOwnership(OwnerClientId);
             shipInstance.Spawn();
 
             Ship ship = shipInstance.GetComponent<Ship>();
@@ -122,7 +171,6 @@ public class PlayManager : NetworkBehaviour
 
             return ship;
         }
-        
     }
 
     public void placeShip(Ship ship, List<Vector3Int> coords)
@@ -164,7 +212,6 @@ public class PlayManager : NetworkBehaviour
                     FogPrefab,
                     new Vector3(vx, y, vz),
                     Quaternion.identity);
-                //FogInstance.SpawnWithOwnership(OwnerClientId);
                 FogInstance.Spawn();
 
                 FixedFog fog = FogInstance.GetComponent<FixedFog>();
@@ -177,7 +224,7 @@ public class PlayManager : NetworkBehaviour
     [ServerRpc]
     public void SetMoveShipServerRpc(ShipSymbol s, DirectionType dirType, int amount)
     {
-        Debug.Log("SetMove: "+this.GetHashCode());
+        Debug.Log("SetMove: " + this.GetHashCode());
 
         bool exist = NetworkManager.Singleton.ConnectedClients[0].PlayerObject.GetComponent<PlayManager>().MapInstance.GetComponent<Map>().SetSelectedShip(s);
         if (exist)
@@ -195,8 +242,6 @@ public class PlayManager : NetworkBehaviour
         Map map = NetworkManager.Singleton.ConnectedClients[0].PlayerObject.GetComponent<PlayManager>().MapInstance.GetComponent<Map>();
 
         map.fixedFogManager.ClearFog(new Vector2Int(x, y));
-
-        //map.AttackCoord(new Vector2Int(x, y));
         AttackCoordServerRpc(x, y);
     }
 
@@ -207,12 +252,14 @@ public class PlayManager : NetworkBehaviour
 
         bool exist = map.SetSelectedShip(map.GetShipSymbolByCoords(new Vector2Int(x, y)));
         if (exist)
-        {
+        { 
+            // ERROR
+            // 아래 구문에서 동일한 지점 공격시 nullpoint exception 발생!!
+
             for (int i = 0; i < map.GetSelectedShip().shipCoords.Count; i++)
             {
                 if (map.GetSelectedShip().shipCoords[i].x == x && map.GetSelectedShip().shipCoords[i].y == y)
                 {
-                    //map.GetSelectedShip().DamageShip(i);
                     DamageShipServerRpc(i);
                     Debug.Log("damaged ship : Vector(" + x + ", " + y + ")");
                 }
@@ -243,6 +290,26 @@ public class PlayManager : NetworkBehaviour
                 Instantiate(BigExplosionPrefab, ship.transform.position, Quaternion.identity).Spawn();
                 Debug.Log("ship destroyed");
 
+                // list 에서 파괴된 배 삭제
+                bool removed = map.RemoveShipInList(ship.Symbol);
+                if (removed)
+                {
+                    Debug.Log(ship.Symbol + " is removed in list");
+                }
+                else
+                {
+                    Debug.Log("Remove ship in list error...");
+                }
+
+                if (NetworkManager.Singleton.IsServer)
+                {
+                    Destroy(GameObject.FindGameObjectWithTag(ship.Symbol.ToString()));
+                }
+                else
+                {
+                    SymbolNetworkObject.TryGetValue(ship.Symbol, out NetworkObject obj);
+                    obj.Despawn();
+                }
             }
         }
         else
@@ -251,7 +318,70 @@ public class PlayManager : NetworkBehaviour
             Instantiate(ExplosionPrefab, curCoord, Quaternion.identity).Spawn();
         }
         ship.shipCoords[index] = new Vector3Int(ship.shipCoords[index].x, ship.shipCoords[index].y, ship.shipCoords[index].z + 1);
+
+        CheckGameOver();
     }
+
+    public void CheckGameOver()
+    {
+        Map map = NetworkManager.Singleton.ConnectedClients[0].PlayerObject.GetComponent<PlayManager>().MapInstance.GetComponent<Map>();
+
+        foreach(var m in map.ShipsInFieldList)
+        {
+            Debug.Log("List in : " + m.Symbol);
+        }
+
+        bool ATeamShips = map.IsThereLeftShip(Team.ATeam);
+        bool BTeamShips = map.IsThereLeftShip(Team.BTeam);
+
+        if (ATeamShips && !BTeamShips)
+        {
+            WinLoseEvent(1);
+        }
+        else if (!ATeamShips && BTeamShips)
+        {
+            WinLoseEvent(2);
+        }
+        else if (map.ShipsInFieldList.Count == 0)
+        {
+            WinLoseEvent(0);
+        }
+    }
+
+    // 0: 무승부
+    // 1: ATeam 승리
+    // 2: BTeam 승리
+    public void WinLoseEvent(int winLose) 
+    {
+        if (winLose < 0 || winLose > 2)
+        {
+            Debug.Log("argument error in WinLoseEventServerRpc");
+            return;
+        }
+        else
+        {
+            ulong localClientId = NetworkManager.Singleton.LocalClientId;
+
+            if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(localClientId, out NetworkClient networkClient))
+            {
+                return;
+            }
+
+            if (!networkClient.PlayerObject.TryGetComponent<TurnManager>(out var TurnManager))
+            {
+                return;
+            }
+
+            // who win?
+            TurnManager.SetWinLose(winLose);
+
+            // GameOver Turn
+            TurnManager.SetGameState(4);
+        }
+    }
+
+
+
 
     // Update is called once per frame
     void Update()

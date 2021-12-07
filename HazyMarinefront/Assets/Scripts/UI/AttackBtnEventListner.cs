@@ -13,11 +13,8 @@ public class AttackBtnEventListner : MonoBehaviour
 
     public bool AttackMode;
 
-    // 일단 안개 클릭 시마다 공격 가능하도록 (나중에 서버에서 제어하는 방식으로 변경 필요)
     public void SetAttack()
     {
-        Debug.Log(AttackMode);
-
         if (AttackMode)
         {
             attackText.text = "ATTACK";
@@ -28,17 +25,6 @@ public class AttackBtnEventListner : MonoBehaviour
             attackText.text = "CANCEL";
             AttackMode = true;
         }
-        // attack 이후 cancel -> attack으로 다시 바꿔주는 기능 아직 x
-        /*if (!GameObject.Find("Map(Clone)").GetComponent<Map>().Attack)
-        {
-            GameObject.Find("Map(Clone)").GetComponent<Map>().Attack = true;
-            attackText.text = "CANCEL";
-        }
-        else
-        {
-            GameObject.Find("Map(Clone)").GetComponent<Map>().Attack = false;
-            attackText.text = "ATTACK";
-        }*/
     }
 
     public void SetAttackMode(bool atk)

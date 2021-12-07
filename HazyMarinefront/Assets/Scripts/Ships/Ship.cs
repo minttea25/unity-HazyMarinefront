@@ -21,9 +21,6 @@ public abstract class Ship : NetworkBehaviour
     public int shipHealth { get; set; }
     public bool isDestroyed { get; set; }
 
-    private bool RevealedToA { get; set; }
-    private bool RevealedToB { get; set; }
-
     // 로직에 필요 요소
     public List<Vector2Int> availableArea;
     private MaterialSetter materialSetter;
@@ -34,7 +31,6 @@ public abstract class Ship : NetworkBehaviour
 
     public abstract Vector3 GetShipCenterPositionFromCoord(List<Vector3Int> coords, Map map);
     public abstract List<Vector3Int> GetPosibleShipSpawnCoordsList(Map map);
-
     public abstract void ActivateAbility();
 
     public void Init()
@@ -98,13 +94,6 @@ public abstract class Ship : NetworkBehaviour
         controller.MoveTo(transform, shipCenterPosition);
     }
 
-    // 해당 좌표로 움직일 수 있는지 여부
-    public bool CanMoveTo(Vector2Int coord)
-    {
-        //TODO: 임시로 true
-        return true;
-    }
-
     // 배의 칸수(크기) 반환
     public int GetShipSize()
     {
@@ -120,8 +109,6 @@ public abstract class Ship : NetworkBehaviour
         int yAxis = axisValue[1];
 
         Debug.Log(xAxis + ", " + yAxis);
-
-
 
         List<Vector3Int> newCoords = new List<Vector3Int>();
         for (int i = 0; i < shipCoords.Count; i++)
@@ -185,35 +172,6 @@ public abstract class Ship : NetworkBehaviour
         return true;
     }
 
-    public void DamageShip(int index)
-    {
-        if (shipCoords[index].z == 0)
-            shipHealth--;
-        if (shipHealth == 0)
-        {
-            if (!this.isDestroyed)
-            {
-                this.isDestroyed = true;
-                Instantiate(BigExplosion, gameObject.transform.position, Quaternion.identity).Spawn();
-                //Destroy(GameObject.Find("BigExplosion(Clone)"), 1f);
-                Debug.Log("ship destroyed");
-            }
-            
-        }
-        else
-        {
-            var curCoord = new Vector3((float)(shipCoords[index].x - 4.5), 2f, (float)(shipCoords[index].y - 4.5));
-            NetworkObject explosionIst = Instantiate(Explosion, curCoord, Quaternion.identity);
-            explosionIst.Spawn();
-            //Debug.Log("coord: " + gameObject.transform.position);
-            //Destroy(GameObject.Find("SmallExplosion(Clone)"), 1f);
-        }
-        shipCoords[index] = new Vector3Int(shipCoords[index].x, shipCoords[index].y, shipCoords[index].z + 1);
-        //prefab 으로 배 색상 변경 (붉은색 혹은 검은색/피탄 리소스 있으면 적용해보기)
-        //이펙트 추가?
-
-    }
-
     public int[] GetDirectionAmount(DirectionType dirType, int amount)
     {
         int xAxis = 0;
@@ -252,20 +210,4 @@ public abstract class Ship : NetworkBehaviour
             shipCoords.Add(new Vector3Int(newCoords[i].x, newCoords[i].y, newCoords[i].z));
         }
     }
-
-    // 위치가 노출 되었을 경우 상태 변경
-    public void SetRevealedState(Team ToTeam, bool visible)
-    {
-        switch (ToTeam) {
-            case Team.ATeam:
-                RevealedToA = visible;
-                break;
-            case Team.BTeam:
-                RevealedToB = visible;
-                break;
-            default:
-                return;
-        }
-    }
-
 }
