@@ -18,6 +18,8 @@ public class SubShip1 : Ship
 
         abilityCost = MapLayout.subship1AbilityCost;
 
+        visibility = false;
+
     }
 
     public override Vector3 GetShipCenterPositionFromCoord(List<Vector3Int> coords, Map map)

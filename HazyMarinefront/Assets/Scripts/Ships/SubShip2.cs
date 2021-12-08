@@ -14,6 +14,8 @@ public class SubShip2 : Ship
         shipType = ShipType.SubShip2;
 
         abilityCost = MapLayout.subship2AbilityCost;
+
+        visibility = false;
     }
 
     public override Vector3 GetShipCenterPositionFromCoord(List<Vector3Int> coords, Map map)

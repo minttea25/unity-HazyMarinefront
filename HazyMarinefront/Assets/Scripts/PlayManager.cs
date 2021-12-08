@@ -3,6 +3,8 @@ using UnityEngine;
 using MLAPI;
 using MLAPI.Messaging;
 using MLAPI.Connection;
+using MLAPI.NetworkVariable;
+using System;
 
 public class PlayManager : NetworkBehaviour
 {
@@ -17,14 +19,22 @@ public class PlayManager : NetworkBehaviour
 
     [SerializeField] public NetworkObject MapInstance { get; private set; }
 
-    [SerializeField] public bool IsTurn;
+    [SerializeField] private Dictionary<ShipSymbol, NetworkObject> SymbolNetworkInstance = new Dictionary<ShipSymbol, NetworkObject>();
 
-    [SerializeField] private Dictionary<ShipSymbol, NetworkObject> SymbolNetworkObject = new Dictionary<ShipSymbol, NetworkObject>();
+    [SerializeField] public NetworkVariableBool AMainShipVisibility = new NetworkVariableBool(false);
+    [SerializeField] public NetworkVariableBool ASubShip1Visibility = new NetworkVariableBool(false);
+    [SerializeField] public NetworkVariableBool ASubShip2Visibility = new NetworkVariableBool(false);
+    [SerializeField] public NetworkVariableBool ASubShip3Visibility = new NetworkVariableBool(false);
 
+    [SerializeField] public NetworkVariableBool BMainShipVisibility = new NetworkVariableBool(false);
+    [SerializeField] public NetworkVariableBool BSubShip1Visibility = new NetworkVariableBool(false);
+    [SerializeField] public NetworkVariableBool BSubShip2Visibility = new NetworkVariableBool(false);
+    [SerializeField] public NetworkVariableBool BSubShip3Visibility = new NetworkVariableBool(false);
+
+    [SerializeField] public NetworkVariableBool IsShipSpawned = new NetworkVariableBool(false);
 
     private void Awake()
     {
-        IsTurn = false;
     }
 
     // Start is called before the first frame update
@@ -36,7 +46,6 @@ public class PlayManager : NetworkBehaviour
         {
             SpawnMapServerRpc();
             SpawnFogServerRpc();
-
         }
         else
         {
@@ -73,6 +82,7 @@ public class PlayManager : NetworkBehaviour
 
             Ship ship = shipInstance.GetComponent<Ship>();
             ship.team = Team.ATeam;
+            ship.visibility = false;
             ship.Init();
 
             List<Vector3Int> temp = ship.GetPosibleShipSpawnCoordsList(MapInstance.GetComponent<Map>());
@@ -99,9 +109,9 @@ public class PlayManager : NetworkBehaviour
 
             shipInstance.tag = ship.Symbol.ToString();
 
-            MaterialSetter.ChangeAlpha(shipInstance.GetComponent<Renderer>().material, 1.0f);
+            SymbolNetworkInstance.Add(ship.Symbol, shipInstance);
 
-            SymbolNetworkObject.Add(ship.Symbol, shipInstance);
+            ChangeAlphaValueShip(ship.Symbol, MapLayout.spawnedShipAlphaValue);
         }
 
         for (int k = 0; k < teamBShipPrefabs.Length; k++)
@@ -114,6 +124,7 @@ public class PlayManager : NetworkBehaviour
 
             Ship ship = shipInstance.GetComponent<Ship>();
             ship.team = Team.BTeam;
+            ship.visibility = false;
             ship.Init();
 
             List<Vector3Int> temp = ship.GetPosibleShipSpawnCoordsList(MapInstance.GetComponent<Map>());
@@ -139,10 +150,12 @@ public class PlayManager : NetworkBehaviour
 
             shipInstance.tag = ship.Symbol.ToString();
 
-            MaterialSetter.ChangeAlpha(shipInstance.GetComponent<Renderer>().material, 1.0f);
+            SymbolNetworkInstance.Add(ship.Symbol, shipInstance);
 
-            SymbolNetworkObject.Add(ship.Symbol, shipInstance);
+            ChangeAlphaValueShip(ship.Symbol, MapLayout.spawnedShipAlphaValue);
         }
+
+        IsShipSpawned.Value = true;
     }
 
     public Ship createShip(int num, bool shipType)
@@ -259,6 +272,7 @@ public class PlayManager : NetworkBehaviour
         { 
             // ERROR
             // 아래 구문에서 동일한 지점 공격시 nullpoint exception 발생!!
+            // 충돌 시에도 같은 현상 발생
 
             for (int i = 0; i < map.GetSelectedShip().shipCoords.Count; i++)
             {
@@ -311,7 +325,7 @@ public class PlayManager : NetworkBehaviour
                 }
                 else
                 {
-                    SymbolNetworkObject.TryGetValue(ship.Symbol, out NetworkObject obj);
+                    SymbolNetworkInstance.TryGetValue(ship.Symbol, out NetworkObject obj);
                     obj.Despawn();
                 }
             }
@@ -320,6 +334,20 @@ public class PlayManager : NetworkBehaviour
         {
             var curCoord = new Vector3((float)(ship.shipCoords[index].x - 4.5), 2f, (float)(ship.shipCoords[index].y - 4.5));
             Instantiate(ExplosionPrefab, curCoord, Quaternion.identity).Spawn();
+
+            // reveal ship
+            if (!ship.visibility)
+            {
+                ShipSymbol ss = MapLayout.GetSymbolByShiptypeTeam(ship.shipType, ship.team);
+                Debug.Log("ss = " + ss);
+
+                ChangeValueVisiblity(ship.Symbol, true);
+
+                ship.visibility = true;
+
+                Debug.Log("REVEAL SHIP: " + ss);
+            }
+
         }
         ship.shipCoords[index] = new Vector3Int(ship.shipCoords[index].x, ship.shipCoords[index].y, ship.shipCoords[index].z + 1);
 
@@ -329,11 +357,6 @@ public class PlayManager : NetworkBehaviour
     public void CheckGameOver()
     {
         Map map = NetworkManager.Singleton.ConnectedClients[0].PlayerObject.GetComponent<PlayManager>().MapInstance.GetComponent<Map>();
-
-        foreach(var m in map.ShipsInFieldList)
-        {
-            Debug.Log("List in : " + m.Symbol);
-        }
 
         bool ATeamShips = map.IsThereLeftShip(Team.ATeam);
         bool BTeamShips = map.IsThereLeftShip(Team.BTeam);
@@ -384,12 +407,208 @@ public class PlayManager : NetworkBehaviour
         }
     }
 
-
-
-
-    // Update is called once per frame
-    void Update()
+    [ServerRpc]
+    private void ChangeAlphaValueShipInServerServerRpc(ShipSymbol ss, float alphaValue)
     {
+        ulong localClientId = NetworkManager.Singleton.LocalClientId;
+
+        if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(localClientId, out NetworkClient networkClient))
+        {
+            return;
+        }
+
+        if (!networkClient.PlayerObject.TryGetComponent<PlayManager>(out var playManager))
+        {
+            return;
+        }
+
+        playManager.SymbolNetworkInstance.TryGetValue(ss, out NetworkObject shipInstance);
+
+        if (shipInstance == null)
+        {
+            Debug.Log("NULL VALUE instance - ERROR");
+            return;
+        }
+
+        MaterialSetter.ChangeAlpha(shipInstance.transform.Find(MapLayout.shipUpperComponentName).GetComponent<Renderer>().material, alphaValue);
+        MaterialSetter.ChangeAlpha(shipInstance.transform.Find(MapLayout.shipDownComponentName).GetComponent<Renderer>().material, alphaValue);
+
     }
 
+    private void OnEnable()
+    {
+        AMainShipVisibility.OnValueChanged += AMainChanged;
+        ASubShip1Visibility.OnValueChanged += ASub1Changed;
+        ASubShip2Visibility.OnValueChanged += ASub2Changed;
+        ASubShip3Visibility.OnValueChanged += ASub3Changed;
+
+        BMainShipVisibility.OnValueChanged += BMainChanged;
+        BSubShip1Visibility.OnValueChanged += BSub1Changed;
+        BSubShip2Visibility.OnValueChanged += BSub2Changed;
+        BSubShip3Visibility.OnValueChanged += BSub3Changed;
+
+        IsShipSpawned.OnValueChanged += IsShipSpawnedValueChanged;
+
+    }
+
+    private void IsShipSpawnedValueChanged(bool previousValue, bool newValue)
+    {
+        if (!newValue) { return; }
+        if (NetworkManager.Singleton.IsServer) { return; }
+
+        ChangeAlphaValueShip(ShipSymbol.A0, MapLayout.spawnedShipAlphaValue);
+        ChangeAlphaValueShip(ShipSymbol.A1, MapLayout.spawnedShipAlphaValue);
+        ChangeAlphaValueShip(ShipSymbol.A2, MapLayout.spawnedShipAlphaValue);
+        ChangeAlphaValueShip(ShipSymbol.A3, MapLayout.spawnedShipAlphaValue);
+
+        ChangeAlphaValueShip(ShipSymbol.B0, MapLayout.spawnedShipAlphaValue);
+        ChangeAlphaValueShip(ShipSymbol.B1, MapLayout.spawnedShipAlphaValue);
+        ChangeAlphaValueShip(ShipSymbol.B2, MapLayout.spawnedShipAlphaValue);
+        ChangeAlphaValueShip(ShipSymbol.B3, MapLayout.spawnedShipAlphaValue);
+    }
+
+    private void BSub3Changed(bool previousValue, bool newValue)
+    {
+        if (!newValue) { return; }
+        ChangeAlphaValueShip(ShipSymbol.B3, MapLayout.shipRevealedAlphaValue);
+    }
+
+    private void BSub2Changed(bool previousValue, bool newValue)
+    {
+        if (!newValue) { return; }
+        ChangeAlphaValueShip(ShipSymbol.B2, MapLayout.shipRevealedAlphaValue);
+    }
+
+    private void BSub1Changed(bool previousValue, bool newValue)
+    {
+        if (!newValue) { return; }
+        ChangeAlphaValueShip(ShipSymbol.B1, MapLayout.shipRevealedAlphaValue);
+    }
+
+    private void BMainChanged(bool previousValue, bool newValue)
+    {
+        if (!newValue) { return; }
+        ChangeAlphaValueShip(ShipSymbol.B0, MapLayout.shipRevealedAlphaValue);
+    }
+
+    private void ASub3Changed(bool previousValue, bool newValue)
+    {
+        if (!newValue) { return; }
+        ChangeAlphaValueShip(ShipSymbol.A3, MapLayout.shipRevealedAlphaValue);
+    }
+
+    private void ASub2Changed(bool previousValue, bool newValue)
+    {
+        if (!newValue) { return; }
+        ChangeAlphaValueShip(ShipSymbol.A2, MapLayout.shipRevealedAlphaValue);
+    }
+
+    private void ASub1Changed(bool previousValue, bool newValue)
+    {
+        if (!newValue) { return; }
+        ChangeAlphaValueShip(ShipSymbol.A1, MapLayout.shipRevealedAlphaValue);
+    }
+
+    private void AMainChanged(bool previousValue, bool newValue)
+    {
+        if (!newValue) { return; }
+        ChangeAlphaValueShip(ShipSymbol.A0, MapLayout.shipRevealedAlphaValue);
+    }
+
+    private void ChangeAlphaValueShip(ShipSymbol ss, float alphaValue)
+    {
+        if (NetworkManager.Singleton.IsServer)
+        {
+            ChangeAlphaValueShipInServerServerRpc(ss, alphaValue);
+        }
+        else
+        {
+            ChangeAlphaValueShipInClient(ss, alphaValue);
+        }
+    }
+
+    private void ChangeAlphaValueShipInClient(ShipSymbol ss, float alphaValue)
+    {
+        if (NetworkManager.Singleton.IsServer) { return; }
+
+        string name = "";
+        switch (ss)
+        {
+            case ShipSymbol.A0:
+                name = MapLayout.aMainshipNameClient;
+                break;
+            case ShipSymbol.A1:
+                name = MapLayout.aSubship1NameClient;
+                break;
+            case ShipSymbol.A2:
+                name = MapLayout.aSubship2NameClient;
+                break;
+            case ShipSymbol.A3:
+                name = MapLayout.aSubship3NameClient;
+                break;
+            case ShipSymbol.B0:
+                name = MapLayout.bMainshipNameClient;
+                break;
+            case ShipSymbol.B1:
+                name = MapLayout.bSubship1NameClient;
+                break;
+            case ShipSymbol.B2:
+                name = MapLayout.bSubship2NameClient;
+                break;
+            case ShipSymbol.B3:
+                name = MapLayout.bSubship3NameClient;
+                break;
+        }
+
+        MaterialSetter.ChangeAlpha(GameObject.Find(name).transform.Find(MapLayout.shipUpperComponentName).GetComponent<Renderer>().material, alphaValue);
+        MaterialSetter.ChangeAlpha(GameObject.Find(name).transform.Find(MapLayout.shipDownComponentName).GetComponent<Renderer>().material, alphaValue);
+
+    }
+
+    private void OnDisable()
+    {
+        AMainShipVisibility.OnValueChanged -= AMainChanged;
+        ASubShip1Visibility.OnValueChanged -= ASub1Changed;
+        ASubShip2Visibility.OnValueChanged -= ASub2Changed;
+        ASubShip3Visibility.OnValueChanged -= ASub3Changed;
+
+        BMainShipVisibility.OnValueChanged -= BMainChanged;
+        BSubShip1Visibility.OnValueChanged -= BSub1Changed;
+        BSubShip2Visibility.OnValueChanged -= BSub2Changed;
+        BSubShip3Visibility.OnValueChanged -= BSub3Changed;
+
+        IsShipSpawned.OnValueChanged -= IsShipSpawnedValueChanged;
+    }
+
+    private void ChangeValueVisiblity(ShipSymbol ss, bool value)
+    {
+        switch (ss)
+        {
+            case ShipSymbol.A0:
+                //AMainShipVisibility.Value = value;
+                break;
+            case ShipSymbol.A1:
+                ASubShip1Visibility.Value = value;
+                break;
+            case ShipSymbol.A2:
+                ASubShip2Visibility.Value = value;
+                break;
+            case ShipSymbol.A3:
+                ASubShip3Visibility.Value = value;
+                break;
+            case ShipSymbol.B0:
+                //BMainShipVisibility.Value = value;
+                break;
+            case ShipSymbol.B1:
+                BSubShip1Visibility.Value = value;
+                break;
+            case ShipSymbol.B2:
+                BSubShip2Visibility.Value = value;
+                break;
+            case ShipSymbol.B3:
+                BSubShip3Visibility.Value = value;
+                break;
+
+        }
+    }
 }
