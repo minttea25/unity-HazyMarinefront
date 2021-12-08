@@ -11,6 +11,8 @@ public class SubShip3 : Ship
         shipHealth = shipSizeX * shipSizeY;
 
         shipType = ShipType.SubShip3;
+
+        abilityCost = MapLayout.subship3AbilityCost;
     }
 
     public override Vector3 GetShipCenterPositionFromCoord(List<Vector3Int> coords, Map map)

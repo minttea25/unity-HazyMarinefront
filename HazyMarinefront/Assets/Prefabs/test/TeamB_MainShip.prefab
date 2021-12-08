@@ -146,8 +146,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   availableArea: []
-  Explosion: {fileID: 1828176872806910, guid: 64891a0eb28db934898420d80ca07cb3, type: 3}
-  BigExplosion: {fileID: 1121192042590650, guid: e1b08032bec16ba4eb1ae23cbd572664,
+  AttackedParticlePrefab: {fileID: 3694808153188650092, guid: ec47cdce6cbf28a45823f7d5926fd1b1,
     type: 3}
 --- !u!114 &5534445129423513407
 MonoBehaviour:
@@ -196,7 +195,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 12f8d02a41bd0a240a3e1bbc150c8dde, type: 2}
+  - {fileID: 2100000, guid: dfae2a3ef52bf7a40ac1c6ed4ad35ae2, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

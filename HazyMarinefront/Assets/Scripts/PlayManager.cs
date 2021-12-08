@@ -99,6 +99,8 @@ public class PlayManager : NetworkBehaviour
 
             shipInstance.tag = ship.Symbol.ToString();
 
+            MaterialSetter.ChangeAlpha(shipInstance.GetComponent<Renderer>().material, 1.0f);
+
             SymbolNetworkObject.Add(ship.Symbol, shipInstance);
         }
 
@@ -136,6 +138,8 @@ public class PlayManager : NetworkBehaviour
             ship.transform.localScale = new Vector3(1, 1, 1);
 
             shipInstance.tag = ship.Symbol.ToString();
+
+            MaterialSetter.ChangeAlpha(shipInstance.GetComponent<Renderer>().material, 1.0f);
 
             SymbolNetworkObject.Add(ship.Symbol, shipInstance);
         }

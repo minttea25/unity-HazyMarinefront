@@ -5,6 +5,8 @@ using MLAPI;
 using MLAPI.NetworkVariable;
 using MLAPI.Messaging;
 using System;
+using UnityEngine.UI;
+using MLAPI.Connection;
 
 public class TurnManager : NetworkBehaviour
 {
@@ -18,13 +20,13 @@ public class TurnManager : NetworkBehaviour
     public NetworkVariableInt WinLose;
 
     public bool UIAvailable;
-
-
+    public int cost;
 
     private void Awake()
     {
         GameState.Value = 0;
         UIAvailable = false;
+        cost = MapLayout.startCost;
     }
 
     private void OnEnable()
@@ -50,6 +52,8 @@ public class TurnManager : NetworkBehaviour
 
     private void OnGameStateChanged(int previousValue, int newValue)
     {
+        if (newValue == -1) { return; }
+        Debug.Log(previousValue + " -> " + newValue + " - " + System.DateTime.Now);
         switch (newValue)
         {
             case 0:
@@ -57,6 +61,8 @@ public class TurnManager : NetworkBehaviour
                 break;
             case 1:
                 Debug.Log("Ready to start game...");
+                GameObject.Find("EventSystem").GetComponent<HostClientNetworkManager>().SetActiveCostUI(true);
+                GameObject.Find("CostText").GetComponent<Text>().text = MapLayout.startCost.ToString();
                 break;
             case 2:
                 Debug.Log("It's Host Turn.");
@@ -76,7 +82,7 @@ public class TurnManager : NetworkBehaviour
             default:
                 break;
         }
-        Debug.Log(previousValue + " -> " + newValue + " - " + System.DateTime.Now);
+        
     }
 
     private void GameOver()
@@ -130,7 +136,7 @@ public class TurnManager : NetworkBehaviour
     {
         if (NetworkManager.Singleton.IsServer)
         {
-            //GameObject.Find("EventSystem").GetComponent<EndTurnBtnEventListener>().SetActiveTurnEndBtn(true);
+            AddCost(MapLayout.turnCost);
             SetUIShow(true);
         }
         else
@@ -143,7 +149,7 @@ public class TurnManager : NetworkBehaviour
     {
         if (!NetworkManager.Singleton.IsServer)
         {
-            //GameObject.Find("EventSystem").GetComponent<EndTurnBtnEventListener>().SetActiveTurnEndBtn(true);
+            AddCost(MapLayout.turnCost);
             SetUIShow(true);
         }
         else
@@ -193,5 +199,29 @@ public class TurnManager : NetworkBehaviour
     {
         GameState.Value = -1;
         GameState.Value = gameState;
+    }
+
+    private void AddCost(int v)
+    {
+        ulong localClientId = NetworkManager.Singleton.LocalClientId;
+
+        if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(localClientId, out NetworkClient networkClient))
+        {
+            return;
+        }
+
+        if (!networkClient.PlayerObject.TryGetComponent<TurnManager>(out var TurnManager))
+        {
+            return;
+        }
+        TurnManager.cost += v;
+
+        //cost += v;
+        GameObject.Find("CostText").GetComponent<Text>().text = TurnManager.cost.ToString();
+    }
+
+
+    private void Update()
+    {
     }
 }
