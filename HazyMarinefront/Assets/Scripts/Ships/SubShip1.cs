@@ -1,3 +1,4 @@
+using MLAPI;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,6 +15,9 @@ public class SubShip1 : Ship
         shipHealth = shipSizeX * shipSizeY;
 
         shipType = ShipType.SubShip1;
+
+        abilityCost = MapLayout.subship1AbilityCost;
+
     }
 
     public override Vector3 GetShipCenterPositionFromCoord(List<Vector3Int> coords, Map map)

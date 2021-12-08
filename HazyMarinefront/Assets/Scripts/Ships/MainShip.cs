@@ -13,6 +13,8 @@ public class MainShip : Ship
         shipHealth = shipSizeX * shipSizeY;
 
         shipType = ShipType.MainShip;
+
+        abilityCost = MapLayout.mainshipAbilityCost;
     }
 
     public override Vector3 GetShipCenterPositionFromCoord(List<Vector3Int> coords, Map map)
