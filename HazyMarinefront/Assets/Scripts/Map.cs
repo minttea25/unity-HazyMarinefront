@@ -14,8 +14,10 @@ public class Map : NetworkBehaviour
 
     public GameObject shipHolder;
 
-    // 기준 좌표
+    // ???? ????
     public Transform bottomLeftSquareTransform;
+    public Transform topLeftSquareTransform;
+    public Transform RaderTransform;
 
     public GameObject fogBlocks; 
 
@@ -65,7 +67,7 @@ public class Map : NetworkBehaviour
         }
     }
 
-    // 이동에 성공 시 true 반환
+    // ?????? ???? ?? true ????
     public bool MoveShip(DirectionType dirType, int amount)
     {
         if (selectedShip == null || selectedShip.isDestroyed)
@@ -89,12 +91,12 @@ public class Map : NetworkBehaviour
         for (int i = 0; i < selectedShip.shipCoords.Count; i++)
         {
             Debug.Log("count: " + i + "/" + grid[selectedShip.shipCoords[i].x + xAxis, selectedShip.shipCoords[i].y + yAxis]);
-            //여러개 동시에 충돌하는 경우 보완 필요 
+            //?????? ?????? ???????? ???? ???? ???? 
             if (grid[selectedShip.shipCoords[i].x + xAxis, selectedShip.shipCoords[i].y + yAxis] != ShipSymbol.NoShip &&
                 grid[selectedShip.shipCoords[i].x + xAxis, selectedShip.shipCoords[i].y + yAxis] != ShipSymbol.NM &&
                 grid[selectedShip.shipCoords[i].x + xAxis, selectedShip.shipCoords[i].y + yAxis] != selectedShip.Symbol)
             {
-                Debug.Log("충돌");
+                Debug.Log("????");
 
                 ulong localClientId = NetworkManager.Singleton.LocalClientId;
 
@@ -182,7 +184,7 @@ public class Map : NetworkBehaviour
                 int x = coord.x + moveX + i;
                 int y = coord.y + moveY + j;
 
-                // 배열 bound 확인
+                // ???? bound ????
                 if (x < 0 || y < 0 || x > MapLayout.mapSize.x - 1 || y > MapLayout.mapSize.y - 1)
                 {
                     continue;

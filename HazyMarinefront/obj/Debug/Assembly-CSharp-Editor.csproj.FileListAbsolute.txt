@@ -1,0 +1,2 @@
+/Users/yelimoh/Desktop/gameprogramming/ver5/unity-HazyMarinefront/HazyMarinefront/obj/Debug/Assembly-CSharp-Editor.csproj.AssemblyReference.cache
+/Users/yelimoh/Desktop/gameprogramming/ver5/unity-HazyMarinefront/HazyMarinefront/obj/Debug/Assembly-CSharp-Editor.csproj.CoreCompileInputs.cache

@@ -49,3 +49,6 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Rader
+    uniqueID: 4096980507
+    locked: 0

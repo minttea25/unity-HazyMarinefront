@@ -49,13 +49,13 @@ public class Player : NetworkBehaviour
             if (NetworkManager.Singleton.IsServer)
             {
                 SetTeamServerRpc(Team.ATeam);
-                transform.position = new Vector3(6, 3, 0);
-                Position.Value = new Vector3(6, 3, 0);
+                transform.position = new Vector3( -6.5f, 3, -3);
+                Position.Value = new Vector3( -6.5f, 3, -3);
             }
             else
             {
                 SetTeamServerRpc(Team.BTeam);
-                SetPositionServerRpc(new Vector3(6, 3, -2));
+                SetPositionServerRpc(new Vector3( 0 , 3, -3));
             }
         }
         

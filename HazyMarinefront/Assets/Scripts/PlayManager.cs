@@ -198,9 +198,10 @@ public class PlayManager : NetworkBehaviour
     [ServerRpc]
     private void SpawnFogServerRpc()
     {
-        float x = MapInstance.GetComponent<Map>().bottomLeftSquareTransform.transform.position.x;
-        float y = MapInstance.GetComponent<Map>().bottomLeftSquareTransform.transform.position.y + MapLayout.oceanFogInterval;
-        float z = MapInstance.GetComponent<Map>().bottomLeftSquareTransform.transform.position.z;
+
+        float x = MapInstance.GetComponent<Map>().topLeftSquareTransform.transform.position.x;
+        float y = MapInstance.GetComponent<Map>().topLeftSquareTransform.transform.position.y + MapLayout.oceanFogInterval;
+        float z = MapInstance.GetComponent<Map>().topLeftSquareTransform.transform.position.z;
 
         for (int i = 0; i < MapLayout.mapSize.x; i++)
         {
@@ -254,7 +255,7 @@ public class PlayManager : NetworkBehaviour
         if (exist)
         { 
             // ERROR
-            // 아래 구문에서 동일한 지점 공격시 nullpoint exception 발생!!
+            // ???? ???????? ?????? ???? ?????? nullpoint exception ????!!
 
             for (int i = 0; i < map.GetSelectedShip().shipCoords.Count; i++)
             {
@@ -290,7 +291,7 @@ public class PlayManager : NetworkBehaviour
                 Instantiate(BigExplosionPrefab, ship.transform.position, Quaternion.identity).Spawn();
                 Debug.Log("ship destroyed");
 
-                // list 에서 파괴된 배 삭제
+                // list ???? ?????? ?? ????
                 bool removed = map.RemoveShipInList(ship.Symbol);
                 if (removed)
                 {
@@ -348,9 +349,9 @@ public class PlayManager : NetworkBehaviour
         }
     }
 
-    // 0: 무승부
-    // 1: ATeam 승리
-    // 2: BTeam 승리
+    // 0: ??????
+    // 1: ATeam ????
+    // 2: BTeam ????
     public void WinLoseEvent(int winLose) 
     {
         if (winLose < 0 || winLose > 2)
