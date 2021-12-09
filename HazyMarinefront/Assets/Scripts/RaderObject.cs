@@ -47,21 +47,22 @@ public class RaderObject : MonoBehaviour
 
         for (int i = 0; i < textGrids.GetLength(0) ; i++)
         {
-            float x = standard.x + distList[i].x;
-            float y = standard.y + distList[i].z;
-            float z = 0;
-            Debug.Log(shipType + " , " + team + "'s  " + i + "th time : (" + x + " , " + y + " , " + z + ") ");
-
-
+            
             if ( i< limit )
             {
                 textGrids[i].text = "*";
+                float x = standard.x + distList[i].x;
+                float y = standard.y + distList[i].z;
+                float z = 0;
+                Debug.Log(shipType + " , " + team + "'s  " + i + "th time : (" + x + " , " + y + " , " + z + ") ");
+                textGrids[i].transform.localScale = new Vector3(1, 1, 1);
                 textGrids[i].color = Color.blue;
                 textGrids[i].GetComponent<RectTransform>().anchoredPosition = new Vector3(x, y, z);
             }
             else
             {
                 textGrids[i].text = "";
+                textGrids[i].transform.localScale = new Vector3(0, 0, 0);
             }
 
         }
@@ -175,20 +176,15 @@ public class RaderObject : MonoBehaviour
         for( int i=0; i<textGrids.GetLength(0);i++)
         {
             GameObject textObj = (GameObject)Instantiate(textPrefab);
-            Text text = textObj.GetComponent<text>();
+            Text text = textObj.GetComponent<Text>();
 
             textGrids[i] = text;
             textGrids[i].text = "";
             
-            textGrids[i].GetComponent<RectTransform>().anchoredPosistion = new Vector3(0, 0, 0);
+            textGrids[i].GetComponent<RectTransform>().anchoredPosition = new Vector3(0, 0, 0);
             textGrids[i].transform.localScale = new Vector3(0, 0, 0);
 
             textGrids[i].transform.parent = shipCanvas.transform;
-            //        shipsGrid[i, j].text = "*";
-            //        shipsGrid[i, j].color = Color.blue;
-            //        shipsGrid[i, j].transform.parent = shipCanvas.transform;
-            //        shipsGrid[i, j].GetComponent<RectTransform>().anchoredPosition = new Vector3(axis[i, j].x + standard.x, axis[i, j].y + standard.y, 0);
-            //        shipsGrid[i, j].transform.localScale = new Vector3(1, 1, 1);
 
         }
 
