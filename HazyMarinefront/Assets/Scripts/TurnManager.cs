@@ -81,7 +81,7 @@ public class TurnManager : NetworkBehaviour
 
     private void GameOver()
     {
-        // UI ºñÈ°¼º (both)
+        // UI ?????? (both)
         SetUIShow(false);
         ShowResult();
 
@@ -91,17 +91,17 @@ public class TurnManager : NetworkBehaviour
     {
         GameObject.Find("EventSystem").GetComponent<WinLoseBtnEventListener>().SetActiveWinLoseCanvas(true);
 
-        // ´©°¡ ÀÌ°å´ÂÁö È®ÀÎ ÈÄ °¢°¢ ´Ù¸¥ dialog ¶ç¿öÁÖ±â
+        // ???? ???????? ???? ?? ???? ???? dialog ????????
         if (WinLose.Value == 0)
         {
             Debug.Log("DRAW");
-            // ¹«½ÂºÎ
+            // ??????
             GameObject.Find("EventSystem").GetComponent<WinLoseBtnEventListener>().ChangeWinLoseText("DRAW");
         }
         else if (WinLose.Value == 1)
         {
             Debug.Log("A TEAM WIN");
-            // A ÆÀ ½Â
+            // A ?? ??
             if (NetworkManager.Singleton.IsServer)
             {
                 GameObject.Find("EventSystem").GetComponent<WinLoseBtnEventListener>().ChangeWinLoseText("WIN");
@@ -114,7 +114,7 @@ public class TurnManager : NetworkBehaviour
         else
         {
             Debug.Log("B TEAM WIN");
-            // B ÆÀ ½Â
+            // B ?? ??
             if (NetworkManager.Singleton.IsServer)
             {
                 GameObject.Find("EventSystem").GetComponent<WinLoseBtnEventListener>().ChangeWinLoseText("Lose");

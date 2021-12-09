@@ -75,6 +75,8 @@ public class HostClientNetworkManager : MonoBehaviour
 
     public void Leave()
     {
+        Map map = NetworkManager.Singleton.ConnectedClients[0].PlayerObject.GetComponent<PlayManager>().MapInstance.GetComponent<Map>();
+        Debug.Log("ShipsInFieldList size : " + map.ShipsInFieldList.Count);
         if (NetworkManager.Singleton.IsHost)
         {
             NetworkManager.Singleton.StopHost();
@@ -198,22 +200,10 @@ public class HostClientNetworkManager : MonoBehaviour
         PlayManager.SpawnShipRandomCoordServerRpc();
 
         spawnButton.SetActive(false);
-        //GameObject.Find("Map").GetComponent<RaderObject>().GetComponent<Rader>().
-
-        Debug.Log("test start ");
-
-        if ( GameObject.Find("Map") == null )
-        {
-            Debug.Log("map is null");
-        }
-        else
-        {
-            Debug.Log("map is not hull");
-        }
-        GameObject.Find("Map").GetComponent<FixedFogManager>().test();
 
         // ?????? host ???? ?? ????
         GetTurnManager().SetGameState(2);
+
     }
 
     private TurnManager GetTurnManager()

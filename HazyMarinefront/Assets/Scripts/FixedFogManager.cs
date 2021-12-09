@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using MLAPI;
+using MLAPI.Connection;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -31,6 +32,114 @@ public class FixedFogManager : MonoBehaviour
         SpawnTiles();
         //SpawnRaders();
         SpawnRaderObjects();
+    }
+
+    public void getShipCoord( List<Ship> shipList )
+    {
+        Debug.Log("ship size : " + shipList.Count);
+
+        for ( int i=0; i < shipList.Count; i++ )
+        //for ( int i=0; i<1; i++ )
+        {
+            if ( shipList[i].Symbol == ShipSymbol.A0 )
+            {
+                List<Vector3> dist = new List<Vector3>();
+                for (int j = 0; j < shipList.Count; j++)
+                {
+                    Vector3 ans = getPart(shipList[i].shipCenterPosition, shipList[j].shipCenterPosition);
+
+                    if (ans != new Vector3(0, 0, 0))
+                    {
+                        dist.Add(ans);
+                    }
+
+                }
+                placeRaderDots(shipList[i].Symbol, dist);
+            }
+            else if (shipList[i].Symbol == ShipSymbol.A1 )
+            {
+                List<Vector3> dist = new List<Vector3>();
+                for (int j = 0; j < shipList.Count; j++)
+                {
+                    Vector3 ans = getPart(shipList[i].shipCenterPosition, shipList[j].shipCenterPosition);
+
+                    if (ans != new Vector3(0, 0, 0))
+                    {
+                        dist.Add(ans);
+                    }
+
+                }
+                placeRaderDots(shipList[i].Symbol, dist);
+            }
+            else if (shipList[i].Symbol == ShipSymbol.A2 )
+            {
+                List<Vector3> dist = new List<Vector3>();
+                for (int j = 0; j < shipList.Count; j++)
+                {
+                    Vector3 ans = getPart(shipList[i].shipCenterPosition, shipList[j].shipCenterPosition);
+
+                    if (ans != new Vector3(0, 0, 0))
+                    {
+                        dist.Add(ans);
+                    }
+
+                }
+                placeRaderDots(shipList[i].Symbol, dist);
+            }
+            else if (shipList[i].Symbol == ShipSymbol.A3)
+            {
+                List<Vector3> dist = new List<Vector3>();
+                for (int j = 0; j < shipList.Count; j++)
+                {
+                    Vector3 ans = getPart(shipList[i].shipCenterPosition, shipList[j].shipCenterPosition);
+
+                    if (ans != new Vector3(0, 0, 0))
+                    {
+                        dist.Add(ans);
+                    }
+
+                }
+                placeRaderDots(shipList[i].Symbol, dist);
+            }
+            
+        }
+    }
+
+    public bool placeRaderDots(ShipSymbol symbol, List<Vector3> dist)
+    {
+        for (int i = 0; i < raderObjectGrid.GetLength(0); i++)
+        {
+            for (int j = 0; j < raderObjectGrid.GetLength(1); j++)
+            {
+                RaderObject now = raderObjectGrid[i, j];
+                ShipSymbol s = MapLayout.GetSymbolByShiptypeTeam(now.shipType, now.team);
+                if (s == symbol)
+                {
+                    raderObjectGrid[i, j].placeShips(dist);
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public Vector3 getPart(Vector3 f, Vector3 b)
+    {
+        float radius = (f.x - b.x) * (f.x - b.x) + (f.z - b.z) * (f.z - b.z); // 0 ~ 25
+
+        if (radius > 0 && radius <= 9 )
+        {
+            float x = b.x - f.x;
+            float z = b.z - f.z;
+
+            x *= 12;
+            z *= 12;
+
+            Vector3 ans = new Vector3(x, 1, z);
+            return ans;
+        }
+        return new Vector3(0, 0, 0);
     }
 
     private void SpawnRaderObjects()
@@ -86,16 +195,36 @@ public class FixedFogManager : MonoBehaviour
                 raderObjectGrid[i, j].transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
 
                 raderObjectGrid[i, j].transform.parent = Raders.transform;
-                raderObjectGrid[i, j].placeShips();
+                //raderObjectGrid[i, j].placeShips();
 
             }
         }
 
     }
 
+    
+
     public void test()
     {
-        List<Ship> shipList = MapInstance.GetComponent<Map>().ShipsInFieldList;
+        ulong localClientId = NetworkManager.Singleton.LocalClientId;
+
+        if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(localClientId, out NetworkClient networkClient))
+        {
+            Debug.Log("Cannot find NetworkClient");
+            return;
+        }
+
+        if (!networkClient.PlayerObject.TryGetComponent<PlayManager>(out var PlayManager))
+        {
+            Debug.Log("Cannot find PlayerManager");
+            return;
+        }
+
+        //PlayManager.MapInstance.GetComponent<Map>().ShipsInFieldList
+        List<Ship> shipList = PlayManager.MapInstance.GetComponent<Map>().ShipsInFieldList;
+
+        Debug.Log("ShipList size is " + shipList.Count);
+
         for (int i = 0; i < shipList.Count; i++)
         {
             Ship ship = shipList[i];

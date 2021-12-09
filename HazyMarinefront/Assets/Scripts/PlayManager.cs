@@ -139,6 +139,54 @@ public class PlayManager : NetworkBehaviour
 
             SymbolNetworkObject.Add(ship.Symbol, shipInstance);
         }
+
+        // rader data create func
+        Debug.Log("ShipInFieldList size : " + MapInstance.GetComponent<Map>().ShipsInFieldList.Count);
+
+        Map map = MapInstance.GetComponent<Map>();
+        FixedFogManager ffm = MapInstance.GetComponent<Map>().fixedFogManager;
+
+        ffm.getShipCoord(map.ShipsInFieldList);
+
+
+        
+        ////for ( int i=0; i<map.ShipsInFieldList.Count; i++ )
+        //for ( int i=0; i<1; i++ )
+        //{
+        //    List<Vector3> dist = new List<Vector3>();
+        //    for ( int j=0; j<map.ShipsInFieldList.Count; j++ )
+        //    {
+        //        Vector3 ans = getPart(map.ShipsInFieldList[i].shipCenterPosition, map.ShipsInFieldList[j].shipCenterPosition);
+
+        //        if (ans != new Vector3(0, 0, 0))
+        //        {
+        //            dist.Add(ans);
+        //        }
+
+        //    }
+        //    ffm.placeRaderDots(map.ShipsInFieldList[i].Symbol, dist);
+        //}
+
+
+        // rader data create func
+    }
+
+    public Vector3 getPart( Vector3 f, Vector3 b)
+    {
+        float radius = (f.x - b.x) * (f.x - b.x) + (f.z - b.z) * (f.z - b.z); // 0 ~ 25
+
+        if ( radius >0 && radius <= 25)
+        {
+            float x = b.x - f.x;
+            float z = b.z - f.z;
+
+            x *= 12;
+            z *= 12;
+
+            Vector3 ans = new Vector3(x, 1, z);
+            return ans;
+        }
+        return new Vector3(0, 0, 0);
     }
 
     public Ship createShip(int num, bool shipType)

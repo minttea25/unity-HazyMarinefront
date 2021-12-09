@@ -15,10 +15,11 @@ public class RaderObject : MonoBehaviour
     public DirectionType dirType;
     public ShipType shipType;
     public Team team;
+    public ShipSymbol symbol;
 
     public GameObject textPrefab;
 
-    public Text[,] shipsGrid = new Text[2,6];
+    public Text[] textGrids = new Text[7];
 
     public Canvas shipCanvas;
 
@@ -29,20 +30,9 @@ public class RaderObject : MonoBehaviour
 
     public Vector3[,] axis = new Vector3[2,6];
 
-    public void placeShips()
+    public void placeShips(List<Vector3> distList)
     {
-        axis[0, 0] = new Vector3(0, 70, 0);
-        axis[0, 1] = new Vector3(-35, 35, 0);
-        axis[0, 2] = new Vector3(0, 35, 0);
-        axis[0, 3] = new Vector3(35, 35, 0);
-        axis[0, 4] = new Vector3(-70, 0, 0);
-        axis[0, 5] = new Vector3(-35, 0, 0);
-        axis[1, 0] = new Vector3(35, 0, 0);
-        axis[1, 1] = new Vector3(70, 0, 0);
-        axis[1, 2] = new Vector3(-35, -35, 0);
-        axis[1, 3] = new Vector3(0, -35, 0);
-        axis[1, 4] = new Vector3(35, -35, 0);
-        axis[1, 5] = new Vector3(0, -70, 0);
+        int limit = distList.Count;
 
         switch (shipType)
         {
@@ -53,25 +43,91 @@ public class RaderObject : MonoBehaviour
             default: break;
         }
 
-        for (int i = 0; i < shipsGrid.GetLength(0); i++)
-        {
-            for (int j = 0; j < shipsGrid.GetLength(1); j++)
-            {
-                GameObject textObj = (GameObject)Instantiate(textPrefab);
-                Text text = textObj.GetComponent<Text>();
+        Debug.Log(shipType + " , " + team + "'s  distList size : " + distList.Count);
 
-                shipsGrid[i, j] = text;
-                float x = axis[i, j].x + standard.x;
-                float y = axis[i, j].y + standard.y;
-                Debug.Log(x + " , " + y);
-                shipsGrid[i, j].text = "*";
-                shipsGrid[i, j].color = Color.blue;
-                shipsGrid[i, j].transform.parent = shipCanvas.transform;
-                shipsGrid[i, j].GetComponent<RectTransform>().anchoredPosition = new Vector3(axis[i, j].x + standard.x, axis[i, j].y + standard.y, 0);
-                shipsGrid[i, j].transform.localScale = new Vector3(1, 1, 1);
-                
+        for (int i = 0; i < textGrids.GetLength(0) ; i++)
+        {
+            float x = standard.x + distList[i].x;
+            float y = standard.y + distList[i].z;
+            float z = 0;
+            Debug.Log(shipType + " , " + team + "'s  " + i + "th time : (" + x + " , " + y + " , " + z + ") ");
+
+
+            if ( i< limit )
+            {
+                textGrids[i].text = "*";
+                textGrids[i].color = Color.blue;
+                textGrids[i].GetComponent<RectTransform>().anchoredPosition = new Vector3(x, y, z);
             }
+            else
+            {
+                textGrids[i].text = "";
+            }
+
         }
+
+        //for (int i = 0; i < 7; i++)
+        //{
+        //    GameObject textObj = (GameObject)Instantiate(textPrefab);
+        //    Text text = textObj.GetComponent<Text>();
+        //    shipsGrid[i] = text;
+
+        //    if (i < limit)
+        //    {
+        //        float x = standard.x + distList[i].x;
+        //        float y = standard.z + distList[i].y;
+        //        float z = 0;
+
+        //        Debug.Log(shipType + " , " + team + "'s  " + i + "th time : (" + x + " , " + y + " , " + z + ") ");
+
+        //        //shipsGrid[i].text = "*";
+
+        //        //shipsGrid[i].color = Color.blue;
+        //        //shipsGrid[i].GetComponent<RectTransform>().anchoredPosition = new Vector3(x, y, z);
+        //        //shipsGrid[i].transform.localScale = new Vector3(1, 1, 1);
+        //        //shipsGrid[i].transform.parent = shipCanvas.transform;
+        //    }
+        //    else
+        //    {
+        //        shipsGrid[i].text = "";
+        //    }
+        //}
+
+
+        //axis[0, 0] = new Vector3(0, 70, 0);
+        //axis[0, 1] = new Vector3(-35, 35, 0);
+        //axis[0, 2] = new Vector3(0, 35, 0);
+        //axis[0, 3] = new Vector3(35, 35, 0);
+        //axis[0, 4] = new Vector3(-70, 0, 0);
+        //axis[0, 5] = new Vector3(-35, 0, 0);
+        //axis[1, 0] = new Vector3(35, 0, 0);
+        //axis[1, 1] = new Vector3(70, 0, 0);
+        //axis[1, 2] = new Vector3(-35, -35, 0);
+        //axis[1, 3] = new Vector3(0, -35, 0);
+        //axis[1, 4] = new Vector3(35, -35, 0);
+        //axis[1, 5] = new Vector3(0, -70, 0);
+
+
+
+        //for (int i = 0; i < shipsGrid.GetLength(0); i++)
+        //{
+        //    for (int j = 0; j < shipsGrid.GetLength(1); j++)
+        //    {
+        //        GameObject textObj = (GameObject)Instantiate(textPrefab);
+        //        Text text = textObj.GetComponent<Text>();
+
+        //        shipsGrid[i, j] = text;
+        //        float x = axis[i, j].x + standard.x;
+        //        float y = axis[i, j].y + standard.y;
+        //        Debug.Log(x + " , " + y);
+        //        shipsGrid[i, j].text = "*";
+        //        shipsGrid[i, j].color = Color.blue;
+        //        shipsGrid[i, j].transform.parent = shipCanvas.transform;
+        //        shipsGrid[i, j].GetComponent<RectTransform>().anchoredPosition = new Vector3(axis[i, j].x + standard.x, axis[i, j].y + standard.y, 0);
+        //        shipsGrid[i, j].transform.localScale = new Vector3(1, 1, 1);
+
+        //    }
+        //}
     }
 
     public void setRaderShips()
@@ -81,12 +137,12 @@ public class RaderObject : MonoBehaviour
         {
             Ship ship = shipList[i];
 
-            ShipSymbol mine = MapLayout.GetSymbolByShiptypeTeam(this.shipType, this.team);
+            symbol = MapLayout.GetSymbolByShiptypeTeam(this.shipType, this.team);
 
-            if ( mine == ship.Symbol )
+            if ( symbol == ship.Symbol )
             {
                 Vector3 myCenter = ship.shipCenterPosition;
-                Debug.Log(mine.ToString() + " 's center : " + myCenter.x + " , " + myCenter.y + " , " + myCenter.z);
+                Debug.Log(symbol.ToString() + " 's center : " + myCenter.x + " , " + myCenter.y + " , " + myCenter.z);
             }
         }
     }
@@ -115,6 +171,26 @@ public class RaderObject : MonoBehaviour
         Debug.Log("this type is " + team+ " , and shiptype is  "+shipType);
 
         //placeShips();
+
+        for( int i=0; i<textGrids.GetLength(0);i++)
+        {
+            GameObject textObj = (GameObject)Instantiate(textPrefab);
+            Text text = textObj.GetComponent<text>();
+
+            textGrids[i] = text;
+            textGrids[i].text = "";
+            
+            textGrids[i].GetComponent<RectTransform>().anchoredPosistion = new Vector3(0, 0, 0);
+            textGrids[i].transform.localScale = new Vector3(0, 0, 0);
+
+            textGrids[i].transform.parent = shipCanvas.transform;
+            //        shipsGrid[i, j].text = "*";
+            //        shipsGrid[i, j].color = Color.blue;
+            //        shipsGrid[i, j].transform.parent = shipCanvas.transform;
+            //        shipsGrid[i, j].GetComponent<RectTransform>().anchoredPosition = new Vector3(axis[i, j].x + standard.x, axis[i, j].y + standard.y, 0);
+            //        shipsGrid[i, j].transform.localScale = new Vector3(1, 1, 1);
+
+        }
 
     }
 
