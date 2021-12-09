@@ -165,7 +165,7 @@ public class PlayManager : NetworkBehaviour
     {
         if (NetworkManager.Singleton.IsServer) { return; }
 
-        GameObject.Find("EventSystem").GetComponent<AttackBtnEventListner>().SetAttackMode(true);
+        GameObject.Find("EventSystem").GetComponent<ShipControlEventListener>().SetAttackMode(true);
     }
 
     [ClientRpc]
@@ -173,7 +173,7 @@ public class PlayManager : NetworkBehaviour
     {
         if (NetworkManager.Singleton.IsServer) { return; }
 
-        GameObject.Find("EventSystem").GetComponent<AttackBtnEventListner>().SetCrossAttackMode(true);
+        GameObject.Find("EventSystem").GetComponent<ShipControlEventListener>().SetCrossAttackMode(true);
     }
 
 
@@ -220,6 +220,9 @@ public class PlayManager : NetworkBehaviour
             SymbolNetworkInstance.Add(ship.Symbol, shipInstance);
 
             ChangeAlphaValueShip(ship.Symbol, MapLayout.spawnedShipAlphaValue);
+
+            // 서버만 subship4 ui 띄우기
+            ShowSubship4UI(true);
         }
         else
         {
@@ -259,7 +262,29 @@ public class PlayManager : NetworkBehaviour
             SymbolNetworkInstance.Add(ship.Symbol, shipInstance);
 
             ChangeAlphaValueShip(ship.Symbol, MapLayout.spawnedShipAlphaValue);
+
+            // 클라이언트에 보이기
+            ShowSubship4UIClientRpc(true);
         }
+    }
+
+    [ClientRpc]
+    private void ShowSubship4UIClientRpc(bool v)
+    {
+        if (NetworkManager.Singleton.IsServer) { return; }
+
+        ShipControlEventListener s = GameObject.Find("EventSystem").GetComponent<ShipControlEventListener>();
+
+        s.SubShip4BtnBackground.SetActive(v);
+    }
+
+    private void ShowSubship4UI(bool v)
+    {
+        if (!NetworkManager.Singleton.IsServer) { return; }
+
+        ShipControlEventListener s = GameObject.Find("EventSystem").GetComponent<ShipControlEventListener>();
+
+        s.SubShip4BtnBackground.SetActive(v);
     }
 
     [ServerRpc]
@@ -291,7 +316,7 @@ public class PlayManager : NetworkBehaviour
     [ServerRpc]
     public void SetMoveShipServerRpc(ShipSymbol s, DirectionType dirType, int amount)
     {
-        Debug.Log("SetMove: " + this.GetHashCode());
+        
 
         bool exist = NetworkManager.Singleton.ConnectedClients[0].PlayerObject.GetComponent<PlayManager>().MapInstance.GetComponent<Map>().SetSelectedShip(s);
         if (exist)
@@ -386,6 +411,15 @@ public class PlayManager : NetworkBehaviour
                     SymbolNetworkInstance.TryGetValue(ship.Symbol, out NetworkObject obj);
                     obj.Despawn();
                 }
+
+                if (ship.team == Team.ATeam)
+                {
+                    SetActiveFalseUI(ship.shipType);
+                }
+                else
+                {
+                    SetActiveFalseUIClientRpc(ship.shipType);
+                }
             }
         }
         else
@@ -409,6 +443,25 @@ public class PlayManager : NetworkBehaviour
         ship.shipCoords[index] = new Vector3Int(ship.shipCoords[index].x, ship.shipCoords[index].y, ship.shipCoords[index].z + 1);
 
         CheckGameOver();
+    }
+
+    private void SetActiveFalseUI(ShipType shipType)
+    {
+        if (!NetworkManager.Singleton.IsServer) { return; }
+
+        ShipControlEventListener s = GameObject.Find("EventSystem").GetComponent<ShipControlEventListener>();
+
+        s.SetActiveShipRadarUI(shipType, false);
+    }
+
+    [ClientRpc]
+    private void SetActiveFalseUIClientRpc(ShipType shipType)
+    {
+        if (NetworkManager.Singleton.IsServer) { return; }
+
+        ShipControlEventListener s = GameObject.Find("EventSystem").GetComponent<ShipControlEventListener>();
+
+        s.SetActiveShipRadarUI(shipType, false);
     }
 
     [ServerRpc]

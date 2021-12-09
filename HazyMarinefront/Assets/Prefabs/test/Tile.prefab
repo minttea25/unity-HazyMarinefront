@@ -126,3 +126,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ac769f4e2ee402448af046bb0f16f30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AlertDialogPrefab: {fileID: 5527439510296230002, guid: a3fc08da869f745439f46de9ee91c551,
+    type: 3}

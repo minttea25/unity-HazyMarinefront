@@ -22,11 +22,18 @@ public class TurnManager : NetworkBehaviour
     public bool UIAvailable;
     public int cost;
 
+    public bool hasMoved;
+
+    public bool hasAttacked;
+
     private void Awake()
     {
         GameState.Value = 0;
         UIAvailable = false;
         cost = MapLayout.startCost;
+
+        hasMoved = false;
+        hasAttacked = false;
     }
 
     private void OnEnable()
@@ -53,6 +60,10 @@ public class TurnManager : NetworkBehaviour
     private void OnGameStateChanged(int previousValue, int newValue)
     {
         if (newValue == -1) { return; }
+
+        hasMoved = false;
+        hasAttacked = false;
+
         Debug.Log(previousValue + " -> " + newValue + " - " + System.DateTime.Now);
         switch (newValue)
         {
@@ -136,6 +147,7 @@ public class TurnManager : NetworkBehaviour
     {
         if (NetworkManager.Singleton.IsServer)
         {
+            
             AddCost(MapLayout.turnCost);
             SetUIShow(true);
         }
@@ -160,7 +172,7 @@ public class TurnManager : NetworkBehaviour
 
     private void SetUIShow(bool show)
     {
-        GameObject.Find("EventSystem").GetComponent<MoveBtnEventListener>().SetActiveMoveCanvas(show);
+        GameObject.Find("EventSystem").GetComponent<ShipControlEventListener>().SetActiveMoveCanvas(show);
     }
 
     public void SetGameState(int gameState)

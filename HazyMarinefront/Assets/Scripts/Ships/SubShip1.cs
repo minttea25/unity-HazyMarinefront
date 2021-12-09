@@ -88,8 +88,8 @@ public class SubShip1 : Ship
         //십자 포격
         if (this.team == Team.ATeam)
         {
-            GameObject.Find("EventSystem").GetComponent<AttackBtnEventListner>().SetAttackMode(true);
-            GameObject.Find("EventSystem").GetComponent<AttackBtnEventListner>().SetCrossAttackMode(true);
+            GameObject.Find("EventSystem").GetComponent<ShipControlEventListener>().SetAttackMode(true);
+            GameObject.Find("EventSystem").GetComponent<ShipControlEventListener>().SetCrossAttackMode(true);
 
         }
         else

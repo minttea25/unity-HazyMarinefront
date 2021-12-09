@@ -6,6 +6,7 @@ using MLAPI.Connection;
 public class Tile : MonoBehaviour
 {
     Vector2Int curCoord;
+    public GameObject AlertDialogPrefab;
 
     private void OnMouseEnter()
     {
@@ -19,7 +20,33 @@ public class Tile : MonoBehaviour
 
     void OnMouseDown()
     {
-        if (!GameObject.Find("EventSystem").GetComponent<AttackBtnEventListner>().AttackMode)
+        ulong localClientId = NetworkManager.Singleton.LocalClientId;
+
+        if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(localClientId, out NetworkClient networkClient))
+        {
+            Debug.Log("Cannot find NetworkClient");
+            return;
+        }
+
+        if (!networkClient.PlayerObject.TryGetComponent<TurnManager>(out var TurnManager))
+        {
+            Debug.Log("Cannot find PlayerManager");
+            return;
+        }
+
+        if (TurnManager.hasAttacked && !GameObject.Find("EventSystem").GetComponent<ShipControlEventListener>().CrossAttackMode)
+        {
+            GameObject dialog = Instantiate(
+                AlertDialogPrefab);
+            dialog.GetComponent<AlertDialog>().SetTitle("한 턴에 한번만 공격 가능합니다.");
+
+            GameObject.Find("EventSystem").GetComponent<ShipControlEventListener>().SetAttackMode(false);
+
+            return;
+        }
+
+
+        if (!GameObject.Find("EventSystem").GetComponent<ShipControlEventListener>().AttackMode)
         {
             Debug.Log("Not AttackMode");
             return;
@@ -28,12 +55,6 @@ public class Tile : MonoBehaviour
         curCoord = new Vector2Int(((int)(transform.localPosition.x + 4.5)), (int)(transform.localPosition.z + 4.5));
         Debug.Log(" coord :" + curCoord);
 
-        ulong localClientId = NetworkManager.Singleton.LocalClientId;
-
-        if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(localClientId, out NetworkClient networkClient))
-        {
-            return;
-        }
 
         if (!networkClient.PlayerObject.TryGetComponent<PlayManager>(out var PlayManager))
         {
@@ -46,18 +67,24 @@ public class Tile : MonoBehaviour
 
         // bound 확인 로직 수정 하였음
         PlayManager.AttackServerRpc(curCoord.x, curCoord.y);
-        if (GameObject.Find("EventSystem").GetComponent<AttackBtnEventListner>().CrossAttackMode)
+        if (GameObject.Find("EventSystem").GetComponent<ShipControlEventListener>().CrossAttackMode)
         {
             if (curCoord.x + 1 < MapLayout.mapSize.x)
                 PlayManager.AttackServerRpc(curCoord.x + 1, curCoord.y);
-            if (curCoord.x - 1 > 0)
+            if (curCoord.x - 1 >= 0)
                 PlayManager.AttackServerRpc(curCoord.x - 1, curCoord.y);
             if (curCoord.y + 1 < MapLayout.mapSize.y)
                 PlayManager.AttackServerRpc(curCoord.x, curCoord.y + 1);
-            if (curCoord.y - 1 > 0)
+            if (curCoord.y - 1 >= 0)
                 PlayManager.AttackServerRpc(curCoord.x, curCoord.y - 1);
-            Debug.Log("십자공격 " + GameObject.Find("EventSystem").GetComponent<AttackBtnEventListner>().CrossAttackMode);
-            GameObject.Find("EventSystem").GetComponent<AttackBtnEventListner>().SetCrossAttackMode(false);
+            Debug.Log("십자공격 " + GameObject.Find("EventSystem").GetComponent<ShipControlEventListener>().CrossAttackMode);
+            GameObject.Find("EventSystem").GetComponent<ShipControlEventListener>().SetCrossAttackMode(false);
+
+            // 크로스 어택은 한번 공격에 제한 x
+        }
+        else
+        {
+            TurnManager.hasAttacked = true;
         }
 
         // ???
@@ -65,7 +92,8 @@ public class Tile : MonoBehaviour
 
         transform.GetComponent<Renderer>().material.color = new Color(1, 1, 1, 0);
 
-        GameObject.Find("EventSystem").GetComponent<AttackBtnEventListner>().SetAttackMode(false);
+        GameObject.Find("EventSystem").GetComponent<ShipControlEventListener>().SetAttackMode(false);
+
     }
 
 }

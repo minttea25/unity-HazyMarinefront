@@ -24,7 +24,7 @@ public class HostClientNetworkManager : MonoBehaviour
         NetworkManager.Singleton.OnClientConnectedCallback += HandleClientConnected;
         NetworkManager.Singleton.OnClientDisconnectCallback += HandleClientDisconnect;
 
-        GameObject.Find("EventSystem").GetComponent<MoveBtnEventListener>().MoveControllUICanvas.SetActive(false);
+        GameObject.Find("EventSystem").GetComponent<ShipControlEventListener>().SetActiveMoveCanvas(false);
 
         costUI.SetActive(false);
         leaveButton.SetActive(false);
@@ -51,6 +51,8 @@ public class HostClientNetworkManager : MonoBehaviour
         NetworkManager.Singleton.ConnectionApprovalCallback += ApprovalCheck;
         NetworkManager.Singleton.StartHost(new Vector3(-2f, 0f, 0f), Quaternion.Euler(0f, 135f, 0f));
 
+        GameObject.Find("EventSystem").GetComponent<ShipControlEventListener>().SetTeam(Team.ATeam);
+
         GetTurnManager().SetGameState(0);
     }
 
@@ -59,6 +61,8 @@ public class HostClientNetworkManager : MonoBehaviour
         // Set password ready to send to the server to validate
         NetworkManager.Singleton.NetworkConfig.ConnectionData = Encoding.ASCII.GetBytes(roomcodeInputField.text);
         NetworkManager.Singleton.StartClient();
+
+        GameObject.Find("EventSystem").GetComponent<ShipControlEventListener>().SetTeam(Team.BTeam);
     }
 
     public void Leave()
@@ -190,7 +194,6 @@ public class HostClientNetworkManager : MonoBehaviour
 
         // 임시로 host 먼저 턴 시작
         GetTurnManager().SetGameState(2);
-        Debug.Log("SPAWNHSIP");
     }
 
     private TurnManager GetTurnManager()
