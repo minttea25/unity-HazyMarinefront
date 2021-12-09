@@ -385,7 +385,8 @@ MonoBehaviour:
   - {fileID: 0}
   shipHolder: {fileID: 3439473833098010646}
   bottomLeftSquareTransform: {fileID: 5359853882974637132}
-  fogBlocks: {fileID: 4299850730263092910}
+  fogBlocks: {fileID: 4299850730263092910, guid: 17cc90735397fc54fb57af6f558e94e0,
+    type: 3}
   ExplosionPrefab: {fileID: 1828176872806910, guid: 64891a0eb28db934898420d80ca07cb3,
     type: 3}
   BigExplosionPrefab: {fileID: 1121192042590650, guid: e1b08032bec16ba4eb1ae23cbd572664,
@@ -648,6 +649,7 @@ MonoBehaviour:
   tilePrefab: {fileID: 7537477161541683482, guid: 13d79ae379cd4564cbef25c84a045e20,
     type: 3}
   map: {fileID: 0}
+  aimap: {fileID: 0}
   Tiles: {fileID: 7007762084053328705}
 --- !u!1 &5850279070566175412
 GameObject:

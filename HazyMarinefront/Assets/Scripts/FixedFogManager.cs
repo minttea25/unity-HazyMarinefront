@@ -14,6 +14,7 @@ public class FixedFogManager : MonoBehaviour
 
     public Tile[,] tileGrid = new Tile[MapLayout.mapSize.x, MapLayout.mapSize.y];
 
+    public AITile[,] AItileGrid = new AITile[MapLayout.mapSize.x, MapLayout.mapSize.y];
 
     private void Awake()
     {
@@ -21,7 +22,10 @@ public class FixedFogManager : MonoBehaviour
 
     private void Start()
     {
-        SpawnTiles(); //aimap 구분 필요
+        if (GameObject.Find("Map(Clone)") != null)
+            SpawnTiles(); //aimap 구분 필요
+        else if (GameObject.Find("AIMap(Clone)") != null)
+            SpawnAITiles();
     }
 
     private void SpawnTiles()
@@ -47,10 +51,40 @@ public class FixedFogManager : MonoBehaviour
         }
     }
 
+    private void SpawnAITiles()
+    {
+        for (int i = 0; i < fixedFogGrid.GetLength(0); i++)
+        {
+            for (int j = 0; j < fixedFogGrid.GetLength(1); j++)
+            {
+                // set fog in array
+                AItileGrid[i, j] = GetAITile();
+
+                float x = aimap.bottomLeftSquareTransform.transform.position.x + MapLayout.areaSize * (i + 0.5f);
+                float z = aimap.bottomLeftSquareTransform.transform.position.z + MapLayout.areaSize * (j + 0.5f);
+
+                Vector3 pos = new Vector3(x, aimap.bottomLeftSquareTransform.transform.position.y + MapLayout.oceanTileInterval, z);
+
+                tileGrid[i, j].transform.position = pos;
+                tileGrid[i, j].transform.localScale = new Vector3(MapLayout.areaSize, MapLayout.areaSize * 0.1f, MapLayout.areaSize);
+
+
+                tileGrid[i, j].transform.parent = Tiles.transform;
+            }
+        }
+    }
+
     private Tile GetTile()
     {
         GameObject tileObj = (GameObject)Instantiate(tilePrefab);
         Tile tile = tileObj.GetComponent<Tile>();
+
+        return tile;
+    }
+    private AITile GetAITile()
+    {
+        GameObject tileObj = (GameObject)Instantiate(tilePrefab);
+        AITile tile = tileObj.GetComponent<AITile>();
 
         return tile;
     }

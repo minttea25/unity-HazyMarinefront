@@ -15,6 +15,12 @@ public class AIManager : MonoBehaviour
     [SerializeField] public GameObject BigExplosionPrefab;
     [SerializeField] public GameObject WaterSplashPrefab;
 
+    [SerializeField] private GameObject roomcodeEntryUI;
+    [SerializeField] private GameObject leaveButton;
+    [SerializeField] private GameObject attackBtn;
+    [SerializeField] private GameObject spawnButton;
+    [SerializeField] private GameObject costUI;
+
     [SerializeField] public GameObject MapInstance { get; private set; }
 
     [SerializeField] private Dictionary<ShipSymbol, GameObject> SymbolNetworkInstance = new Dictionary<ShipSymbol, GameObject>();
@@ -42,13 +48,26 @@ public class AIManager : MonoBehaviour
 
         //if (NetworkManager.Singleton.IsServer)
         //{
-            SpawnMap();
-            SpawnFog();
+            
         //}
         //else
         //{
             //Debug.Log("Client");
         //}
+    }
+
+    public void AIStart()
+    {
+        GameObject.Find("EventSystem").GetComponent<MoveBtnEventListener>().MoveControllUICanvas.SetActive(false);
+
+        costUI.SetActive(false);
+        leaveButton.SetActive(false);
+        attackBtn.SetActive(false);
+        spawnButton.SetActive(false);
+
+        SpawnMap();
+        SpawnFog();
+        SpawnShipRandomCoord();
     }
 
     internal void ClearFogTest()
@@ -80,7 +99,7 @@ public class AIManager : MonoBehaviour
             ship.visibility = false;
             ship.Init();
 
-            List<Vector3Int> temp = ship.GetPosibleShipSpawnCoordsList(MapInstance.GetComponent<Map>());
+            List<Vector3Int> temp = ship.GetPosibleAIShipSpawnCoordsList(MapInstance.GetComponent<AIMap>());
 
             // deep copy
             ship.shipCoords.Clear();
@@ -128,19 +147,19 @@ public class AIManager : MonoBehaviour
             // deep copy
             ship.shipCoords.Clear();
             ship.shipCoords = temp.ConvertAll(o => new Vector3Int(o.x, o.y, o.z));
-            MapInstance.GetComponent<Map>().ShipsInFieldList.Add(ship);
+            MapInstance.GetComponent<AIMap>().ShipsInFieldList.Add(ship);
 
             for (int i = 0; i < ship.shipCoords.Count; i++)
             {
-                MapInstance.GetComponent<Map>().grid[ship.shipCoords[i].x, ship.shipCoords[i].y] = MapLayout.GetSymbolByShiptypeTeam(ship.shipType, ship.team);
+                MapInstance.GetComponent<AIMap>().grid[ship.shipCoords[i].x, ship.shipCoords[i].y] = MapLayout.GetSymbolByShiptypeTeam(ship.shipType, ship.team);
             }
 
-            ship.shipCenterPosition = ship.GetShipCenterPositionFromCoord(ship.shipCoords, MapInstance.GetComponent<Map>());
+            ship.shipCenterPosition = ship.GetAIShipCenterPositionFromCoord(ship.shipCoords, MapInstance.GetComponent<AIMap>());
 
             Vector3 pos = ship.shipCenterPosition;
             ship.transform.position = pos;
 
-            ship.transform.parent = MapInstance.GetComponent<Map>().shipHolder.transform;
+            ship.transform.parent = MapInstance.GetComponent<AIMap>().shipHolder.transform;
             ship.transform.localScale = new Vector3(1, 1, 1);
 
             shipInstance.tag = ship.Symbol.ToString();
@@ -192,19 +211,19 @@ public class AIManager : MonoBehaviour
             ship.shipCoords = temp.ConvertAll(o => new Vector3Int(o.x, o.y, o.z));
 
 
-            MapInstance.GetComponent<Map>().ShipsInFieldList.Add(ship);
+            MapInstance.GetComponent<AIMap>().ShipsInFieldList.Add(ship);
 
             for (int i = 0; i < ship.shipCoords.Count; i++)
             {
-                MapInstance.GetComponent<Map>().grid[ship.shipCoords[i].x, ship.shipCoords[i].y] = MapLayout.GetSymbolByShiptypeTeam(ship.shipType, ship.team);
+                MapInstance.GetComponent<AIMap>().grid[ship.shipCoords[i].x, ship.shipCoords[i].y] = MapLayout.GetSymbolByShiptypeTeam(ship.shipType, ship.team);
             }
 
-            ship.shipCenterPosition = ship.GetShipCenterPositionFromCoord(ship.shipCoords, MapInstance.GetComponent<Map>());
+            ship.shipCenterPosition = ship.GetAIShipCenterPositionFromCoord(ship.shipCoords, MapInstance.GetComponent<AIMap>());
 
             Vector3 pos = ship.shipCenterPosition;
             ship.transform.position = pos;
 
-            ship.transform.parent = MapInstance.GetComponent<Map>().shipHolder.transform;
+            ship.transform.parent = MapInstance.GetComponent<AIMap>().shipHolder.transform;
             ship.transform.localScale = new Vector3(1, 1, 1);
 
             shipInstance.tag = ship.Symbol.ToString();
@@ -231,19 +250,19 @@ public class AIManager : MonoBehaviour
             ship.shipCoords = temp.ConvertAll(o => new Vector3Int(o.x, o.y, o.z));
 
 
-            MapInstance.GetComponent<Map>().ShipsInFieldList.Add(ship);
+            MapInstance.GetComponent<AIMap>().ShipsInFieldList.Add(ship);
 
             for (int i = 0; i < ship.shipCoords.Count; i++)
             {
-                MapInstance.GetComponent<Map>().grid[ship.shipCoords[i].x, ship.shipCoords[i].y] = MapLayout.GetSymbolByShiptypeTeam(ship.shipType, ship.team);
+                MapInstance.GetComponent<AIMap>().grid[ship.shipCoords[i].x, ship.shipCoords[i].y] = MapLayout.GetSymbolByShiptypeTeam(ship.shipType, ship.team);
             }
 
-            ship.shipCenterPosition = ship.GetShipCenterPositionFromCoord(ship.shipCoords, MapInstance.GetComponent<Map>());
+            ship.shipCenterPosition = ship.GetAIShipCenterPositionFromCoord(ship.shipCoords, MapInstance.GetComponent<AIMap>());
 
             Vector3 pos = ship.shipCenterPosition;
             ship.transform.position = pos;
 
-            ship.transform.parent = MapInstance.GetComponent<Map>().shipHolder.transform;
+            ship.transform.parent = MapInstance.GetComponent<AIMap>().shipHolder.transform;
             ship.transform.localScale = new Vector3(1, 1, 1);
 
             shipInstance.tag = ship.Symbol.ToString();
