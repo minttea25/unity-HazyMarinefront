@@ -31,6 +31,18 @@ public class SubShip3 : Ship
         return new Vector3(x, map.bottomLeftSquareTransform.transform.position.y, z);
     }
 
+    public override Vector3 GetAIShipCenterPositionFromCoord(List<Vector3Int> coords, AIMap map)
+    {
+        float avgCoordX = coords[0].x; //coords[0].x = coords[1].x = coords[2].x
+        float avgCoordY = (coords[0].y + coords[coords.Count - 1].y) / 2f;
+
+        // 이부분은 배마다 다르게
+        float x = map.bottomLeftSquareTransform.transform.position.x + MapLayout.areaSize * (avgCoordX + +0.5f);
+        float z = map.bottomLeftSquareTransform.transform.position.z + MapLayout.areaSize * (avgCoordY + +0.5f);
+
+        return new Vector3(x, map.bottomLeftSquareTransform.transform.position.y, z);
+    }
+
     public override List<Vector3Int> GetPosibleShipSpawnCoordsList(Map map)
     {
         // 먼저 좌표 하나뽑고 만약 가능한 좌표면 위로으로 두칸 추가해서 다시 그 칸 가능한 좌표인지 확인

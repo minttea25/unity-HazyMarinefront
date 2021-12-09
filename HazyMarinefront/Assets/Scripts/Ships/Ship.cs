@@ -32,6 +32,8 @@ public abstract class Ship : NetworkBehaviour
     public NetworkObject AttackedParticlePrefab;
 
     public abstract Vector3 GetShipCenterPositionFromCoord(List<Vector3Int> coords, Map map);
+
+    public abstract Vector3 GetAIShipCenterPositionFromCoord(List<Vector3Int> coords, AIMap map);
     public abstract List<Vector3Int> GetPosibleShipSpawnCoordsList(Map map);
     public abstract void ActivateAbility();
 
@@ -133,6 +135,34 @@ public abstract class Ship : NetworkBehaviour
     {
         // 움직이고 난 후의 coord에 대한 중앙 position 값 얻기
         shipCenterPosition = GetShipCenterPositionFromCoord(shipCoords, map);
+    }
+
+    public void MoveAIShipInCoord(DirectionType dirType, int amount, AIMap map)
+    {
+        Debug.Log("MoveShipInCoord");
+
+        int[] axisValue = GetDirectionAmount(dirType, amount);
+        int xAxis = axisValue[0];
+        int yAxis = axisValue[1];
+
+        Debug.Log(xAxis + ", " + yAxis);
+
+        List<Vector3Int> newCoords = new List<Vector3Int>();
+        for (int i = 0; i < shipCoords.Count; i++)
+        {
+            newCoords.Add(new Vector3Int(shipCoords[i].x + xAxis, shipCoords[i].y + yAxis, shipCoords[i].z));
+            Debug.Log(newCoords[i]);
+        }
+
+        ChangeOldNewCoords(newCoords);
+
+        map.UpdateShipOnGrid(oldShipCoords, shipCoords, this);
+    }
+
+    public void MoveAIShipInPosition(AIMap map)
+    {
+        // 움직이고 난 후의 coord에 대한 중앙 position 값 얻기
+        shipCenterPosition = GetAIShipCenterPositionFromCoord(shipCoords, map);
     }
 
     internal bool CheckAvailableToMove(DirectionType dirType, int amount, Vector2Int mapSize)
