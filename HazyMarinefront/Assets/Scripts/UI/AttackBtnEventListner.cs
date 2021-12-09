@@ -12,6 +12,7 @@ public class AttackBtnEventListner : MonoBehaviour
     public Text attackText;
 
     public bool AttackMode;
+    public bool CrossAttackMode;
 
     public void SetAttack()
     {
@@ -38,6 +39,17 @@ public class AttackBtnEventListner : MonoBehaviour
         {
             attackText.text = "ATTACK";
             AttackMode = false;
+        }
+    }
+    public void SetCrossAttackMode(bool atk)
+    {
+        if (atk)
+        {
+            CrossAttackMode = true;
+        }
+        else
+        {
+            CrossAttackMode = false;
         }
     }
 }

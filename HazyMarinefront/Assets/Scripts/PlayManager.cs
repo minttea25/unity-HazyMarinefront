@@ -35,11 +35,8 @@ public class PlayManager : NetworkBehaviour
 
     [SerializeField] public NetworkVariableBool IsShipSpawned = new NetworkVariableBool(false);
 
-    public bool crossAtk;
-
     private void Awake()
     {
-        crossAtk = false;
     }
 
     // Start is called before the first frame update
@@ -163,6 +160,22 @@ public class PlayManager : NetworkBehaviour
         IsShipSpawned.Value = true;
     }
 
+    [ClientRpc]
+    public void SetAttackModeClientRpc(bool mode)
+    {
+        if (NetworkManager.Singleton.IsServer) { return; }
+
+        GameObject.Find("EventSystem").GetComponent<AttackBtnEventListner>().SetAttackMode(true);
+    }
+
+    [ClientRpc]
+    public void SetCrossAttackModeClientRpc(bool mode)
+    {
+        if (NetworkManager.Singleton.IsServer) { return; }
+
+        GameObject.Find("EventSystem").GetComponent<AttackBtnEventListner>().SetCrossAttackMode(true);
+    }
+
 
 
     [ServerRpc]
@@ -249,7 +262,6 @@ public class PlayManager : NetworkBehaviour
         }
     }
 
-
     [ServerRpc]
     private void SpawnFogServerRpc()
     {
@@ -311,10 +323,6 @@ public class PlayManager : NetworkBehaviour
         bool exist = map.SetSelectedShip(map.GetShipSymbolByCoords(new Vector2Int(x, y)));
         if (exist)
         { 
-            // ERROR
-            // 아래 구문에서 동일한 지점 공격시 nullpoint exception 발생!!
-            // 충돌 시에도 같은 현상 발생
-
             for (int i = 0; i < map.GetSelectedShip().shipCoords.Count; i++)
             {
                 if (map.GetSelectedShip().shipCoords[i].x == x && map.GetSelectedShip().shipCoords[i].y == y)
@@ -324,7 +332,7 @@ public class PlayManager : NetworkBehaviour
                 }
             }
             // ojy added
-            //map.SetSelectedShip(MapLayout.GetSymbolByShiptypeTeam(curShip.shipType, curShip.team));
+            map.SetSelectedShip(MapLayout.GetSymbolByShiptypeTeam(curShip.shipType, curShip.team));
         }
         else
         {
@@ -389,7 +397,6 @@ public class PlayManager : NetworkBehaviour
             if (!ship.visibility)
             {
                 ShipSymbol ss = MapLayout.GetSymbolByShiptypeTeam(ship.shipType, ship.team);
-                Debug.Log("ss = " + ss);
 
                 ChangeValueVisiblity(ship.Symbol, true);
 
