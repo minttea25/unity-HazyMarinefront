@@ -13,6 +13,7 @@ public class HostClientNetworkManager : MonoBehaviour
     [SerializeField] private GameObject leaveButton;
     [SerializeField] private GameObject attackBtn;
     [SerializeField] private GameObject spawnButton;
+    [SerializeField] private GameObject costUI;
 
     [SerializeField] private NetworkVariable<int> ClientsNum = new NetworkVariable<int>(0);
 
@@ -25,6 +26,7 @@ public class HostClientNetworkManager : MonoBehaviour
 
         GameObject.Find("EventSystem").GetComponent<MoveBtnEventListener>().MoveControllUICanvas.SetActive(false);
 
+        costUI.SetActive(false);
         leaveButton.SetActive(false);
         attackBtn.SetActive(false);
         spawnButton.SetActive(false);
@@ -71,6 +73,7 @@ public class HostClientNetworkManager : MonoBehaviour
             NetworkManager.Singleton.StopClient();
         }
 
+        costUI.SetActive(false);
         roomcodeEntryUI.SetActive(true);
         leaveButton.SetActive(false);
         spawnButton.SetActive(false);
@@ -183,9 +186,11 @@ public class HostClientNetworkManager : MonoBehaviour
         PlayManager.SpawnShipRandomCoordServerRpc();
 
         spawnButton.SetActive(false);
+        costUI.SetActive(true);
 
         // 임시로 host 먼저 턴 시작
         GetTurnManager().SetGameState(2);
+        Debug.Log("SPAWNHSIP");
     }
 
     private TurnManager GetTurnManager()
@@ -203,5 +208,10 @@ public class HostClientNetworkManager : MonoBehaviour
         }
 
         return TurnManager;
+    }
+
+    public void SetActiveCostUI(bool show)
+    {
+        costUI.SetActive(show);
     }
 }

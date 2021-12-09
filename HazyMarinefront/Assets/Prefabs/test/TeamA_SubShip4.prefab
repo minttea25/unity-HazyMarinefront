@@ -27,8 +27,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3898622539109964009}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
-  m_LocalScale: {x: 0.5, y: 1, z: 0.5}
+  m_LocalPosition: {x: 0, y: 0.851, z: 0}
+  m_LocalScale: {x: 0.3, y: 0.90286726, z: 0.3}
   m_Children: []
   m_Father: {fileID: 8747177479649643372}
   m_RootOrder: 1
@@ -104,12 +104,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8747177479649643372}
-  - component: {fileID: -3229115680202101397}
   - component: {fileID: 5534445129423513407}
   - component: {fileID: 731221094868350482}
   - component: {fileID: 2415795919801953164}
-  - component: {fileID: 1934367507668350947}
-  - component: {fileID: 1898100086852034326}
+  - component: {fileID: 279531082410485182}
+  - component: {fileID: 1923804658419268750}
+  - component: {fileID: -8226167682428809001}
   m_Layer: 0
   m_Name: TeamA_SubShip4
   m_TagString: Untagged
@@ -133,21 +133,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &-3229115680202101397
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6625412930321134663}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe2a096440a92d04a8e2cb087d9e3b01, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  availableArea: []
-  Explosion: {fileID: 0}
-  BigExplosion: {fileID: 0}
 --- !u!114 &5534445129423513407
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -217,7 +202,22 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &1934367507668350947
+--- !u!114 &279531082410485182
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6625412930321134663}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5524d07f75426f140b780e8f3090a886, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  availableArea: []
+  AttackedParticlePrefab: {fileID: 3694808153188650092, guid: ec47cdce6cbf28a45823f7d5926fd1b1,
+    type: 3}
+--- !u!114 &1923804658419268750
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -230,11 +230,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   NetworkInstanceId: 0
-  PrefabHash: 3227229926805524455
-  PrefabHashGenerator: TeamA_MainShip
+  PrefabHash: 4324483889211843658
+  PrefabHashGenerator: TeamA_SubShip4
   AlwaysReplicateAsRoot: 0
   DontDestroyWithOwner: 0
---- !u!114 &1898100086852034326
+--- !u!114 &-8226167682428809001
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -310,7 +310,7 @@ Transform:
   m_GameObject: {fileID: 8640077520962329101}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
   m_Children: []
   m_Father: {fileID: 8747177479649643372}
   m_RootOrder: 0

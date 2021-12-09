@@ -1,13 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Random = UnityEngine.Random;
 using MLAPI;
 using MLAPI.Connection;
+using Random = UnityEngine.Random;
 
 
 public class MainShip : Ship
 {
+
     private void Awake()
     {
         shipSizeX = 1;
@@ -15,6 +16,10 @@ public class MainShip : Ship
         shipHealth = shipSizeX * shipSizeY;
 
         shipType = ShipType.MainShip;
+
+        abilityCost = MapLayout.mainshipAbilityCost;
+
+        visibility = false;
     }
 
     public override Vector3 GetShipCenterPositionFromCoord(List<Vector3Int> coords, Map map)
@@ -71,7 +76,7 @@ public class MainShip : Ship
         }
         else
         {
-            PlayManager.createShipServerRpc(4, false);   
+            PlayManager.createShipServerRpc(4, false);
         }
     }
 }

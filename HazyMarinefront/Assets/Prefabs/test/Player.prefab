@@ -147,18 +147,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7c80924937f76b42a8bf0852eafd82f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AlertDialogPrefab: {fileID: 5527439510296230002, guid: a3fc08da869f745439f46de9ee91c551,
+    type: 3}
   teamAShipPrefabs:
   - {fileID: 1934367507668350947, guid: 8965312e4b0c0ae4d8636d9de94b6a90, type: 3}
   - {fileID: -2432177384309961072, guid: 6b0c1549d42e52d409b9d096c5870088, type: 3}
   - {fileID: 329282666599445363, guid: 64a001a126dd4c649857c7faf03ba88a, type: 3}
   - {fileID: 6164735337386948877, guid: 4cb53b12beecc1a4cb3bee673d873e9a, type: 3}
-  - {fileID: 1934367507668350947, guid: e16031b54b3e7a4418a2536667fda5d1, type: 3}
+  - {fileID: 1923804658419268750, guid: 12b8c20ea387a0f4e9ea9fda5f740640, type: 3}
   teamBShipPrefabs:
   - {fileID: -8370568665772525696, guid: b160a6b8b83a83340928ad4596a23284, type: 3}
   - {fileID: -4889289539341254296, guid: 3bb7cf06fd020e7419bba613769ba9e7, type: 3}
   - {fileID: 2690357882951643416, guid: 4a806620a76c60c42bea5aa790cbe5dd, type: 3}
   - {fileID: 4789653886291661079, guid: 7d28da919f69dbc4286051ba3565099b, type: 3}
-  - {fileID: -8370568665772525696, guid: 3e40f6a6ea06b6444819045af15c05b2, type: 3}
+  - {fileID: 5360827379785861289, guid: 9bc78a7e5a21aae49b833c1c0901a0a3, type: 3}
   MapPrfab: {fileID: -4952535041585469654, guid: 17cc90735397fc54fb57af6f558e94e0,
     type: 3}
   FogPrefab: {fileID: 1156299195809612299, guid: 2f249478da1a3b14e85ec26b0b023f02,
@@ -169,7 +171,24 @@ MonoBehaviour:
     type: 3}
   WaterSplashPrefab: {fileID: -1831579963455581370, guid: c1c88308ebb5d2541a282905b854ee4c,
     type: 3}
-  IsTurn: 0
+  AMainShipVisibility:
+    m_InternalValue: 0
+  ASubShip1Visibility:
+    m_InternalValue: 0
+  ASubShip2Visibility:
+    m_InternalValue: 0
+  ASubShip3Visibility:
+    m_InternalValue: 0
+  BMainShipVisibility:
+    m_InternalValue: 0
+  BSubShip1Visibility:
+    m_InternalValue: 0
+  BSubShip2Visibility:
+    m_InternalValue: 0
+  BSubShip3Visibility:
+    m_InternalValue: 0
+  IsShipSpawned:
+    m_InternalValue: 0
   crossAtk: 0
 --- !u!114 &-6763149102899802792
 MonoBehaviour:
@@ -188,3 +207,4 @@ MonoBehaviour:
   WinLose:
     m_InternalValue: 0
   UIAvailable: 0
+  cost: 0

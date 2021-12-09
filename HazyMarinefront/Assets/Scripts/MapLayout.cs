@@ -65,12 +65,64 @@ public class MapLayout : MonoBehaviour
 
     public float OCEAN_TILE_INTERVAL = 2f;
 
+    // 시작 cost 값
+    public int START_COST = 0;
 
-    public static Vector2Int mapSize { get; set; }
-    public static int areaSize { get; set; }
-    public static int spawnLeastInterval { get; set; }
-    public static float oceanFogInterval { get; set; }
-    public static float oceanTileInterval { get; set; }
+    // 턴 시작시 마다 얻는 cost 값
+    public int TURN_COST = 2;
+
+    // ship ability cost
+    public int MAINSHIP_ABILITY_COST = 3;
+    public int SUBSHIP1_ABILITY_COST = 3;
+    public int SUBSHIP2_ABILITY_COST = 4;
+    public int SUBSHIP3_ABILITY_COST = 5;
+
+    
+
+
+    // do not modify!
+    public float SPAWNED_SHIP_ALPHA_VALUE = 1.0f;
+    public static float spawnedShipAlphaValue { get; set; }
+
+    public float SHIP_REVEALED_ALPHA_VALUE = 1.0f;
+    public static float shipRevealedAlphaValue { get; set; }
+    public string SHIP_UPPDER_COMPONENT_NAME = "Cube1";
+    public static string shipUpperComponentName { get; set; }
+    public string SHIP_DOWN_COMPONENT_NAME = "Cube2";
+    public static string shipDownComponentName { get; set; }
+
+    public string A_MAINSHIP_NAME_CLIENT = "TeamA_MainShip(Clone)";
+    public string A_SUBSHIP1_NAME_CLIENT = "TeamA_SubShip1(Clone)";
+    public string A_SUBSHIP2_NAME_CLIENT = "TeamA_SubShip2(Clone)";
+    public string A_SUBSHIP3_NAME_CLIENT = "TeamA_SubShip3(Clone)";
+
+    public string B_MAINSHIP_NAME_CLIENT = "TeamB_MainShip(Clone)";
+    public string B_SUBSHIP1_NAME_CLIENT = "TeamB_SubShip1(Clone)";
+    public string B_SUBSHIP2_NAME_CLIENT = "TeamB_SubShip2(Clone)";
+    public string B_SUBSHIP3_NAME_CLIENT = "TeamB_SubShip3(Clone)";
+
+    public static string aMainshipNameClient { get; set; }
+    public static string aSubship1NameClient { get; set; }
+    public static string aSubship2NameClient { get; set; }
+    public static string aSubship3NameClient { get; set; }
+    public static string bMainshipNameClient { get; set; }
+    public static string bSubship1NameClient { get; set; }
+    public static string bSubship2NameClient { get; set; }
+    public static string bSubship3NameClient { get; set; }
+
+
+    public static Vector2Int mapSize { get; private set; }
+    public static int areaSize { get; private set; }
+    public static int spawnLeastInterval { get; private set; }
+    public static float oceanFogInterval { get; private set; }
+    public static float oceanTileInterval { get; private set; }
+    public static int startCost { get; private set; }
+    public static int turnCost { get; private set; }
+
+    public static int mainshipAbilityCost { get; private set; }
+    public static int subship1AbilityCost { get; private set; }
+    public static int subship2AbilityCost { get; private set; }
+    public static int subship3AbilityCost { get; private set; }
 
     MapLayout()
     {
@@ -79,6 +131,28 @@ public class MapLayout : MonoBehaviour
         spawnLeastInterval = SPAWN_LEAST_INTERVAL;
         oceanFogInterval = OCEAN_FOG_INTERVAL;
         oceanTileInterval = OCEAN_TILE_INTERVAL;
+        startCost = START_COST;
+        turnCost = TURN_COST;
+
+        mainshipAbilityCost = MAINSHIP_ABILITY_COST;
+        subship1AbilityCost = SUBSHIP1_ABILITY_COST;
+        subship2AbilityCost = SUBSHIP2_ABILITY_COST;
+        subship3AbilityCost = SUBSHIP3_ABILITY_COST;
+
+        spawnedShipAlphaValue = SPAWNED_SHIP_ALPHA_VALUE;
+        shipRevealedAlphaValue = SHIP_REVEALED_ALPHA_VALUE;
+        shipUpperComponentName = SHIP_UPPDER_COMPONENT_NAME;
+        shipDownComponentName = SHIP_DOWN_COMPONENT_NAME;
+
+        aMainshipNameClient = A_MAINSHIP_NAME_CLIENT;
+        aSubship1NameClient = A_SUBSHIP1_NAME_CLIENT;
+        aSubship2NameClient = A_SUBSHIP2_NAME_CLIENT;
+        aSubship3NameClient = A_SUBSHIP3_NAME_CLIENT;
+
+        bMainshipNameClient = B_MAINSHIP_NAME_CLIENT;
+        bSubship1NameClient = B_SUBSHIP1_NAME_CLIENT;
+        bSubship2NameClient = B_SUBSHIP2_NAME_CLIENT;
+        bSubship3NameClient = B_SUBSHIP3_NAME_CLIENT;
     }
 
     public static Team GetTeamByShipSymbol(ShipSymbol s)
@@ -148,5 +222,22 @@ public class MapLayout : MonoBehaviour
         }
 
         return s;
+    }
+
+    public static int GetCostByShipType(ShipType type)
+    {
+        switch (type)
+        {
+            case ShipType.MainShip:
+                return MapLayout.mainshipAbilityCost;
+            case ShipType.SubShip1:
+                return MapLayout.subship1AbilityCost;
+            case ShipType.SubShip2:
+                return MapLayout.subship2AbilityCost;
+            case ShipType.SubShip3:
+                return MapLayout.subship3AbilityCost;
+            default:
+                return -1;
+        }
     }
 }

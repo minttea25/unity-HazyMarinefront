@@ -1,9 +1,9 @@
+using MLAPI;
+using MLAPI.Connection;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
-using MLAPI;
-using MLAPI.Connection;
 
 // 아직 파손 상태의 배 중심 좌표에 대한 구현은 없음
 
@@ -16,6 +16,11 @@ public class SubShip1 : Ship
         shipHealth = shipSizeX * shipSizeY;
 
         shipType = ShipType.SubShip1;
+
+        abilityCost = MapLayout.subship1AbilityCost;
+
+        visibility = false;
+
     }
 
     public override Vector3 GetShipCenterPositionFromCoord(List<Vector3Int> coords, Map map)
@@ -81,21 +86,16 @@ public class SubShip1 : Ship
             return;
         }
         //십자 포격
-        GameObject.Find("EventSystem").GetComponent<AttackBtnEventListner>().SetAttackMode(true);
+        if (this.team == Team.ATeam)
+        {
+            GameObject.Find("EventSystem").GetComponent<AttackBtnEventListner>().SetAttackMode(true);
+            GameObject.Find("EventSystem").GetComponent<AttackBtnEventListner>().SetCrossAttackMode(true);
 
-        //GameObject.Find("AbilityBtnEventObject").GetComponent<AbilityBtnEventListner>().SetCrossAttackMode(true);
-
-        PlayManager.crossAtk = true;
-        Debug.Log("십자공격 " + PlayManager.crossAtk);
-
-        //if (!GameObject.Find("AttackBtnEventObject").GetComponent<AttackBtnEventListner>().AttackMode)
-        //{
-        //    Vector2Int curCoord = GameObject.Find("Map(Clone)").GetComponent<Map>().selectedCoord;
-
-        //    GameObject.Find("NetworkManager").GetComponent<PlayManager>().AttackServerRpc(curCoord.x + 1, curCoord.y);
-        //    GameObject.Find("NetworkManager").GetComponent<PlayManager>().AttackServerRpc(curCoord.x - 1, curCoord.y);
-        //    GameObject.Find("NetworkManager").GetComponent<PlayManager>().AttackServerRpc(curCoord.x, curCoord.y + 1);
-        //    GameObject.Find("NetworkManager").GetComponent<PlayManager>().AttackServerRpc(curCoord.x, curCoord.y - 1);
-        //}
+        }
+        else
+        {
+            PlayManager.SetAttackModeClientRpc(true);
+            PlayManager.SetCrossAttackModeClientRpc(true);
+        }
     }
 }

@@ -60,7 +60,7 @@ public class AIPlayer : NetworkBehaviour
                 SetPositionServerRpc(new Vector3(6, 3, -2));
             }
         }
-        
+
         playerTeamRenderer.material.color = teamColors[(int)team.Value];
     }
 
@@ -121,8 +121,8 @@ public class AIPlayer : NetworkBehaviour
             {
                 if (map.grid[aiShip.shipCoords[i].x + xAxis, aiShip.shipCoords[i].y + yAxis] != ShipSymbol.NoShip &&
                     map.grid[aiShip.shipCoords[i].x + xAxis, aiShip.shipCoords[i].y + yAxis] != ShipSymbol.NM &&
-                    map.grid[aiShip.shipCoords[i].x + xAxis, aiShip.shipCoords[i].y + yAxis] != aiShip.Symbol)        
-                        collision = true;
+                    map.grid[aiShip.shipCoords[i].x + xAxis, aiShip.shipCoords[i].y + yAxis] != aiShip.Symbol)
+                    collision = true;
             }
             if (collision)
                 continue;
@@ -146,7 +146,7 @@ public class AIPlayer : NetworkBehaviour
         {
             return;
         }
-        
+
 
         Map map = NetworkManager.Singleton.ConnectedClients[0].PlayerObject.GetComponent<PlayManager>().MapInstance.GetComponent<Map>();
 
@@ -154,9 +154,9 @@ public class AIPlayer : NetworkBehaviour
         {
             for (int j = 0; j < MapLayout.mapSize.y; j++)
             {
-                if(map.fixedFogManager.fixedFogGrid[i, j] == null && map.grid[i, j] != ShipSymbol.NoShip && map.grid[i, j] != ShipSymbol.NM)
+                if (map.fixedFogManager.fixedFogGrid[i, j] == null && map.grid[i, j] != ShipSymbol.NoShip && map.grid[i, j] != ShipSymbol.NM)
                 {
-                    if(MapLayout.GetTeamByShipSymbol(map.grid[i, j]) == Team.ATeam)
+                    if (MapLayout.GetTeamByShipSymbol(map.grid[i, j]) == Team.ATeam)
                     {
                         PlayManager.AttackServerRpc(i, j);
                         atk = true;

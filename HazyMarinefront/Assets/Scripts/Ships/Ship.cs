@@ -6,6 +6,7 @@ using MLAPI;
 
 public abstract class Ship : NetworkBehaviour
 {
+    public bool visibility { get; set; }
     public List<Vector3Int> oldShipCoords { get; set; }
     public List<Vector3Int> shipCoords { get; set; }
     public Vector3 shipCenterPosition { get; set; }
@@ -26,12 +27,15 @@ public abstract class Ship : NetworkBehaviour
     private MaterialSetter materialSetter;
     private MoveShipController controller;
 
-    public NetworkObject Explosion;
-    public NetworkObject BigExplosion;
+    public int abilityCost { get; protected set; }
+
+    public NetworkObject AttackedParticlePrefab;
 
     public abstract Vector3 GetShipCenterPositionFromCoord(List<Vector3Int> coords, Map map);
     public abstract List<Vector3Int> GetPosibleShipSpawnCoordsList(Map map);
     public abstract void ActivateAbility();
+
+    public GameObject AlertDialog;
 
     public void Init()
     {
@@ -44,6 +48,9 @@ public abstract class Ship : NetworkBehaviour
         Symbol = MapLayout.GetSymbolByShiptypeTeam(this.shipType, team);
 
         Material m = GetMaterial(team);
+
+        // new
+        visibility = false;
 
 
         if (m != null)

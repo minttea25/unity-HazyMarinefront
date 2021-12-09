@@ -12,6 +12,7 @@ public class AttackBtnEventListner : MonoBehaviour
     public Text attackText;
 
     public bool AttackMode;
+    public bool CrossAttackMode;
 
     public void SetAttack()
     {
@@ -40,16 +41,15 @@ public class AttackBtnEventListner : MonoBehaviour
             AttackMode = false;
         }
     }
-
-    // Start is called before the first frame update
-    void Start()
+    public void SetCrossAttackMode(bool atk)
     {
-        AttackMode = false;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        if (atk)
+        {
+            CrossAttackMode = true;
+        }
+        else
+        {
+            CrossAttackMode = false;
+        }
     }
 }

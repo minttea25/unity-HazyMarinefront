@@ -51,8 +51,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   availableArea: []
-  Explosion: {fileID: 1828176872806910, guid: 64891a0eb28db934898420d80ca07cb3, type: 3}
-  BigExplosion: {fileID: 1121192042590650, guid: e1b08032bec16ba4eb1ae23cbd572664,
+  AttackedParticlePrefab: {fileID: 3694808153188650092, guid: ec47cdce6cbf28a45823f7d5926fd1b1,
     type: 3}
 --- !u!114 &6206159777067275964
 MonoBehaviour:
