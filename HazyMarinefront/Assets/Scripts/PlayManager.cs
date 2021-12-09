@@ -21,10 +21,12 @@ public class PlayManager : NetworkBehaviour
 
     [SerializeField] private Dictionary<ShipSymbol, NetworkObject> SymbolNetworkObject = new Dictionary<ShipSymbol, NetworkObject>();
 
+    public bool crossAtk;
 
     private void Awake()
     {
         IsTurn = false;
+        crossAtk = false;
     }
 
     // Start is called before the first frame update
@@ -63,7 +65,7 @@ public class PlayManager : NetworkBehaviour
     [ServerRpc]
     public void SpawnShipRandomCoordServerRpc()
     {
-        for (int k = 0; k < teamAShipPrefabs.Length; k++)
+        for (int k = 0; k < teamAShipPrefabs.Length - 1; k++)
         {
             NetworkObject shipInstance = Instantiate(
             teamAShipPrefabs[k],
@@ -102,7 +104,7 @@ public class PlayManager : NetworkBehaviour
             SymbolNetworkObject.Add(ship.Symbol, shipInstance);
         }
 
-        for (int k = 0; k < teamBShipPrefabs.Length; k++)
+        for (int k = 0; k < teamBShipPrefabs.Length - 1; k++)
         {
             NetworkObject shipInstance = Instantiate(
             teamBShipPrefabs[k],
@@ -141,7 +143,8 @@ public class PlayManager : NetworkBehaviour
         }
     }
 
-    public Ship createShip(int num, bool shipType)
+    [ServerRpc]
+    public void createShipServerRpc(int num, bool shipType)
     {
         if (shipType)
         {
@@ -155,7 +158,31 @@ public class PlayManager : NetworkBehaviour
             ship.team = Team.ATeam;
             ship.Init();
 
-            return ship;
+            List<Vector3Int> temp = ship.GetPosibleShipSpawnCoordsList(MapInstance.GetComponent<Map>());
+
+
+            ship.shipCoords.Clear();
+            ship.shipCoords = temp.ConvertAll(o => new Vector3Int(o.x, o.y, o.z));
+
+
+            MapInstance.GetComponent<Map>().ShipsInFieldList.Add(ship);
+
+            for (int i = 0; i < ship.shipCoords.Count; i++)
+            {
+                MapInstance.GetComponent<Map>().grid[ship.shipCoords[i].x, ship.shipCoords[i].y] = MapLayout.GetSymbolByShiptypeTeam(ship.shipType, ship.team);
+            }
+
+            ship.shipCenterPosition = ship.GetShipCenterPositionFromCoord(ship.shipCoords, MapInstance.GetComponent<Map>());
+
+            Vector3 pos = ship.shipCenterPosition;
+            ship.transform.position = pos;
+
+            ship.transform.parent = MapInstance.GetComponent<Map>().shipHolder.transform;
+            ship.transform.localScale = new Vector3(1, 1, 1);
+
+            shipInstance.tag = ship.Symbol.ToString(); //A4 not defined?
+
+            SymbolNetworkObject.Add(ship.Symbol, shipInstance);
         }
         else
         {
@@ -169,7 +196,30 @@ public class PlayManager : NetworkBehaviour
             ship.team = Team.BTeam;
             ship.Init();
 
-            return ship;
+            List<Vector3Int> temp = ship.GetPosibleShipSpawnCoordsList(MapInstance.GetComponent<Map>());
+
+            ship.shipCoords.Clear();
+            ship.shipCoords = temp.ConvertAll(o => new Vector3Int(o.x, o.y, o.z));
+
+
+            MapInstance.GetComponent<Map>().ShipsInFieldList.Add(ship);
+
+            for (int i = 0; i < ship.shipCoords.Count; i++)
+            {
+                MapInstance.GetComponent<Map>().grid[ship.shipCoords[i].x, ship.shipCoords[i].y] = MapLayout.GetSymbolByShiptypeTeam(ship.shipType, ship.team);
+            }
+
+            ship.shipCenterPosition = ship.GetShipCenterPositionFromCoord(ship.shipCoords, MapInstance.GetComponent<Map>());
+
+            Vector3 pos = ship.shipCenterPosition;
+            ship.transform.position = pos;
+
+            ship.transform.parent = MapInstance.GetComponent<Map>().shipHolder.transform;
+            ship.transform.localScale = new Vector3(1, 1, 1);
+
+            shipInstance.tag = ship.Symbol.ToString();
+
+            SymbolNetworkObject.Add(ship.Symbol, shipInstance);
         }
     }
 
@@ -193,6 +243,7 @@ public class PlayManager : NetworkBehaviour
 
         ship.transform.parent = MapInstance.GetComponent<Map>().shipHolder.transform;
         ship.transform.localScale = new Vector3(1, 1, 1);
+        
     }
 
     [ServerRpc]
@@ -250,6 +301,8 @@ public class PlayManager : NetworkBehaviour
     {
         Map map = NetworkManager.Singleton.ConnectedClients[0].PlayerObject.GetComponent<PlayManager>().MapInstance.GetComponent<Map>();
 
+        Ship curShip = map.GetSelectedShip();
+
         bool exist = map.SetSelectedShip(map.GetShipSymbolByCoords(new Vector2Int(x, y)));
         if (exist)
         { 
@@ -264,6 +317,7 @@ public class PlayManager : NetworkBehaviour
                     Debug.Log("damaged ship : Vector(" + x + ", " + y + ")");
                 }
             }
+            map.SetSelectedShip(MapLayout.GetSymbolByShiptypeTeam(curShip.shipType, curShip.team));
         }
         else
         {
@@ -290,6 +344,13 @@ public class PlayManager : NetworkBehaviour
                 Instantiate(BigExplosionPrefab, ship.transform.position, Quaternion.identity).Spawn();
                 Debug.Log("ship destroyed");
 
+                for (int i = 0; i < ship.shipCoords.Count; i++)
+                {
+                    map.grid[ship.shipCoords[i].x, ship.shipCoords[i].y] = ShipSymbol.NoShip;
+                    //Debug.Log();
+                }
+                
+
                 // list 에서 파괴된 배 삭제
                 bool removed = map.RemoveShipInList(ship.Symbol);
                 if (removed)
@@ -303,7 +364,7 @@ public class PlayManager : NetworkBehaviour
 
                 if (NetworkManager.Singleton.IsServer)
                 {
-                    Destroy(GameObject.FindGameObjectWithTag(ship.Symbol.ToString()));
+                    Destroy(GameObject.FindGameObjectWithTag(ship.Symbol.ToString())); //A4 not defined?
                 }
                 else
                 {

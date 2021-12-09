@@ -55,8 +55,23 @@ public class MoveBtnEventListener : MonoBehaviour
             case "SubShip1": shipType = ShipType.SubShip1; break;
             case "SubShip2": shipType = ShipType.SubShip2; break;
             case "SubShip3": shipType = ShipType.SubShip3; break;
+            case "SubShip4": shipType = ShipType.SubShip4; break;
             default: return;
         }
+        ulong localClientId = NetworkManager.Singleton.LocalClientId;
+
+        if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(localClientId, out NetworkClient networkClient))
+        {
+            Debug.Log("Cannot find NetworkClient");
+            return;
+        }
+
+        if (!networkClient.PlayerObject.TryGetComponent<PlayManager>(out var PlayManager))
+        {
+            Debug.Log("Cannot find PlayerManager");
+            return;
+        }
+        PlayManager.MapInstance.GetComponent<Map>().SetSelectedShip(MapLayout.GetSymbolByShiptypeTeam(shipType, team));
     }
 
     public void SelectedDirectionChanged()
@@ -89,6 +104,20 @@ public class MoveBtnEventListener : MonoBehaviour
             case "Team B": team = Team.BTeam; break;
             default: return;
         }
+        ulong localClientId = NetworkManager.Singleton.LocalClientId;
+
+        if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(localClientId, out NetworkClient networkClient))
+        {
+            Debug.Log("Cannot find NetworkClient");
+            return;
+        }
+
+        if (!networkClient.PlayerObject.TryGetComponent<PlayManager>(out var PlayManager))
+        {
+            Debug.Log("Cannot find PlayerManager");
+            return;
+        }
+        PlayManager.MapInstance.GetComponent<Map>().SetSelectedShip(MapLayout.GetSymbolByShiptypeTeam(shipType, team));
     }
 
     public void SetActiveMoveCanvas(bool act)

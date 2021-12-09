@@ -67,22 +67,6 @@ public class SubShip1 : Ship
 
     public override void ActivateAbility()
     {
-        //십자 포격
-        GameObject.Find("AttackBtnEventObject").GetComponent<AttackBtnEventListner>().SetAttackMode(true);
-
-        if (!GameObject.Find("AttackBtnEventObject").GetComponent<AttackBtnEventListner>().AttackMode)
-        {
-            Vector2Int curCoord = GameObject.Find("Map(Clone)").GetComponent<Map>().selectedCoord;
-
-            GameObject.Find("NetworkManager").GetComponent<PlayManager>().AttackServerRpc(curCoord.x + 1, curCoord.y);
-            GameObject.Find("NetworkManager").GetComponent<PlayManager>().AttackServerRpc(curCoord.x - 1, curCoord.y);
-            GameObject.Find("NetworkManager").GetComponent<PlayManager>().AttackServerRpc(curCoord.x, curCoord.y + 1);
-            GameObject.Find("NetworkManager").GetComponent<PlayManager>().AttackServerRpc(curCoord.x, curCoord.y - 1);
-        }
-    }
-
-    public override void ActivateAbility()
-    {
         ulong localClientId = NetworkManager.Singleton.LocalClientId;
 
         if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(localClientId, out NetworkClient networkClient))
@@ -97,7 +81,7 @@ public class SubShip1 : Ship
             return;
         }
         //십자 포격
-        GameObject.Find("AttackBtnEventObject").GetComponent<AttackBtnEventListner>().SetAttackMode(true);
+        GameObject.Find("EventSystem").GetComponent<AttackBtnEventListner>().SetAttackMode(true);
 
         //GameObject.Find("AbilityBtnEventObject").GetComponent<AbilityBtnEventListner>().SetCrossAttackMode(true);
 

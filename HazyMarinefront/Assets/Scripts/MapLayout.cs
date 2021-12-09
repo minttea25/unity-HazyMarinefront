@@ -88,7 +88,7 @@ public class MapLayout : MonoBehaviour
             return Team.ATeam;
         }
 
-        if (s == ShipSymbol.A0 || s == ShipSymbol.A1 || s == ShipSymbol.A2 || s == ShipSymbol.A3)
+        if (s == ShipSymbol.A0 || s == ShipSymbol.A1 || s == ShipSymbol.A2 || s == ShipSymbol.A3 || s == ShipSymbol.A4)
         {
             return Team.ATeam;
         }

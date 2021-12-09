@@ -42,7 +42,20 @@ public class Tile : MonoBehaviour
         // RPC method parameter does not support serialization: UnityEngine.Vector2Int
         // -> int 값 2개 사용
         PlayManager.AttackServerRpc(curCoord.x, curCoord.y);
-
+        if (PlayManager.crossAtk)
+        {
+            if (curCoord.x < MapLayout.mapSize.x)
+                PlayManager.AttackServerRpc(curCoord.x + 1, curCoord.y);
+            if (curCoord.x > 0)
+                PlayManager.AttackServerRpc(curCoord.x - 1, curCoord.y);
+            if (curCoord.y < MapLayout.mapSize.y)
+                PlayManager.AttackServerRpc(curCoord.x, curCoord.y + 1);
+            if (curCoord.y > 0)
+                PlayManager.AttackServerRpc(curCoord.x, curCoord.y - 1);
+            Debug.Log("십자공격 " + PlayManager.crossAtk);
+            PlayManager.crossAtk = false;
+            //GameObject.Find("AbilityBtnEventObject").GetComponent<AbilityBtnEventListner>().SetCrossAttackMode(false);
+        }
         // added (ojy)
         GameObject.Find("Map(Clone)").GetComponent<Map>().selectedCoord = curCoord;
 
