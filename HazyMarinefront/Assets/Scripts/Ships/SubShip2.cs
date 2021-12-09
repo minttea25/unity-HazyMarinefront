@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using MLAPI;
+using MLAPI.Connection;
 
 public class SubShip2 : Ship
 {
@@ -66,14 +68,28 @@ public class SubShip2 : Ship
 
     public override void ActivateAbility()
     {
+        ulong localClientId = NetworkManager.Singleton.LocalClientId;
+
+        if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(localClientId, out NetworkClient networkClient))
+        {
+            Debug.Log("Cannot find NetworkClient");
+            return;
+        }
+
+        if (!networkClient.PlayerObject.TryGetComponent<PlayManager>(out var PlayManager))
+        {
+            Debug.Log("Cannot find PlayerManager");
+            return;
+        }
+
         //기뢰 설치
         int x = this.shipCoords[0].x;
         int y = this.shipCoords[0].y;
-        ShipSymbol loc = GameObject.Find("NetworkManager").GetComponent<PlayManager>().MapInstance.GetComponent<Map>().grid[x + 1, y];
+        ShipSymbol loc = PlayManager.MapInstance.GetComponent<Map>().grid[x + 1, y];
         if (loc == ShipSymbol.NoShip)
-            GameObject.Find("NetworkManager").GetComponent<PlayManager>().MapInstance.GetComponent<Map>().grid[x + 1, y] = ShipSymbol.NM;
+            PlayManager.MapInstance.GetComponent<Map>().grid[x + 1, y] = ShipSymbol.NM;
         else
-            GameObject.Find("NetworkManager").GetComponent<PlayManager>().AttackServerRpc(x + 1, y);
+            PlayManager.AttackServerRpc(x + 1, y);
 
         //현재로는 배 우측 하단에 기뢰 설치 -> 추후 UI 생성 시 지뢰 설치 칸을 정하는 파트 추가
     }

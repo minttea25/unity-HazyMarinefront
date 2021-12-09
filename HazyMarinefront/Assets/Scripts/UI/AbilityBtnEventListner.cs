@@ -9,26 +9,27 @@ public class AbilityBtnEventListner : MonoBehaviour
 {
     public GameObject AlertDialogPrefab;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public Dropdown dirDropDown;
+    public Dropdown teamDropDown;
+    public Dropdown shipDropDown;
 
-    // Update is called once per frame
-    void Update()
+    public DirectionType dirType { get; private set; }
+    public Team team { get; private set; }
+    public ShipType shipType { get; private set; }
+
+    public bool MainShipAbilityUsed;
+
+    private void Awake()
     {
-        
+        dirType = DirectionType.Front;
+        team = Team.ATeam;
+        shipType = ShipType.MainShip;
+
+        MainShipAbilityUsed = false;
     }
 
     public void ActivateAbility()
     {
-        // 아래 코드 수정 필요 (ojy 업데이트 된 브랜치에서 확인 후 가져올 것. 일단 아래 코드는 null)
-        //Ship s = GameObject.Find("NetworkManager").GetComponent<PlayManager>().MapInstance.GetComponent<Map>().GetSelectedShip();
-        int s = 4;
-
-
-        // 아래 코드는 검증 완료
         ulong localClientId = NetworkManager.Singleton.LocalClientId;
 
         if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(localClientId, out NetworkClient networkClient))
@@ -41,26 +42,90 @@ public class AbilityBtnEventListner : MonoBehaviour
             return;
         }
 
+        int c = MapLayout.GetCostByShipType(shipType);
         // cost 있는지 확인
-        if (TurnManager.cost < s)
+        if (TurnManager.cost < c)
         {
             // 부족합니다! 경고창 띄우기
-            Debug.Log("Cost 부족! 필요 cost: " + s);
+            Debug.Log("Cost 부족! 필요 cost: " + c);
             GameObject dialog = Instantiate(
                 AlertDialogPrefab
                 );
-            dialog.GetComponent<AlertDialog>().SetTitle("Cost 부족! - 필요 Cost: " + s);
+            dialog.GetComponent<AlertDialog>().SetTitle("Cost 부족! - 필요 Cost: " + c);
             return;
         }
         else
         {
-            Debug.Log("cost 소모하여 어빌리티 발동: " + s);
+            Debug.Log("cost 소모하여 어빌리티 발동: " + c);
         }
 
-        TurnManager.cost -= s;
+        if (MainShipAbilityUsed)
+        {
+            GameObject dialog = Instantiate(
+                AlertDialogPrefab);
+            dialog.GetComponent<AlertDialog>().SetTitle("MainShip의 능력은 1번만 발동 가능");
+            return;
+        }
+
+
+        if (!networkClient.PlayerObject.TryGetComponent<PlayManager>(out var PlayManager))
+        {
+            return;
+        }
+
+        ShipSymbol ss = MapLayout.GetSymbolByShiptypeTeam(shipType, team);
+        PlayManager.ActivateShipAbilityServerRpc((int)ss);
+
+        TurnManager.cost -= c;
         GameObject.Find("CostText").GetComponent<Text>().text = TurnManager.cost.ToString();
 
-        // 가장 위 코드와 마찬가지로 null 값으로 실행 x
-        //s.ActivateAbility();
+        if (ss == ShipSymbol.A0 || ss == ShipSymbol.B0)
+        {
+            MainShipAbilityUsed = true;
+        }
+    }
+
+    public void SelectedShipTypeChanged()
+    {
+        switch (shipDropDown.captionText.text)
+        {
+            case "MainShip": shipType = ShipType.MainShip; break;
+            case "SubShip1": shipType = ShipType.SubShip1; break;
+            case "SubShip2": shipType = ShipType.SubShip2; break;
+            case "SubShip3": shipType = ShipType.SubShip3; break;
+            default: return;
+        }
+    }
+
+    public void SelectedDirectionChanged()
+    {
+        switch (dirDropDown.captionText.text)
+        {
+            case "Front":
+                dirType = DirectionType.Front;
+                break;
+            case "Back":
+                dirType = DirectionType.Back;
+                break;
+            case "Right":
+                dirType = DirectionType.Right;
+                break;
+            case "Left":
+                dirType = DirectionType.Left;
+                break;
+            default:
+                Debug.Log("dir error - MoveBtnEventListener");
+                return;
+        }
+    }
+
+    public void SelectedTeamChanged()
+    {
+        switch (teamDropDown.captionText.text)
+        {
+            case "Team A": team = Team.ATeam; break;
+            case "Team B": team = Team.BTeam; break;
+            default: return;
+        }
     }
 }

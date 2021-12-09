@@ -148,6 +148,8 @@ MonoBehaviour:
   availableArea: []
   AttackedParticlePrefab: {fileID: 3694808153188650092, guid: ec47cdce6cbf28a45823f7d5926fd1b1,
     type: 3}
+  AlertDialog: {fileID: 5527439510296230002, guid: a3fc08da869f745439f46de9ee91c551,
+    type: 3}
 --- !u!114 &5534445129423513407
 MonoBehaviour:
   m_ObjectHideFlags: 0

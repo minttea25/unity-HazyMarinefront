@@ -35,6 +35,8 @@ public abstract class Ship : NetworkBehaviour
     public abstract List<Vector3Int> GetPosibleShipSpawnCoordsList(Map map);
     public abstract void ActivateAbility();
 
+    public GameObject AlertDialog;
+
     public void Init()
     {
         oldShipCoords = new List<Vector3Int>();

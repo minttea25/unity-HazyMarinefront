@@ -23,7 +23,5 @@ public class MaterialSetter : MonoBehaviour
         Color oldColor = mat.color;
         Color newColor = new Color(oldColor.r, oldColor.g, oldColor.b, alphaValue);
         mat.SetColor("_Color", newColor);
-        Debug.Log("OLD: " + oldColor.a);
-        Debug.Log("NEW: " + newColor.a);
     }
 }

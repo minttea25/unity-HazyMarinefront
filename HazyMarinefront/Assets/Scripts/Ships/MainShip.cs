@@ -1,11 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using MLAPI;
+using MLAPI.Connection;
 using Random = UnityEngine.Random;
 
 
 public class MainShip : Ship
 {
+
     private void Awake()
     {
         shipSizeX = 1;
@@ -52,18 +55,28 @@ public class MainShip : Ship
 
     public override void ActivateAbility()
     {
+        ulong localClientId = NetworkManager.Singleton.LocalClientId;
+
+        if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(localClientId, out NetworkClient networkClient))
+        {
+            Debug.Log("Cannot find NetworkClient");
+            return;
+        }
+
+        if (!networkClient.PlayerObject.TryGetComponent<PlayManager>(out var PlayManager))
+        {
+            Debug.Log("Cannot find PlayerManager");
+            return;
+        }
+
         //아군 소환
         if (this.team == Team.ATeam)
         {
-            Ship newShip = GameObject.Find("NetworkManager").GetComponent<PlayManager>().createShip(Random.Range(1, 3), true);
-            List<Vector3Int> temp = newShip.GetPosibleShipSpawnCoordsList(GameObject.Find("NetworkManager").GetComponent<PlayManager>().MapInstance.GetComponent<Map>());
-            GameObject.Find("NetworkManager").GetComponent<PlayManager>().placeShip(newShip, temp);
+            PlayManager.createShipServerRpc(4, true);
         }
         else
         {
-            Ship newShip = GameObject.Find("NetworkManager").GetComponent<PlayManager>().createShip(Random.Range(1, 3), false);
-            List<Vector3Int> temp = newShip.GetPosibleShipSpawnCoordsList(GameObject.Find("NetworkManager").GetComponent<PlayManager>().MapInstance.GetComponent<Map>());
-            GameObject.Find("NetworkManager").GetComponent<PlayManager>().placeShip(newShip, temp);
+            PlayManager.createShipServerRpc(4, false);
         }
     }
 }

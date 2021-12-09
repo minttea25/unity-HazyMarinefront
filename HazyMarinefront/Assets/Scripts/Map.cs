@@ -35,7 +35,6 @@ public class Map : NetworkBehaviour
     private void Awake()
     {
         SetShipSymbolDefault();
-
     }
     private void SetShipSymbolDefault()
     {
@@ -63,6 +62,9 @@ public class Map : NetworkBehaviour
         {
             return null;
         }
+
+        // ojy code
+        //return selectedShip;
     }
 
     // 이동에 성공 시 true 반환
@@ -136,7 +138,6 @@ public class Map : NetworkBehaviour
 
         if (mine && minehit != -1)
         {
-
             ulong localClientId = NetworkManager.Singleton.LocalClientId;
 
             if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(localClientId, out NetworkClient networkClient))
@@ -211,9 +212,17 @@ public class Map : NetworkBehaviour
                     continue;
                 if (grid[i, j] == s)
                 {
-                    selectedShip = GetShipBySymbol(s);
-                    Debug.Log(selectedShip + " is selected");
-                    return true;
+                    Ship t = GetShipBySymbol(s);
+                    if (t == null)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        selectedShip = t;
+                        Debug.Log(selectedShip + " is selected");
+                        return true;
+                    }
                 }
             }
         }
@@ -221,8 +230,6 @@ public class Map : NetworkBehaviour
         return false;
     }
 
-    /*@param
-     */
     public Ship GetShipBySymbol(ShipSymbol s)
     {
         for (int i = 0; i < ShipsInFieldList.Count; i++)
@@ -270,5 +277,10 @@ public class Map : NetworkBehaviour
         }
 
         return false;
+    }
+
+    private void Update()
+    {
+        //Debug.Log("SELECT: " + selectedShip.Symbol);
     }
 }

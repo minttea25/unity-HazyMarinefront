@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using MLAPI;
+using MLAPI.Connection;
 
 public class SubShip3 : Ship
 {
@@ -72,13 +74,27 @@ public class SubShip3 : Ship
 
     public override void ActivateAbility()
     {
+        ulong localClientId = NetworkManager.Singleton.LocalClientId;
+
+        if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(localClientId, out NetworkClient networkClient))
+        {
+            Debug.Log("Cannot find NetworkClient");
+            return;
+        }
+
+        if (!networkClient.PlayerObject.TryGetComponent<PlayManager>(out var PlayManager))
+        {
+            Debug.Log("Cannot find PlayerManager");
+            return;
+        }
+
         //자가 수리
         for (int i = 0; i < this.shipSizeY; i++)
         {
             if (this.shipCoords[i].z != 0)
             {
                 //this.shipCoords[i].z = 0;
-                GameObject.Find("NetworkManager").GetComponent<PlayManager>().MapInstance.GetComponent<Map>().GetSelectedShip().shipCoords[i] = new Vector3Int(this.shipCoords[i].x, this.shipCoords[i].y, 0);
+                PlayManager.MapInstance.GetComponent<Map>().GetSelectedShip().shipCoords[i] = new Vector3Int(this.shipCoords[i].x, this.shipCoords[i].y, 0);
                 this.shipHealth++;
                 break;
             }

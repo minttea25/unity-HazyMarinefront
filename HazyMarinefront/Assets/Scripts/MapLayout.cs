@@ -81,7 +81,7 @@ public class MapLayout : MonoBehaviour
 
 
     // do not modify!
-    public float SPAWNED_SHIP_ALPHA_VALUE = 0.0f;
+    public float SPAWNED_SHIP_ALPHA_VALUE = 1.0f;
     public static float spawnedShipAlphaValue { get; set; }
 
     public float SHIP_REVEALED_ALPHA_VALUE = 1.0f;
@@ -222,5 +222,22 @@ public class MapLayout : MonoBehaviour
         }
 
         return s;
+    }
+
+    public static int GetCostByShipType(ShipType type)
+    {
+        switch (type)
+        {
+            case ShipType.MainShip:
+                return MapLayout.mainshipAbilityCost;
+            case ShipType.SubShip1:
+                return MapLayout.subship1AbilityCost;
+            case ShipType.SubShip2:
+                return MapLayout.subship2AbilityCost;
+            case ShipType.SubShip3:
+                return MapLayout.subship3AbilityCost;
+            default:
+                return -1;
+        }
     }
 }
