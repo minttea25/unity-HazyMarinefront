@@ -223,29 +223,6 @@ public class PlayManager : NetworkBehaviour
         }
     }
 
-    public void placeShip(Ship ship, List<Vector3Int> coords)
-    {
-        ship.shipCoords.Clear();
-        ship.shipCoords = coords.ConvertAll(o => new Vector3Int(o.x, o.y, o.z));
-
-
-        MapInstance.GetComponent<Map>().ShipsInFieldList.Add(ship);
-
-        for (int i = 0; i < ship.shipCoords.Count; i++)
-        {
-            MapInstance.GetComponent<Map>().grid[ship.shipCoords[i].x, ship.shipCoords[i].y] = MapLayout.GetSymbolByShiptypeTeam(ship.shipType, ship.team);
-        }
-
-        ship.shipCenterPosition = ship.GetShipCenterPositionFromCoord(ship.shipCoords, MapInstance.GetComponent<Map>());
-
-        Vector3 pos = ship.shipCenterPosition;
-        ship.transform.position = pos;
-
-        ship.transform.parent = MapInstance.GetComponent<Map>().shipHolder.transform;
-        ship.transform.localScale = new Vector3(1, 1, 1);
-        
-    }
-
     [ServerRpc]
     private void SpawnFogServerRpc()
     {
