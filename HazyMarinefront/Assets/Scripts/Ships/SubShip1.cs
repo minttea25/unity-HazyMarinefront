@@ -1,4 +1,5 @@
 using MLAPI;
+using MLAPI.Connection;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,6 +18,8 @@ public class SubShip1 : Ship
         shipType = ShipType.SubShip1;
 
         abilityCost = MapLayout.subship1AbilityCost;
+
+        visibility = false;
 
     }
 
@@ -69,17 +72,35 @@ public class SubShip1 : Ship
 
     public override void ActivateAbility()
     {
-        //십자 포격
-        GameObject.Find("AttackBtnEventObject").GetComponent<AttackBtnEventListner>().SetAttackMode(true);
+        ulong localClientId = NetworkManager.Singleton.LocalClientId;
 
-        if (!GameObject.Find("AttackBtnEventObject").GetComponent<AttackBtnEventListner>().AttackMode)
+        if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(localClientId, out NetworkClient networkClient))
         {
-            Vector2Int curCoord = GameObject.Find("Map(Clone)").GetComponent<Map>().selectedCoord;
-
-            GameObject.Find("NetworkManager").GetComponent<PlayManager>().AttackServerRpc(curCoord.x + 1, curCoord.y);
-            GameObject.Find("NetworkManager").GetComponent<PlayManager>().AttackServerRpc(curCoord.x - 1, curCoord.y);
-            GameObject.Find("NetworkManager").GetComponent<PlayManager>().AttackServerRpc(curCoord.x, curCoord.y + 1);
-            GameObject.Find("NetworkManager").GetComponent<PlayManager>().AttackServerRpc(curCoord.x, curCoord.y - 1);
+            Debug.Log("Cannot find NetworkClient");
+            return;
         }
+
+        if (!networkClient.PlayerObject.TryGetComponent<PlayManager>(out var PlayManager))
+        {
+            Debug.Log("Cannot find PlayerManager");
+            return;
+        }
+        //십자 포격
+        GameObject.Find("EventSystem").GetComponent<AttackBtnEventListner>().SetAttackMode(true);
+
+        //GameObject.Find("AbilityBtnEventObject").GetComponent<AbilityBtnEventListner>().SetCrossAttackMode(true);
+
+        PlayManager.crossAtk = true;
+        Debug.Log("십자공격 " + PlayManager.crossAtk);
+
+        //if (!GameObject.Find("AttackBtnEventObject").GetComponent<AttackBtnEventListner>().AttackMode)
+        //{
+        //    Vector2Int curCoord = GameObject.Find("Map(Clone)").GetComponent<Map>().selectedCoord;
+
+        //    GameObject.Find("NetworkManager").GetComponent<PlayManager>().AttackServerRpc(curCoord.x + 1, curCoord.y);
+        //    GameObject.Find("NetworkManager").GetComponent<PlayManager>().AttackServerRpc(curCoord.x - 1, curCoord.y);
+        //    GameObject.Find("NetworkManager").GetComponent<PlayManager>().AttackServerRpc(curCoord.x, curCoord.y + 1);
+        //    GameObject.Find("NetworkManager").GetComponent<PlayManager>().AttackServerRpc(curCoord.x, curCoord.y - 1);
+        //}
     }
 }

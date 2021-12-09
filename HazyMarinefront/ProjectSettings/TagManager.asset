@@ -12,6 +12,8 @@ TagManager:
   - B1
   - B2
   - B3
+  - A4
+  - B4
   layers:
   - Default
   - TransparentFX

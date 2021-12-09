@@ -56,6 +56,12 @@ public class FixedFogManager : MonoBehaviour
 
     internal void ClearFog(Vector2Int coords)
     {
+        if (coords.x < 0 || coords.x >= MapLayout.mapSize.x
+            || coords.y <0 || coords.y >= MapLayout.mapSize.y)
+        {
+            return;
+        }
+
         if (fixedFogGrid[coords.x, coords.y] != null)
         {
             Destroy(fixedFogGrid[coords.x, coords.y].gameObject);

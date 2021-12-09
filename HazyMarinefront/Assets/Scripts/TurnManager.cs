@@ -219,9 +219,4 @@ public class TurnManager : NetworkBehaviour
         //cost += v;
         GameObject.Find("CostText").GetComponent<Text>().text = TurnManager.cost.ToString();
     }
-
-
-    private void Update()
-    {
-    }
 }
