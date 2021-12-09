@@ -400,7 +400,7 @@ public class AIManager : MonoBehaviour
 
     public void ActivateShipAbility(int symbol)
     {
-        Map map = GetComponent<AIManager>().MapInstance.GetComponent<Map>();
+        AIMap map = GetComponent<AIManager>().MapInstance.GetComponent<AIMap>();
 
         map.SetSelectedShip((ShipSymbol)symbol);
         Ship s = map.GetSelectedShip();
@@ -412,7 +412,7 @@ public class AIManager : MonoBehaviour
 
     public void CheckGameOver()
     {
-        Map map = GetComponent<AIManager>().MapInstance.GetComponent<Map>();
+        AIMap map = GetComponent<AIManager>().MapInstance.GetComponent<AIMap>();
 
         bool ATeamShips = map.IsThereLeftShip(Team.ATeam);
         bool BTeamShips = map.IsThereLeftShip(Team.BTeam);
@@ -443,41 +443,21 @@ public class AIManager : MonoBehaviour
         }
         else
         {
-            ulong localClientId = NetworkManager.Singleton.LocalClientId;
-
-            if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(localClientId, out NetworkClient networkClient))
-            {
-                return;
-            }
-
-            if (!networkClient.PlayerObject.TryGetComponent<TurnManager>(out var TurnManager))
-            {
-                return;
-            }
-
             // who win?
-            TurnManager.SetWinLose(winLose);
+            GetComponent<TurnManager>().SetWinLose(winLose);
+            //TurnManager.SetWinLose(winLose);
 
             // GameOver Turn
-            TurnManager.SetGameState(4);
+            GetComponent<TurnManager>().SetGameState(4);
+            //TurnManager.SetGameState(4);
         }
     }
 
-    private void ChangeAlphaValueShipInServerServerRpc(ShipSymbol ss, float alphaValue)
+    private void ChangeAlphaValueShipInServer(ShipSymbol ss, float alphaValue)
     {
-        ulong localClientId = NetworkManager.Singleton.LocalClientId;
 
-        if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(localClientId, out NetworkClient networkClient))
-        {
-            return;
-        }
-
-        if (!networkClient.PlayerObject.TryGetComponent<PlayManager>(out var playManager))
-        {
-            return;
-        }
-
-        playManager.SymbolNetworkInstance.TryGetValue(ss, out NetworkObject shipInstance);
+        //playManager.SymbolNetworkInstance.TryGetValue(ss, out NetworkObject shipInstance);
+        GetComponent<AIManager>().SymbolNetworkInstance.TryGetValue(ss, out GameObject shipInstance);
 
         if (shipInstance == null)
         {
@@ -492,17 +472,17 @@ public class AIManager : MonoBehaviour
 
     private void OnEnable()
     {
-        AMainShipVisibility.OnValueChanged += AMainChanged;
-        ASubShip1Visibility.OnValueChanged += ASub1Changed;
-        ASubShip2Visibility.OnValueChanged += ASub2Changed;
-        ASubShip3Visibility.OnValueChanged += ASub3Changed;
+        //AMainShipVisibility.OnValueChanged += AMainChanged;
+        //ASubShip1Visibility.OnValueChanged += ASub1Changed;
+        //ASubShip2Visibility.OnValueChanged += ASub2Changed;
+        //ASubShip3Visibility.OnValueChanged += ASub3Changed;
 
-        BMainShipVisibility.OnValueChanged += BMainChanged;
-        BSubShip1Visibility.OnValueChanged += BSub1Changed;
-        BSubShip2Visibility.OnValueChanged += BSub2Changed;
-        BSubShip3Visibility.OnValueChanged += BSub3Changed;
+        //BMainShipVisibility.OnValueChanged += BMainChanged;
+        //BSubShip1Visibility.OnValueChanged += BSub1Changed;
+        //BSubShip2Visibility.OnValueChanged += BSub2Changed;
+        //BSubShip3Visibility.OnValueChanged += BSub3Changed;
 
-        IsShipSpawned.OnValueChanged += IsShipSpawnedValueChanged;
+        //IsShipSpawned.OnValueChanged += IsShipSpawnedValueChanged;
 
     }
 
@@ -573,19 +553,19 @@ public class AIManager : MonoBehaviour
 
     private void ChangeAlphaValueShip(ShipSymbol ss, float alphaValue)
     {
-        if (NetworkManager.Singleton.IsServer)
-        {
-            ChangeAlphaValueShipInServerServerRpc(ss, alphaValue);
-        }
-        else
-        {
+        //if (NetworkManager.Singleton.IsServer)
+        //{
+            //ChangeAlphaValueShipInServer(ss, alphaValue);
+        //}
+        //else
+        //{
             ChangeAlphaValueShipInClient(ss, alphaValue);
-        }
+        //}
     }
 
     private void ChangeAlphaValueShipInClient(ShipSymbol ss, float alphaValue)
     {
-        if (NetworkManager.Singleton.IsServer) { return; }
+        //if (NetworkManager.Singleton.IsServer) { return; }
 
         string name = "";
         switch (ss)
@@ -623,17 +603,17 @@ public class AIManager : MonoBehaviour
 
     private void OnDisable()
     {
-        AMainShipVisibility.OnValueChanged -= AMainChanged;
-        ASubShip1Visibility.OnValueChanged -= ASub1Changed;
-        ASubShip2Visibility.OnValueChanged -= ASub2Changed;
-        ASubShip3Visibility.OnValueChanged -= ASub3Changed;
+        //AMainShipVisibility.OnValueChanged -= AMainChanged;
+        //ASubShip1Visibility.OnValueChanged -= ASub1Changed;
+        //ASubShip2Visibility.OnValueChanged -= ASub2Changed;
+        //ASubShip3Visibility.OnValueChanged -= ASub3Changed;
 
-        BMainShipVisibility.OnValueChanged -= BMainChanged;
-        BSubShip1Visibility.OnValueChanged -= BSub1Changed;
-        BSubShip2Visibility.OnValueChanged -= BSub2Changed;
-        BSubShip3Visibility.OnValueChanged -= BSub3Changed;
+        //BMainShipVisibility.OnValueChanged -= BMainChanged;
+        //BSubShip1Visibility.OnValueChanged -= BSub1Changed;
+        //BSubShip2Visibility.OnValueChanged -= BSub2Changed;
+        //BSubShip3Visibility.OnValueChanged -= BSub3Changed;
 
-        IsShipSpawned.OnValueChanged -= IsShipSpawnedValueChanged;
+        //IsShipSpawned.OnValueChanged -= IsShipSpawnedValueChanged;
     }
 
     private void ChangeValueVisiblity(ShipSymbol ss, bool value)

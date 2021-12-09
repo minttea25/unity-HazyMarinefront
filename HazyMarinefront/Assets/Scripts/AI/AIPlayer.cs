@@ -1,44 +1,40 @@
 using UnityEngine;
-using MLAPI;
-using MLAPI.Connection;
-using MLAPI.NetworkVariable;
-using MLAPI.Messaging;
+
 using Random = UnityEngine.Random;
 using System;
 
-public class AIPlayer : NetworkBehaviour
+public class AIPlayer : MonoBehaviour
 {
     [SerializeField] private Renderer playerTeamRenderer;
     [SerializeField] private Color[] teamColors;
 
-    [SerializeField] private NetworkVariable<Vector3> Position = new NetworkVariable<Vector3>();
+    [SerializeField] private Vector3 Position;
 
-    private NetworkVariable<Team> team = new NetworkVariable<Team>();
+    private Team team;
 
-    [ServerRpc]
     public void SetTeamServerRpc(Team t)
     {
         // only 2 team (A and B) - make sure team index is valid
         if (t != Team.ATeam && t != Team.BTeam) { return; }
 
         // Update the team NetworkVariable
-        team.Value = t;
+        team = t;
     }
 
     private void OnEnable()
     {
-        team.OnValueChanged += OnTeamChanged;
+        //team.OnValueChanged += OnTeamChanged;
     }
 
     private void OnDisable()
     {
-        team.OnValueChanged -= OnTeamChanged;
+        //team.OnValueChanged -= OnTeamChanged;
     }
 
     private void OnTeamChanged(Team previousTeam, Team newTeam)
     {
         // Only clients need to update the renderer
-        if (!IsClient) { return; }
+        //if (!IsClient) { return; }
 
         // update the player color from team
         playerTeamRenderer.material.color = teamColors[(int)newTeam];
@@ -46,33 +42,32 @@ public class AIPlayer : NetworkBehaviour
 
     private void Start()
     {
-        if (IsOwner)
-        {
-            if (NetworkManager.Singleton.IsServer)
-            {
+        //if (IsOwner)
+        //{
+            //if (NetworkManager.Singleton.IsServer)
+            //{
                 SetTeamServerRpc(Team.ATeam);
                 transform.position = new Vector3(6, 3, 0);
-                Position.Value = new Vector3(6, 3, 0);
-            }
-            else
-            {
+                Position = new Vector3(6, 3, 0);
+            //}
+            //else
+            //{
                 SetTeamServerRpc(Team.BTeam);
                 SetPositionServerRpc(new Vector3(6, 3, -2));
-            }
-        }
+            //}
+        //}
 
-        playerTeamRenderer.material.color = teamColors[(int)team.Value];
+        playerTeamRenderer.material.color = teamColors[(int)team];
     }
 
-    [ServerRpc]
     private void SetPositionServerRpc(Vector3 pos)
     {
-        Position.Value = pos;
+        Position = pos;
     }
 
     private void Update()
     {
-        transform.position = Position.Value;
+        transform.position = Position;
     }
 
     void turn()
@@ -82,22 +77,10 @@ public class AIPlayer : NetworkBehaviour
 
     void moveShip()
     {
-        Map map = NetworkManager.Singleton.ConnectedClients[0].PlayerObject.GetComponent<PlayManager>().MapInstance.GetComponent<Map>();
+        AIMap map = GetComponent<AIManager>().MapInstance.GetComponent<AIMap>();
 
         Ship aiShip;
         DirectionType dirType;
-
-        ulong localClientId = NetworkManager.Singleton.LocalClientId;
-
-        if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(localClientId, out NetworkClient networkClient))
-        {
-            return;
-        }
-
-        if (!networkClient.PlayerObject.TryGetComponent<PlayManager>(out var PlayManager))
-        {
-            return;
-        }
 
         while (true)
         {
@@ -128,27 +111,14 @@ public class AIPlayer : NetworkBehaviour
                 continue;
             break;
         }
-        PlayManager.SetMoveShipServerRpc(aiShip.Symbol, dirType, 1);
+        GetComponent<AIManager>().SetMoveShip(aiShip.Symbol, dirType, 1);
     }
 
     void atkShip()
     {
         bool atk = false;
 
-        ulong localClientId = NetworkManager.Singleton.LocalClientId;
-
-        if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(localClientId, out NetworkClient networkClient))
-        {
-            return;
-        }
-
-        if (!networkClient.PlayerObject.TryGetComponent<PlayManager>(out var PlayManager))
-        {
-            return;
-        }
-
-
-        Map map = NetworkManager.Singleton.ConnectedClients[0].PlayerObject.GetComponent<PlayManager>().MapInstance.GetComponent<Map>();
+        AIMap map = GetComponent<AIManager>().MapInstance.GetComponent<AIMap>();
 
         for (int i = 0; i < MapLayout.mapSize.x && !atk; i++)
         {
@@ -158,7 +128,7 @@ public class AIPlayer : NetworkBehaviour
                 {
                     if (MapLayout.GetTeamByShipSymbol(map.grid[i, j]) == Team.ATeam)
                     {
-                        PlayManager.AttackServerRpc(i, j);
+                        GetComponent<AIManager>().Attack(i, j);
                         atk = true;
                         break;
                     }
@@ -174,7 +144,7 @@ public class AIPlayer : NetworkBehaviour
             if (map.fixedFogManager.fixedFogGrid[x, y] != null || MapLayout.GetTeamByShipSymbol(map.grid[x, y]) == Team.BTeam)
                 continue;
 
-            PlayManager.AttackServerRpc(x, y);
+            GetComponent<AIManager>().Attack(x, y);
 
             break;
         }
