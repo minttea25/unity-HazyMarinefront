@@ -84,6 +84,47 @@ public class SubShip3 : Ship
         return list;
     }
 
+    public override List<Vector3Int> GetPosibleAIShipSpawnCoordsList(AIMap map)
+    {
+        // 먼저 좌표 하나뽑고 만약 가능한 좌표면 위로으로 두칸 추가해서 다시 그 칸 가능한 좌표인지 확인
+
+        List<Vector3Int> list = new List<Vector3Int>();
+
+        while (true)
+        {
+            // 양옆으로 2칸이므로 위에 항상 두 칸 놓을 수 있도록 y 값은 -2해서 가져오기
+            int x = Random.Range(0, MapLayout.mapSize.x);
+            int y = Random.Range(0, MapLayout.mapSize.y - 2);
+
+            if (map.CheckIsShipNear(new Vector3Int(x, y, 0)))
+            {
+                continue;
+            }
+
+            y += 1;
+
+            if (map.CheckIsShipNear(new Vector3Int(x, y, 0)))
+            {
+                continue;
+            }
+
+            y += 1;
+
+            if (map.CheckIsShipNear(new Vector3Int(x, y, 0)))
+            {
+                continue;
+            }
+
+            list.Add(new Vector3Int(x, y - 2, 0));
+            list.Add(new Vector3Int(x, y - 1, 0));
+            list.Add(new Vector3Int(x, y, 0));
+
+            break;
+        }
+
+        return list;
+    }
+
     public override void ActivateAbility()
     {
         ulong localClientId = NetworkManager.Singleton.LocalClientId;

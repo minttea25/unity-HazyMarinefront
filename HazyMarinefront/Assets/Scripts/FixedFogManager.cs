@@ -7,6 +7,7 @@ public class FixedFogManager : MonoBehaviour
 {
     public GameObject tilePrefab;
     public Map map;
+    public AIMap aimap;
     public GameObject Tiles;
 
     public FixedFog[,] fixedFogGrid = new FixedFog[MapLayout.mapSize.x, MapLayout.mapSize.y];
@@ -20,7 +21,7 @@ public class FixedFogManager : MonoBehaviour
 
     private void Start()
     {
-        SpawnTiles();
+        SpawnTiles(); //aimap 구분 필요
     }
 
     private void SpawnTiles()

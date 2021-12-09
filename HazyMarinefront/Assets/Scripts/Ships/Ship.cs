@@ -35,6 +35,8 @@ public abstract class Ship : NetworkBehaviour
 
     public abstract Vector3 GetAIShipCenterPositionFromCoord(List<Vector3Int> coords, AIMap map);
     public abstract List<Vector3Int> GetPosibleShipSpawnCoordsList(Map map);
+
+    public abstract List<Vector3Int> GetPosibleAIShipSpawnCoordsList(AIMap map);
     public abstract void ActivateAbility();
 
     public GameObject AlertDialog;

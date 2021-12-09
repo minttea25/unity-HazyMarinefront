@@ -55,6 +55,26 @@ public class SubShip4 : Ship
         return list;
     }
 
+    public override List<Vector3Int> GetPosibleAIShipSpawnCoordsList(AIMap map)
+    {
+        List<Vector3Int> list = new List<Vector3Int>();
+
+        while (true)
+        {
+            int x = Random.Range(0, MapLayout.mapSize.x);
+            int y = Random.Range(0, MapLayout.mapSize.y);
+
+            if (map.CheckIsShipNear(new Vector3Int(x, y, 0)))
+                continue;
+
+            list.Add(new Vector3Int(x, y, 0));
+
+            break;
+        }
+
+        return list;
+    }
+
     public override void ActivateAbility()
     {
         //none

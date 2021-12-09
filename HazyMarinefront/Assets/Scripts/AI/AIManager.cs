@@ -53,7 +53,7 @@ public class AIManager : MonoBehaviour
 
     internal void ClearFogTest()
     {
-        GetComponent<PlayManager>().MapInstance.GetComponent<Map>().fixedFogManager.ClearFogTest();
+        GetComponent<PlayManager>().MapInstance.GetComponent<AIMap>().fixedFogManager.ClearFogTest();
     }
 
     private void SpawnMap()
@@ -87,19 +87,19 @@ public class AIManager : MonoBehaviour
             ship.shipCoords = temp.ConvertAll(o => new Vector3Int(o.x, o.y, o.z));
 
 
-            MapInstance.GetComponent<Map>().ShipsInFieldList.Add(ship);
+            MapInstance.GetComponent<AIMap>().ShipsInFieldList.Add(ship);
 
             for (int i = 0; i < ship.shipCoords.Count; i++)
             {
-                MapInstance.GetComponent<Map>().grid[ship.shipCoords[i].x, ship.shipCoords[i].y] = MapLayout.GetSymbolByShiptypeTeam(ship.shipType, ship.team);
+                MapInstance.GetComponent<AIMap>().grid[ship.shipCoords[i].x, ship.shipCoords[i].y] = MapLayout.GetSymbolByShiptypeTeam(ship.shipType, ship.team);
             }
 
-            ship.shipCenterPosition = ship.GetShipCenterPositionFromCoord(ship.shipCoords, MapInstance.GetComponent<Map>());
+            ship.shipCenterPosition = ship.GetAIShipCenterPositionFromCoord(ship.shipCoords, MapInstance.GetComponent<AIMap>());
 
             Vector3 pos = ship.shipCenterPosition;
             ship.transform.position = pos;
 
-            ship.transform.parent = MapInstance.GetComponent<Map>().shipHolder.transform;
+            ship.transform.parent = MapInstance.GetComponent<AIMap>().shipHolder.transform;
             ship.transform.localScale = new Vector3(1, 1, 1);
 
             shipInstance.tag = ship.Symbol.ToString();
@@ -122,7 +122,7 @@ public class AIManager : MonoBehaviour
             ship.visibility = false;
             ship.Init();
 
-            List<Vector3Int> temp = ship.GetPosibleShipSpawnCoordsList(MapInstance.GetComponent<Map>());
+            List<Vector3Int> temp = ship.GetPosibleAIShipSpawnCoordsList(MapInstance.GetComponent<AIMap>());
 
 
             // deep copy
@@ -256,9 +256,9 @@ public class AIManager : MonoBehaviour
 
     private void SpawnFog()
     {
-        float x = MapInstance.GetComponent<Map>().bottomLeftSquareTransform.transform.position.x;
-        float y = MapInstance.GetComponent<Map>().bottomLeftSquareTransform.transform.position.y + MapLayout.oceanFogInterval;
-        float z = MapInstance.GetComponent<Map>().bottomLeftSquareTransform.transform.position.z;
+        float x = MapInstance.GetComponent<AIMap>().bottomLeftSquareTransform.transform.position.x;
+        float y = MapInstance.GetComponent<AIMap>().bottomLeftSquareTransform.transform.position.y + MapLayout.oceanFogInterval;
+        float z = MapInstance.GetComponent<AIMap>().bottomLeftSquareTransform.transform.position.z;
 
         for (int i = 0; i < MapLayout.mapSize.x; i++)
         {
@@ -273,8 +273,8 @@ public class AIManager : MonoBehaviour
                 //FogInstance.Spawn();
 
                 FixedFog fog = FogInstance.GetComponent<FixedFog>();
-                MapInstance.GetComponent<Map>().fixedFogManager.fixedFogGrid[i, j] = fog;
-                fog.transform.parent = MapInstance.GetComponent<Map>().fogBlocks.transform;
+                MapInstance.GetComponent<AIMap>().fixedFogManager.fixedFogGrid[i, j] = fog;
+                fog.transform.parent = MapInstance.GetComponent<AIMap>().fogBlocks.transform;
             }
         }
     }
@@ -283,11 +283,11 @@ public class AIManager : MonoBehaviour
     {
         Debug.Log("SetMove: " + this.GetHashCode());
 
-        bool exist = GetComponent<AIManager>().MapInstance.GetComponent<Map>().SetSelectedShip(s);
+        bool exist = GetComponent<AIManager>().MapInstance.GetComponent<AIMap>().SetSelectedShip(s);
         if (exist)
         {
 
-            bool moved = GetComponent<AIManager>().MapInstance.GetComponent<Map>().MoveShip(dirType, amount);
+            bool moved = GetComponent<AIManager>().MapInstance.GetComponent<AIMap>().MoveShip(dirType, amount);
             Debug.Log("MOVED: " + moved);
         }
     }
@@ -295,7 +295,7 @@ public class AIManager : MonoBehaviour
     // for only clicking fog
     public void Attack(int x, int y)
     {
-        Map map = GetComponent<AIManager>().MapInstance.GetComponent<Map>();
+        AIMap map = GetComponent<AIManager>().MapInstance.GetComponent<AIMap>();
 
         map.fixedFogManager.ClearFog(new Vector2Int(x, y));
         AttackCoord(x, y);
@@ -303,7 +303,7 @@ public class AIManager : MonoBehaviour
 
     public void AttackCoord(int x, int y)
     {
-        Map map = GetComponent<AIManager>().MapInstance.GetComponent<Map>();
+        AIMap map = GetComponent<AIManager>().MapInstance.GetComponent<AIMap>();
 
         // ojy added
         Ship curShip = map.GetSelectedShip();
@@ -331,7 +331,7 @@ public class AIManager : MonoBehaviour
 
     public void DamageShip(int index)
     {
-        Map map = GetComponent<AIManager>().MapInstance.GetComponent<Map>();
+        AIMap map = GetComponent<AIManager>().MapInstance.GetComponent<AIMap>();
         Ship ship = map.GetSelectedShip();
 
         if (ship.shipCoords[index].z == 0)
