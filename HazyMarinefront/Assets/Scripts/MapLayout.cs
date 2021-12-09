@@ -77,7 +77,15 @@ public class MapLayout : MonoBehaviour
     public int SUBSHIP2_ABILITY_COST = 4;
     public int SUBSHIP3_ABILITY_COST = 5;
 
-    
+    public Color SELECTED_SHIP_BACKGROUND_COLOR = new Color(1.0f, 0.67f, 0.31f, 0.4f);
+    public static Color selectedShipBackgroundColor;
+
+    public Color UNSELECTED_SHIP_BACKGROUND_COLOR = new Color(1f, 1f, 1f, 0.3921569f);
+    public static Color unselectedShipBackgroundColor;
+
+    // count of ship (spawnable)
+    public int NUMBER_OF_TYPES_OF_SHIPS = 5;
+    public static int numberOfTypesOfShips { get; set; }
 
 
     // do not modify!
@@ -133,6 +141,22 @@ public class MapLayout : MonoBehaviour
         oceanTileInterval = OCEAN_TILE_INTERVAL;
         startCost = START_COST;
         turnCost = TURN_COST;
+
+        numberOfTypesOfShips = NUMBER_OF_TYPES_OF_SHIPS;
+
+        selectedShipBackgroundColor = new Color(
+            SELECTED_SHIP_BACKGROUND_COLOR.r,
+            SELECTED_SHIP_BACKGROUND_COLOR.g,
+            SELECTED_SHIP_BACKGROUND_COLOR.b,
+            SELECTED_SHIP_BACKGROUND_COLOR.a
+            );
+
+        unselectedShipBackgroundColor = new Color(
+            UNSELECTED_SHIP_BACKGROUND_COLOR.r,
+            UNSELECTED_SHIP_BACKGROUND_COLOR.g,
+            UNSELECTED_SHIP_BACKGROUND_COLOR.b,
+            UNSELECTED_SHIP_BACKGROUND_COLOR.a
+            );
 
         mainshipAbilityCost = MAINSHIP_ABILITY_COST;
         subship1AbilityCost = SUBSHIP1_ABILITY_COST;
