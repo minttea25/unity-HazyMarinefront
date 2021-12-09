@@ -200,6 +200,18 @@ public class HostClientNetworkManager : MonoBehaviour
         spawnButton.SetActive(false);
         //GameObject.Find("Map").GetComponent<RaderObject>().GetComponent<Rader>().
 
+        Debug.Log("test start ");
+
+        if ( GameObject.Find("Map") == null )
+        {
+            Debug.Log("map is null");
+        }
+        else
+        {
+            Debug.Log("map is not hull");
+        }
+        GameObject.Find("Map").GetComponent<FixedFogManager>().test();
+
         // ?????? host ???? ?? ????
         GetTurnManager().SetGameState(2);
     }

@@ -662,7 +662,7 @@ MonoBehaviour:
     type: 3}
   raderPrefab: {fileID: 4913430320116445677, guid: 2b856b8b59a1c4b6b806c14a9951331a,
     type: 3}
-  raderObjectPrefab: {fileID: 8191715995891641316, guid: 1bca1ca6449a742938061ae406c00ac1,
+  raderObjectPrefab: {fileID: 1232512204247376936, guid: 2b504b64fa49d475294d96e23737d042,
     type: 3}
   map: {fileID: 2688818767548134125}
   Tiles: {fileID: 7007762084053328705}

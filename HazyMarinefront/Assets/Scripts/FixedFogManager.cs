@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using MLAPI;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -19,6 +20,7 @@ public class FixedFogManager : MonoBehaviour
     public Rader[,] raderGrid = new Rader[2,2];
     public RaderObject[,] raderObjectGrid = new RaderObject[2, 2];
 
+    [SerializeField] public NetworkObject MapInstance { get; private set; }
 
     private void Awake()
     {
@@ -44,32 +46,36 @@ public class FixedFogManager : MonoBehaviour
                         raderObjectGrid[i, j].shipText.text = "MainShip";
                         raderObjectGrid[i, j].shipType = ShipType.MainShip;
                         raderObjectGrid[i, j].shipText.GetComponent<RectTransform>().anchoredPosition = new Vector3(170, 230, 0);
-                        raderObjectGrid[i, j].movebtn.GetComponent<RectTransform>().anchoredPosition = new Vector3(120, 50, 0);
-                        raderObjectGrid[i, j].abilitybtn.GetComponent<RectTransform>().anchoredPosition = new Vector3(210, 50, 0);
+                        raderObjectGrid[i, j].shipText.color = Color.white;
+                        //raderObjectGrid[i, j].movebtn.GetComponent<RectTransform>().anchoredPosition = new Vector3(120, 50, 0);
+                        //raderObjectGrid[i, j].abilitybtn.GetComponent<RectTransform>().anchoredPosition = new Vector3(210, 50, 0);
                         break;
                     case 1:
                         raderObjectGrid[i, j].shipText.text = "SubShip1";
                         raderObjectGrid[i, j].shipType = ShipType.SubShip1;
                         raderObjectGrid[i, j].shipText.GetComponent<RectTransform>().anchoredPosition = new Vector3(340, 230, 0);
-                        raderObjectGrid[i, j].movebtn.GetComponent<RectTransform>().anchoredPosition = new Vector3(290, 50, 0);
-                        raderObjectGrid[i, j].abilitybtn.GetComponent<RectTransform>().anchoredPosition = new Vector3(380, 50, 0);
+                        raderObjectGrid[i, j].shipText.color = Color.white;
+                        //raderObjectGrid[i, j].movebtn.GetComponent<RectTransform>().anchoredPosition = new Vector3(290, 50, 0);
+                        //raderObjectGrid[i, j].abilitybtn.GetComponent<RectTransform>().anchoredPosition = new Vector3(380, 50, 0);
                         break;
                     case 2:
                         raderObjectGrid[i, j].shipText.text = "SubShip2";
                         raderObjectGrid[i, j].shipType = ShipType.SubShip2;
                         raderObjectGrid[i, j].shipText.GetComponent<RectTransform>().anchoredPosition = new Vector3(170, 15, 0);
-                        raderObjectGrid[i, j].movebtn.GetComponent<RectTransform>().anchoredPosition = new Vector3(120, -170, 0);
-                        raderObjectGrid[i, j].abilitybtn.GetComponent<RectTransform>().anchoredPosition = new Vector3(210, -170, 0);
+                        raderObjectGrid[i, j].shipText.color = Color.white;
+                        //raderObjectGrid[i, j].movebtn.GetComponent<RectTransform>().anchoredPosition = new Vector3(120, -170, 0);
+                        //raderObjectGrid[i, j].abilitybtn.GetComponent<RectTransform>().anchoredPosition = new Vector3(210, -170, 0);
                         break;
                     case 3:
                         raderObjectGrid[i, j].shipText.text = "SubShip3";
                         raderObjectGrid[i, j].shipType = ShipType.SubShip3;
                         raderObjectGrid[i, j].shipText.GetComponent<RectTransform>().anchoredPosition = new Vector3(340, 15, 0);
-                        raderObjectGrid[i, j].movebtn.GetComponent<RectTransform>().anchoredPosition = new Vector3(290, -170, 0);
-                        raderObjectGrid[i, j].abilitybtn.GetComponent<RectTransform>().anchoredPosition = new Vector3(380, -170, 0);
+                        raderObjectGrid[i, j].shipText.color = Color.white;
+                        //raderObjectGrid[i, j].movebtn.GetComponent<RectTransform>().anchoredPosition = new Vector3(290, -170, 0);
+                        //raderObjectGrid[i, j].abilitybtn.GetComponent<RectTransform>().anchoredPosition = new Vector3(380, -170, 0);
                         break;
                 }
-                raderObjectGrid[i, j].rader.stopRader();
+                //raderObjectGrid[i, j].rader.stopRader();
 
                 float x = map.RaderTransform.transform.position.x + (i * 3.5f);
                 float z = map.RaderTransform.transform.position.z + (j * 4.5f);
@@ -80,7 +86,26 @@ public class FixedFogManager : MonoBehaviour
                 raderObjectGrid[i, j].transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
 
                 raderObjectGrid[i, j].transform.parent = Raders.transform;
+                raderObjectGrid[i, j].placeShips();
 
+            }
+        }
+
+    }
+
+    public void test()
+    {
+        List<Ship> shipList = MapInstance.GetComponent<Map>().ShipsInFieldList;
+        for (int i = 0; i < shipList.Count; i++)
+        {
+            Ship ship = shipList[i];
+
+            ShipSymbol mine = MapLayout.GetSymbolByShiptypeTeam( ShipType.MainShip, Team.ATeam);
+
+            if (mine == ship.Symbol)
+            {
+                Vector3 myCenter = ship.shipCenterPosition;
+                Debug.Log(mine.ToString() + " 's center : " + myCenter.x + " , " + myCenter.y + " , " + myCenter.z);
             }
         }
     }

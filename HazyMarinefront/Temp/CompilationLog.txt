@@ -1,0 +1,4 @@
+# Starting compiling Assembly-CSharp.dll
+/Applications/Unity/Hub/Editor/2020.3.22f1/Unity.app/Contents/Tools/RoslynScripts/unity_csc.sh /noconfig @Temp/UnityTempFile-48dee1831b4054facaecc486a57ad322
+# Starting IL post processing on Assembly-CSharp.dll
+/Applications/Unity/Hub/Editor/2020.3.22f1/Unity.app/Contents/MonoBleedingEdge/bin/mono "/Applications/Unity/Hub/Editor/2020.3.22f1/Unity.app/Contents/Tools/ILPostProcessorRunner/ILPostProcessorRunner.exe" @"/Users/yelimoh/Desktop/gameprogramming/ver5/unity-HazyMarinefront/HazyMarinefront/Temp/UnityTempFile-7ab612a67f3194b35a3c8bf85d8dc984"
