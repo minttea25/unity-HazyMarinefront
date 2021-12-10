@@ -8,6 +8,7 @@ using System;
 
 public class PlayManager : NetworkBehaviour
 {
+    public GameObject DotPrefab;
     public GameObject AlertDialogPrefab;
 
     [SerializeField] public NetworkObject[] teamAShipPrefabs;
@@ -35,6 +36,19 @@ public class PlayManager : NetworkBehaviour
 
     [SerializeField] public NetworkVariableBool IsShipSpawned = new NetworkVariableBool(false);
 
+    // for clinet
+    public List<GameObject> MainshipDots = new List<GameObject>();
+    public List<GameObject> Subship1Dots = new List<GameObject>();
+    public List<GameObject> Subship2Dots = new List<GameObject>();
+    public List<GameObject> Subship3Dots = new List<GameObject>();
+    public List<GameObject> Subship4Dots = new List<GameObject>();
+
+    public bool MainshipDestroyed;
+    public bool Subship1Destroyed;
+    public bool Subship2Destroyed;
+    public bool Subship3Destroyed;
+    public bool Subship4Destroyed;
+
     private void Awake()
     {
     }
@@ -53,7 +67,13 @@ public class PlayManager : NetworkBehaviour
         {
             Debug.Log("Client");
         }
-    }
+        MainshipDestroyed = false;
+        Subship1Destroyed = false;
+        Subship2Destroyed = false;
+        Subship3Destroyed = false;
+        Subship4Destroyed = false;
+
+}
 
     [ServerRpc]
     internal void ClearFogTestServerRpc()
@@ -158,6 +178,125 @@ public class PlayManager : NetworkBehaviour
         }
 
         IsShipSpawned.Value = true;
+
+        ActivateRadarServerRpc();
+    }
+
+    [ClientRpc]
+    internal void DestroyDotClientRpc(int type)
+    {
+        if (NetworkManager.Singleton.IsServer) { return; }
+
+        switch(type)
+        {
+            case (int)ShipType.MainShip:
+                foreach (var g in MainshipDots)
+                {
+                    Destroy(g);
+                }
+                break;
+            case (int)ShipType.SubShip1:
+                foreach (var g in Subship1Dots)
+                {
+                    Destroy(g);
+                }
+                break;
+            case (int)ShipType.SubShip2:
+                foreach (var g in Subship2Dots)
+                {
+                    Destroy(g);
+                }
+                break;
+            case (int)ShipType.SubShip3:
+                foreach (var g in Subship3Dots)
+                {
+                    Destroy(g);
+                }
+                break;
+            case (int)ShipType.SubShip4:
+                foreach (var g in Subship4Dots)
+                {
+                    Destroy(g);
+                }
+                break;
+        }
+    }
+
+    // v 는 표시할 실제 색상 (true: A 팀)
+    [ClientRpc]
+    internal void SpawnDotClientRpc(Vector3 position, bool v, int type)
+    {
+        if (NetworkManager.Singleton.IsServer) { return; }
+
+        if (NetworkManager.Singleton.IsServer) { return; }
+
+        ulong localClientId = NetworkManager.Singleton.LocalClientId;
+
+        if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(localClientId, out NetworkClient networkClient))
+        {
+            return;
+        }
+
+        if (!networkClient.PlayerObject.TryGetComponent<PlayManager>(out var PlayManager))
+        {
+            return;
+        }
+
+        switch (type)
+        {
+            case (int)ShipType.MainShip:
+                Debug.Log("DST: " + MainshipDestroyed);
+                if (PlayManager.MainshipDestroyed) return;
+                break;
+            case (int)ShipType.SubShip1:
+                if (PlayManager.Subship1Destroyed) return;
+                break;
+            case (int)ShipType.SubShip2:
+                if (PlayManager.Subship2Destroyed) return;
+                break;
+            case (int)ShipType.SubShip3:
+                if (PlayManager.Subship3Destroyed) return;
+                break;
+            case (int)ShipType.SubShip4:
+                if (PlayManager.Subship4Destroyed) return;
+                break;
+        }
+
+        GameObject g = (GameObject)Instantiate(DotPrefab);
+
+        g.transform.position = position;
+        g.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
+
+        MaterialSetter.ChangeColor(
+            g.GetComponent<Renderer>().material,
+            v ? MapLayout.aShipDotColor : MapLayout.bShipDotColor);
+        switch (type)
+        {
+            case (int)ShipType.MainShip:
+                MainshipDots.Add(g);
+                break;
+            case (int)ShipType.SubShip1:
+                Subship1Dots.Add(g);
+                break;
+            case (int)ShipType.SubShip2:
+                Subship2Dots.Add(g);
+                break;
+            case (int)ShipType.SubShip3:
+                Subship3Dots.Add(g);
+                break;
+            case (int)ShipType.SubShip4:
+                Subship4Dots.Add(g);
+                break;
+        }
+    }
+
+    [ServerRpc]
+    private void ActivateRadarServerRpc()
+    {
+        if (!NetworkManager.Singleton.IsServer) { return; }
+
+        Debug.Log("Activate Radar - server");
+        GameObject.Find("RadarEvents").GetComponent<RadarEvent>().ActivateRadars();
     }
 
     [ClientRpc]
@@ -221,8 +360,8 @@ public class PlayManager : NetworkBehaviour
 
             ChangeAlphaValueShip(ship.Symbol, MapLayout.spawnedShipAlphaValue);
 
-            // 서버만 subship4 ui 띄우기
-            ShowSubship4UI(true);
+            // 서버만 subship4 ui 띄우기 임시 주석처리
+            //ShowSubship4UI(true);
         }
         else
         {
@@ -263,10 +402,13 @@ public class PlayManager : NetworkBehaviour
 
             ChangeAlphaValueShip(ship.Symbol, MapLayout.spawnedShipAlphaValue);
 
-            // 클라이언트에 보이기
-            ShowSubship4UIClientRpc(true);
+            // 클라이언트에 보이기 임시 주석 처리
+            //ShowSubship4UIClientRpc(true);
         }
+
+        ActivateRadarServerRpc();
     }
+
 
     [ClientRpc]
     private void ShowSubship4UIClientRpc(bool v)
@@ -276,6 +418,8 @@ public class PlayManager : NetworkBehaviour
         ShipControlEventListener s = GameObject.Find("EventSystem").GetComponent<ShipControlEventListener>();
 
         s.SubShip4BtnBackground.SetActive(v);
+
+        GameObject.Find("RadarEvents").GetComponent<RadarEvent>().RadarInstances[4].SetActive(true);
     }
 
     private void ShowSubship4UI(bool v)
@@ -285,6 +429,8 @@ public class PlayManager : NetworkBehaviour
         ShipControlEventListener s = GameObject.Find("EventSystem").GetComponent<ShipControlEventListener>();
 
         s.SubShip4BtnBackground.SetActive(v);
+
+        GameObject.Find("RadarEvents").GetComponent<RadarEvent>().RadarInstances[4].SetActive(true);
     }
 
     [ServerRpc]
@@ -316,14 +462,14 @@ public class PlayManager : NetworkBehaviour
     [ServerRpc]
     public void SetMoveShipServerRpc(ShipSymbol s, DirectionType dirType, int amount)
     {
-        
-
         bool exist = NetworkManager.Singleton.ConnectedClients[0].PlayerObject.GetComponent<PlayManager>().MapInstance.GetComponent<Map>().SetSelectedShip(s);
         if (exist)
         {
 
             bool moved = NetworkManager.Singleton.ConnectedClients[0].PlayerObject.GetComponent<PlayManager>().MapInstance.GetComponent<Map>().MoveShip(dirType, amount);
             Debug.Log("MOVED: " + moved);
+
+            ActivateRadarServerRpc();
         }
     }
 
@@ -396,6 +542,7 @@ public class PlayManager : NetworkBehaviour
                 if (removed)
                 {
                     Debug.Log(ship.Symbol + " is removed in list");
+                    Debug.Log("COUNT  dfdd: " + map.ShipsInFieldList.Count);
                 }
                 else
                 {
@@ -418,8 +565,10 @@ public class PlayManager : NetworkBehaviour
                 }
                 else
                 {
-                    SetActiveFalseUIClientRpc(ship.shipType);
+                    SetActiveFalseUIClientRpc((int)ship.shipType);
                 }
+
+                ActivateRadarServerRpc();
             }
         }
         else
@@ -455,13 +604,52 @@ public class PlayManager : NetworkBehaviour
     }
 
     [ClientRpc]
-    private void SetActiveFalseUIClientRpc(ShipType shipType)
+    private void SetActiveFalseUIClientRpc(int shipType)
     {
         if (NetworkManager.Singleton.IsServer) { return; }
 
+        ulong localClientId = NetworkManager.Singleton.LocalClientId;
+
+        if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(localClientId, out NetworkClient networkClient))
+        {
+            return;
+        }
+
+        if (!networkClient.PlayerObject.TryGetComponent<PlayManager>(out var PlayManager))
+        {
+            return;
+        }
+
+        ShipType st = ShipType.MainShip;
+
+        switch (shipType)
+        {
+            case (int)ShipType.MainShip:
+                Debug.Log("DSTTTTT");
+                PlayManager.MainshipDestroyed = true;
+                st = ShipType.MainShip;
+                break;
+            case (int)ShipType.SubShip1:
+                PlayManager.Subship1Destroyed = true;
+                st = ShipType.SubShip1;
+                break;
+            case (int)ShipType.SubShip2:
+                PlayManager.Subship2Destroyed = true;
+                st = ShipType.SubShip2;
+                break;
+            case (int)ShipType.SubShip3:
+                PlayManager.Subship3Destroyed = true;
+                st = ShipType.SubShip3;
+                break;
+            case (int)ShipType.SubShip4:
+                PlayManager.Subship4Destroyed = true;
+                st = ShipType.SubShip4;
+                break;
+        }
+
         ShipControlEventListener s = GameObject.Find("EventSystem").GetComponent<ShipControlEventListener>();
 
-        s.SetActiveShipRadarUI(shipType, false);
+        s.SetActiveShipRadarUI(st, false);
     }
 
     [ServerRpc]
