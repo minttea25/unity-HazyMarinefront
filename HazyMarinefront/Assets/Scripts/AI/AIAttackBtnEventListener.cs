@@ -1,0 +1,52 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class AIAttackBtnEventListener : MonoBehaviour
+{
+    public Button attackBtn;
+    public Text attackText;
+
+    public bool AttackMode;
+    public bool CrossAttackMode;
+
+    public void SetAttack()
+    {
+        if (AttackMode)
+        {
+            attackText.text = "ATTACK";
+            AttackMode = false;
+        }
+        else
+        {
+            attackText.text = "CANCEL";
+            AttackMode = true;
+        }
+    }
+
+    public void SetAttackMode(bool atk)
+    {
+        if (atk)
+        {
+            attackText.text = "CANCEL";
+            AttackMode = true;
+        }
+        else
+        {
+            attackText.text = "ATTACK";
+            AttackMode = false;
+        }
+    }
+    public void SetCrossAttackMode(bool atk)
+    {
+        if (atk)
+        {
+            CrossAttackMode = true;
+        }
+        else
+        {
+            CrossAttackMode = false;
+        }
+    }
+}

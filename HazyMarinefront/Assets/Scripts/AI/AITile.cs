@@ -18,7 +18,7 @@ public class AITile : MonoBehaviour
 
     void OnMouseDown()
     {
-        if (!GameObject.Find("EventSystem").GetComponent<AttackBtnEventListner>().AttackMode)
+        if (!GameObject.Find("AIEventSystem").GetComponent<AttackBtnEventListner>().AttackMode)
         {
             Debug.Log("Not AttackMode");
             return;
@@ -34,7 +34,7 @@ public class AITile : MonoBehaviour
 
         // bound 확인 로직 수정 하였음
         GameObject.Find("AIMap(clone)").GetComponent<AIManager>().AttackCoord(curCoord.x, curCoord.y);
-        if (GameObject.Find("EventSystem").GetComponent<AttackBtnEventListner>().CrossAttackMode)
+        if (GameObject.Find("AIEventSystem").GetComponent<AttackBtnEventListner>().CrossAttackMode)
         {
             if (curCoord.x + 1 < MapLayout.mapSize.x)
                 GameObject.Find("AIMap(clone)").GetComponent<AIManager>().AttackCoord(curCoord.x + 1, curCoord.y);
@@ -45,7 +45,7 @@ public class AITile : MonoBehaviour
             if (curCoord.y - 1 > 0)
                 GameObject.Find("AIMap(clone)").GetComponent<AIManager>().AttackCoord(curCoord.x, curCoord.y - 1);
             Debug.Log("십자공격 " + GameObject.Find("EventSystem").GetComponent<AttackBtnEventListner>().CrossAttackMode);
-            GameObject.Find("EventSystem").GetComponent<AttackBtnEventListner>().SetCrossAttackMode(false);
+            GameObject.Find("AIEventSystem").GetComponent<AttackBtnEventListner>().SetCrossAttackMode(false);
         }
 
         // ???
@@ -53,6 +53,6 @@ public class AITile : MonoBehaviour
 
         transform.GetComponent<Renderer>().material.color = new Color(1, 1, 1, 0);
 
-        GameObject.Find("EventSystem").GetComponent<AttackBtnEventListner>().SetAttackMode(false);
+        GameObject.Find("AIEventSystem").GetComponent<AttackBtnEventListner>().SetAttackMode(false);
     }
 }

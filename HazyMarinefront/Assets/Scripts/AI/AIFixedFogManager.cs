@@ -1,13 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
-public class FixedFogManager : MonoBehaviour
+public class AIFixedFogManager : MonoBehaviour
 {
     public GameObject tilePrefab;
-    public GameObject AItilePrefab;
-    public Map map;
     public AIMap aimap;
     public GameObject Tiles;
 
@@ -23,34 +20,9 @@ public class FixedFogManager : MonoBehaviour
 
     private void Start()
     {
-        if (GameObject.Find("Map(Clone)") != null)
-            SpawnTiles(); //aimap 구분 필요
-        else if (GameObject.Find("AIMap(Clone)") != null)
-            SpawnAITiles();
+          SpawnAITiles();
     }
 
-    private void SpawnTiles()
-    {
-        for (int i = 0; i < fixedFogGrid.GetLength(0); i++)
-        {
-            for (int j = 0; j < fixedFogGrid.GetLength(1); j++)
-            {
-                // set fog in array
-                tileGrid[i, j] = GetTile();
-
-                float x = map.bottomLeftSquareTransform.transform.position.x + MapLayout.areaSize * (i + 0.5f);
-                float z = map.bottomLeftSquareTransform.transform.position.z + MapLayout.areaSize * (j + 0.5f);
-
-                Vector3 pos = new Vector3(x, map.bottomLeftSquareTransform.transform.position.y + MapLayout.oceanTileInterval, z);
-
-                tileGrid[i, j].transform.position = pos;
-                tileGrid[i, j].transform.localScale = new Vector3(MapLayout.areaSize, MapLayout.areaSize* 0.1f, MapLayout.areaSize);
-
-
-                tileGrid[i, j].transform.parent = Tiles.transform;
-            }
-        }
-    }
 
     private void SpawnAITiles()
     {
@@ -75,16 +47,9 @@ public class FixedFogManager : MonoBehaviour
         }
     }
 
-    private Tile GetTile()
-    {
-        GameObject tileObj = (GameObject)Instantiate(tilePrefab);
-        Tile tile = tileObj.GetComponent<Tile>();
-
-        return tile;
-    }
     private AITile GetAITile()
     {
-        GameObject tileObj = (GameObject)Instantiate(AItilePrefab);
+        GameObject tileObj = (GameObject)Instantiate(tilePrefab);
         AITile tile = tileObj.GetComponent<AITile>();
 
         return tile;
@@ -93,7 +58,7 @@ public class FixedFogManager : MonoBehaviour
     internal void ClearFog(Vector2Int coords)
     {
         if (coords.x < 0 || coords.x >= MapLayout.mapSize.x
-            || coords.y <0 || coords.y >= MapLayout.mapSize.y)
+            || coords.y < 0 || coords.y >= MapLayout.mapSize.y)
         {
             return;
         }
@@ -119,4 +84,3 @@ public class FixedFogManager : MonoBehaviour
         ClearFog(new Vector2Int(x, y));
     }
 }
-

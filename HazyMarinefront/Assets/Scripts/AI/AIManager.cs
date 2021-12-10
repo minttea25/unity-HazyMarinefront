@@ -37,8 +37,11 @@ public class AIManager : MonoBehaviour
                             
     [SerializeField] public bool IsShipSpawned;
 
+    public int cost;
+
     private void Awake()
     {
+        cost = MapLayout.startCost;
     }
 
     // Start is called before the first frame update
@@ -60,10 +63,12 @@ public class AIManager : MonoBehaviour
     {
         GameObject.Find("EventSystem").GetComponent<MoveBtnEventListener>().MoveControllUICanvas.SetActive(false);
 
-        costUI.SetActive(false);
-        leaveButton.SetActive(false);
-        attackBtn.SetActive(false);
-        spawnButton.SetActive(false);
+        costUI.SetActive(true);
+        leaveButton.SetActive(true);
+        attackBtn.SetActive(true);
+        roomcodeEntryUI.SetActive(false);
+
+        GameObject.Find("EventSystem").GetComponent<AIMoveBtnEventListener>().SetActiveMoveCanvas(true);
 
         SpawnMap();
         SpawnFog();
@@ -302,11 +307,11 @@ public class AIManager : MonoBehaviour
     {
         Debug.Log("SetMove: " + this.GetHashCode());
 
-        bool exist = GetComponent<AIManager>().MapInstance.GetComponent<AIMap>().SetSelectedShip(s);
+        bool exist = GameObject.Find("AIMap(Clone)").GetComponent<AIMap>().SetSelectedShip(s);
         if (exist)
         {
 
-            bool moved = GetComponent<AIManager>().MapInstance.GetComponent<AIMap>().MoveShip(dirType, amount);
+            bool moved = GameObject.Find("AIMap(Clone)").GetComponent<AIMap>().MoveShip(dirType, amount);
             Debug.Log("MOVED: " + moved);
         }
     }

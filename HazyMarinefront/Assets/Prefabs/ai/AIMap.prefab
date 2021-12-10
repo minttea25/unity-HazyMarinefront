@@ -297,6 +297,7 @@ GameObject:
   - component: {fileID: 2688818767548134130}
   - component: {fileID: -1159375772119797924}
   - component: {fileID: -4952535041585469654}
+  - component: {fileID: -6388197948218832472}
   m_Layer: 0
   m_Name: AIMap
   m_TagString: Untagged
@@ -393,7 +394,8 @@ MonoBehaviour:
     type: 3}
   waterSplash: {fileID: 1722726733478836, guid: c1c88308ebb5d2541a282905b854ee4c,
     type: 3}
-  fixedFogManager: {fileID: 4817176836448938639}
+  fixedFogManager: {fileID: 4817176836448938639, guid: 17cc90735397fc54fb57af6f558e94e0,
+    type: 3}
   mapSize: {x: 10, y: 10}
   selectedCoord: {x: 0, y: 0}
   ShipsInFieldList: []
@@ -414,6 +416,55 @@ MonoBehaviour:
   PrefabHashGenerator: Map
   AlwaysReplicateAsRoot: 0
   DontDestroyWithOwner: 0
+--- !u!114 &-6388197948218832472
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2688818767548134127}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41102b102857d02479c81025e6ae1a33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AlertDialogPrefab: {fileID: 5527439510296230002, guid: a3fc08da869f745439f46de9ee91c551,
+    type: 3}
+  teamAShipPrefabs:
+  - {fileID: 6625412930321134663, guid: 8965312e4b0c0ae4d8636d9de94b6a90, type: 3}
+  - {fileID: 9009154164192721292, guid: 6b0c1549d42e52d409b9d096c5870088, type: 3}
+  - {fileID: 5454497330767398263, guid: 64a001a126dd4c649857c7faf03ba88a, type: 3}
+  - {fileID: 1864550644181383636, guid: 4cb53b12beecc1a4cb3bee673d873e9a, type: 3}
+  - {fileID: 6625412930321134663, guid: 12b8c20ea387a0f4e9ea9fda5f740640, type: 3}
+  teamBShipPrefabs:
+  - {fileID: 6625412930321134663, guid: b160a6b8b83a83340928ad4596a23284, type: 3}
+  - {fileID: 9009154164192721292, guid: 3bb7cf06fd020e7419bba613769ba9e7, type: 3}
+  - {fileID: 5454497330767398263, guid: 4a806620a76c60c42bea5aa790cbe5dd, type: 3}
+  - {fileID: 1864550644181383636, guid: 7d28da919f69dbc4286051ba3565099b, type: 3}
+  - {fileID: 6625412930321134663, guid: 9bc78a7e5a21aae49b833c1c0901a0a3, type: 3}
+  MapPrfab: {fileID: 2688818767548134127}
+  FogPrefab: {fileID: 1269120730060968, guid: 2f249478da1a3b14e85ec26b0b023f02, type: 3}
+  ExplosionPrefab: {fileID: 1828176872806910, guid: 64891a0eb28db934898420d80ca07cb3,
+    type: 3}
+  BigExplosionPrefab: {fileID: 1121192042590650, guid: e1b08032bec16ba4eb1ae23cbd572664,
+    type: 3}
+  WaterSplashPrefab: {fileID: 1722726733478836, guid: c1c88308ebb5d2541a282905b854ee4c,
+    type: 3}
+  roomcodeEntryUI: {fileID: 0}
+  leaveButton: {fileID: 0}
+  attackBtn: {fileID: 0}
+  spawnButton: {fileID: 0}
+  costUI: {fileID: 0}
+  AMainShipVisibility: 0
+  ASubShip1Visibility: 0
+  ASubShip2Visibility: 0
+  ASubShip3Visibility: 0
+  BMainShipVisibility: 0
+  BSubShip1Visibility: 0
+  BSubShip2Visibility: 0
+  BSubShip3Visibility: 0
+  IsShipSpawned: 0
+  cost: 0
 --- !u!1 &3439473833098010646
 GameObject:
   m_ObjectHideFlags: 0
@@ -648,8 +699,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tilePrefab: {fileID: 7537477161541683482, guid: 13d79ae379cd4564cbef25c84a045e20,
     type: 3}
+  AItilePrefab: {fileID: 7537477161541683482, guid: 7bf27d317230f104890bebaa0d5feaa0,
+    type: 3}
   map: {fileID: 0}
-  aimap: {fileID: 0}
+  aimap: {fileID: -1159375772119797924}
   Tiles: {fileID: 7007762084053328705}
 --- !u!1 &5850279070566175412
 GameObject:

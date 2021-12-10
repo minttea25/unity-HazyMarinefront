@@ -343,6 +343,24 @@ MonoBehaviour:
   SPAWN_LEAST_INTERVAL: 3
   OCEAN_FOG_INTERVAL: 1
   OCEAN_TILE_INTERVAL: 2
+  START_COST: 0
+  TURN_COST: 2
+  MAINSHIP_ABILITY_COST: 3
+  SUBSHIP1_ABILITY_COST: 3
+  SUBSHIP2_ABILITY_COST: 4
+  SUBSHIP3_ABILITY_COST: 5
+  SPAWNED_SHIP_ALPHA_VALUE: 1
+  SHIP_REVEALED_ALPHA_VALUE: 1
+  SHIP_UPPDER_COMPONENT_NAME: Cube1
+  SHIP_DOWN_COMPONENT_NAME: Cube2
+  A_MAINSHIP_NAME_CLIENT: TeamA_MainShip(Clone)
+  A_SUBSHIP1_NAME_CLIENT: TeamA_SubShip1(Clone)
+  A_SUBSHIP2_NAME_CLIENT: TeamA_SubShip2(Clone)
+  A_SUBSHIP3_NAME_CLIENT: TeamA_SubShip3(Clone)
+  B_MAINSHIP_NAME_CLIENT: TeamB_MainShip(Clone)
+  B_SUBSHIP1_NAME_CLIENT: TeamB_SubShip1(Clone)
+  B_SUBSHIP2_NAME_CLIENT: TeamB_SubShip2(Clone)
+  B_SUBSHIP3_NAME_CLIENT: TeamB_SubShip3(Clone)
 --- !u!114 &2688818767548134125
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -368,11 +386,11 @@ MonoBehaviour:
   shipHolder: {fileID: 3439473833098010646}
   bottomLeftSquareTransform: {fileID: 5359853882974637132}
   fogBlocks: {fileID: 4299850730263092910}
-  tiles: {fileID: 7537477161541683482, guid: 13d79ae379cd4564cbef25c84a045e20, type: 3}
   waterSplash: {fileID: -1831579963455581370, guid: c1c88308ebb5d2541a282905b854ee4c,
     type: 3}
   fixedFogManager: {fileID: 4817176836448938639}
   mapSize: {x: 0, y: 0}
+  selectedCoord: {x: 0, y: 0}
   ShipsInFieldList: []
 --- !u!114 &-4952535041585469654
 MonoBehaviour:
@@ -625,7 +643,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tilePrefab: {fileID: 7537477161541683482, guid: 13d79ae379cd4564cbef25c84a045e20,
     type: 3}
+  AItilePrefab: {fileID: 7537477161541683482, guid: 7bf27d317230f104890bebaa0d5feaa0,
+    type: 3}
   map: {fileID: 2688818767548134125}
+  aimap: {fileID: -1159375772119797924, guid: 8283aa55c40574e4da98fb3c4ecf5cf3, type: 3}
   Tiles: {fileID: 7007762084053328705}
 --- !u!1 &5850279070566175412
 GameObject:
