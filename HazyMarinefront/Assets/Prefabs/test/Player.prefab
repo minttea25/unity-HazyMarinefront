@@ -147,6 +147,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7c80924937f76b42a8bf0852eafd82f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DotPrefab: {fileID: 6039500746895353893, guid: bb238e19186e5db4fbb728b571e3ae2d,
+    type: 3}
   AlertDialogPrefab: {fileID: 5527439510296230002, guid: a3fc08da869f745439f46de9ee91c551,
     type: 3}
   teamAShipPrefabs:
@@ -189,7 +191,6 @@ MonoBehaviour:
     m_InternalValue: 0
   IsShipSpawned:
     m_InternalValue: 0
-  crossAtk: 0
 --- !u!114 &-6763149102899802792
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -208,3 +209,5 @@ MonoBehaviour:
     m_InternalValue: 0
   UIAvailable: 0
   cost: 0
+  hasMoved: 0
+  hasAttacked: 0

@@ -78,14 +78,28 @@ public class MapLayout : MonoBehaviour
     public int SUBSHIP3_ABILITY_COST = 5;
 
     public Color SELECTED_SHIP_BACKGROUND_COLOR = new Color(1.0f, 0.67f, 0.31f, 0.4f);
-    public static Color selectedShipBackgroundColor;
+    public static Color selectedShipBackgroundColor { get; set; }
 
     public Color UNSELECTED_SHIP_BACKGROUND_COLOR = new Color(1f, 1f, 1f, 0.3921569f);
-    public static Color unselectedShipBackgroundColor;
+    public static Color unselectedShipBackgroundColor { get; set; }
+
+    public Color A_SHIP_DOT_COLOR = new Color(0.25f, 1.0f, 0.3f, 1.0f);
+    public static Color aShipDotColor { get; set; }
+
+    public Color B_SHIP_DOT_COLOR = new Color(1.0f, 0.4f, 0.35f, 1.0f);
+    public static Color bShipDotColor { get; set; }
 
     // count of ship (spawnable)
     public int NUMBER_OF_TYPES_OF_SHIPS = 5;
     public static int numberOfTypesOfShips { get; set; }
+
+    // radar distance
+    public float RADAR_VALID_DISTANCE = 5.0f;
+    public static float radarValidDistance { get; set; }
+
+    // radar distance relative constant
+    public float RADAR_DISTANCE_CONST = 0.2f;
+    public static float radarDistanceConst { get; set; }
 
 
     // do not modify!
@@ -144,6 +158,10 @@ public class MapLayout : MonoBehaviour
 
         numberOfTypesOfShips = NUMBER_OF_TYPES_OF_SHIPS;
 
+        radarValidDistance = RADAR_VALID_DISTANCE;
+        radarDistanceConst = RADAR_DISTANCE_CONST;
+
+
         selectedShipBackgroundColor = new Color(
             SELECTED_SHIP_BACKGROUND_COLOR.r,
             SELECTED_SHIP_BACKGROUND_COLOR.g,
@@ -177,6 +195,18 @@ public class MapLayout : MonoBehaviour
         bSubship1NameClient = B_SUBSHIP1_NAME_CLIENT;
         bSubship2NameClient = B_SUBSHIP2_NAME_CLIENT;
         bSubship3NameClient = B_SUBSHIP3_NAME_CLIENT;
+
+        aShipDotColor = new Color(
+            A_SHIP_DOT_COLOR.r,
+            A_SHIP_DOT_COLOR.g,
+            A_SHIP_DOT_COLOR.b,
+            A_SHIP_DOT_COLOR.a);
+
+        bShipDotColor = new Color(
+            B_SHIP_DOT_COLOR.r,
+            B_SHIP_DOT_COLOR.g,
+            B_SHIP_DOT_COLOR.b,
+            B_SHIP_DOT_COLOR.a);
     }
 
     public static Team GetTeamByShipSymbol(ShipSymbol s)

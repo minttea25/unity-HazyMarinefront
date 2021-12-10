@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using MLAPI;
 using MLAPI.Connection;
-
+using System;
 
 public class ShipControlEventListener : MonoBehaviour
 {
@@ -291,8 +291,14 @@ public class ShipControlEventListener : MonoBehaviour
 
         if (!act)
         {
+            DestroyRadar(type);
             SetPosibleSelectedShip(type);
         }
+    }
+
+    private void DestroyRadar(ShipType type)
+    {
+        GameObject.Find("RadarEvents").GetComponent<RadarEvent>().DestroyRadar(type);
     }
 
     public void SetPosibleSelectedShip(ShipType destryedShiptype)
